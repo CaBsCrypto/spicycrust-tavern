@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full bg-mafia-dark text-provolone-cheese overflow-x-hidden selection:bg-mafia-amber selection:text-white">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- SEO Técnico Principal -->
+    <title>SpicyCrust | Taberna Real & Elixir Pizza Cores</title>
+    <meta name="description" content="Entra en la Taberna Real de SpicyCrust, un reino de fantasía medieval donde rebanas ingredientes, desafías con pizzas mágicas y obtienes victorias legendarias al estilo Clash." />
+    <meta name="keywords" content="SpicyCrust, royal tavern, clash games, web3 games, zero knowledge proof, cryptography, pizza chest, stellar, midnight" />
+    <meta name="robots" content="index, follow" />
+    
+    <!-- OpenGraph (Redes Sociales) -->
+    <meta property="og:title" content="SpicyCrust | Taberna Real & Elixir Pizza Cores" />
+    <meta property="og:description" content="Entra en la pizzería medieval real y domina los simuladores de ritmo y duelos de pizza con elixir." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://spicycrust.com" />
+    <meta property="og:image" content="https://spicycrust.com/speakeasy_bg.png" />
+    <meta property="og:site_name" content="SpicyCrust" />
+    <meta property="og:locale" content="es_ES" />
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="SpicyCrust | Taberna Real & Elixir Pizza Cores" />
+    <meta name="twitter:description" content="Entra en la pizzería medieval real y domina los simuladores de ritmo y duelos de pizza con elixir." />
+    <meta name="twitter:image" content="https://spicycrust.com/speakeasy_bg.png" />
+
+    <!-- Schema.org JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "@id": "https://spicycrust.com/#website",
+          "url": "https://spicycrust.com/",
+          "name": "SpicyCrust",
+          "description": "Taberna Real & Elixir Pizza Cores"
+        },
+        {
+          "@type": "Organization",
+          "@id": "https://spicycrust.com/#organization",
+          "name": "SpicyCrust Labs",
+          "url": "https://spicycrust.com/",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://spicycrust.com/speakeasy_bg.png"
+          }
+        },
+        {
+          "@type": "VideoGame",
+          "name": "Rhythm Slice",
+          "genre": "Rhythm Game",
+          "playMode": "SinglePlayer",
+          "applicationCategory": "Game",
+          "gamePlatform": "Web Browser",
+          "url": "https://rhythmslice.spicycrust.com",
+          "description": "El primer juego de ritmo ZK en Stellar. Toca los ingredientes a tiempo al estilo Guitar Hero.",
+          "author": {
+            "@type": "Organization",
+            "name": "SpicyCrust Labs"
+          }
+        },
+        {
+          "@type": "VideoGame",
+          "name": "Spicy Challenge",
+          "genre": "Strategy / Battleship",
+          "playMode": "MultiPlayer",
+          "applicationCategory": "Game",
+          "gamePlatform": "Web Browser",
+          "url": "https://spicychallenge.spicycrust.com",
+          "description": "Ubica tus pizzas y trampas de chiles de forma oculta en una grilla de 6x6 en Midnight L2.",
+          "author": {
+            "@type": "Organization",
+            "name": "SpicyCrust Labs"
+          }
+        },
+        {
+          "@type": "VideoGame",
+          "name": "Slash Slice",
+          "genre": "Action Arcade",
+          "playMode": "SinglePlayer",
+          "applicationCategory": "Game",
+          "gamePlatform": "Web Browser",
+          "url": "https://slashslice.spicycrust.com",
+          "description": "El clásico juego de arcade de rebanar ingredientes a toda velocidad.",
+          "author": {
+            "@type": "Organization",
+            "name": "SpicyCrust Labs"
+          }
+        }
+      ]
+    }
+    </script>
+    
+    <!-- Favicon SVG -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👑</text></svg>" />
+
+    <!-- Estilos de Importación -->
+
+    <!-- Preload de Capturas Reales de los Monitores Arcade (Carga instantánea) -->
+    <link rel="preload" href="/rhythmslice_preview.png" as="image" />
+    <link rel="preload" href="/spicychallenge_preview.png" as="image" />
+    <link rel="preload" href="/slashslice_preview.png" as="image" />
+    <script type="module" src="/src/main.js"></script>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body class="h-full relative overflow-x-hidden bg-mafia-dark text-provolone-cheese font-inter antialiased">
+    
+    <!-- Canvas unificado compartido de WebGL para todas las cajas 3D (Consolidación) -->
+    <canvas id="shared-cabinet-canvas" class="fixed inset-0 pointer-events-none z-10 w-full h-full"></canvas>
+
+    <!-- ================= FASE 1: INTRO UNBOXING (THREE.JS) ================= -->
+    <div id="unboxing-overlay" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-mafia-dark select-none transition-opacity duration-1000">
+      
+      <!-- Contenedor del Lienzo de Three.js (Cofre Real 3D) -->
+      <div id="unboxing-canvas-container" class="absolute inset-0 z-10 w-full h-full"></div>
+
+      <!-- Textos Flotantes de la Intro -->
+      <div id="unboxing-texts" class="absolute top-[12%] z-20 text-center pointer-events-none transition-all duration-700">
+        <h1 class="font-cinzel font-black text-4xl md:text-6xl tracking-wider text-mafia-gold glow-gold glow-breath flex items-center justify-center gap-3">
+          SPICYCRUST
+        </h1>
+        <p class="font-typewriter text-xs md:text-sm text-mafia-gold mt-4" data-t="introText">
+          ¡ABRE EL COFRE PIZZA Y COMIENZA EL DUELO!
+        </p>
+      </div>
+
+      <!-- Botón de Arcade Central -->
+      <button id="open-box-btn" class="absolute bottom-[16%] z-30 font-arcade text-xs text-white px-8 py-4 md:px-10 md:py-5 rounded-full cursor-pointer clash-button hover:scale-105 active:scale-95 transition-all outline-none max-w-[90%] text-center whitespace-nowrap md:whitespace-normal" aria-label="Abrir cofre de pizza e iniciar sistema real" data-t="introBtn">
+        ¡ABRIR COFRE!
+      </button>
+
+      <!-- Atmospheric Gradient -->
+      <div class="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-mafia-dark to-transparent opacity-60 z-20 pointer-events-none"></div>
+    </div>
+
+
+    <!-- ================= FASE 2: DASHBOARD PRINCIPAL (POST-UNBOXING) ================= -->
+    <div id="dashboard-main" class="min-h-full flex flex-col justify-between opacity-0 scale-95 transition-all duration-1000 pointer-events-auto bg-transparent">
+      
+      <!-- HEADER DE CONTROL -->
+      <header class="premium-header">
+        <div class="max-w-full px-6 md:px-16 h-20 flex items-center justify-between">
+          
+          <!-- Logo Interactivo a la Izquierda -->
+          <div class="flex items-center gap-3 group cursor-pointer">
+            <div id="logo-3d-container" class="w-12 h-12 relative flex items-center justify-center"></div>
+            <span class="font-cinzel font-black tracking-widest text-lg md:text-xl text-provolone-cheese group-hover:text-mafia-gold transition-all duration-300" data-t="brand">
+              SPICY<span class="text-mafia-gold">CRUST</span> TABERNA
+            </span>
+          </div>
+
+          <!-- Enlaces Rápidos -->
+          <nav class="hidden md:flex items-center gap-8" aria-label="Navegación principal">
+            <a href="#" class="font-cinzel font-bold text-xs tracking-wider text-provolone-cheese hover:text-mafia-gold transition-all duration-200" id="nav-home" data-t="navHome">
+              INICIO
+            </a>
+            <a href="#leaderboard" class="font-cinzel font-bold text-xs tracking-wider text-mafia-gold/70 hover:text-mafia-gold transition-all duration-200" id="leaderboard-btn" data-t="navLeaderboard">
+              CLASIFICACIÓN
+            </a>
+            <a href="#docs" class="font-cinzel font-bold text-xs tracking-wider text-mafia-gold/70 hover:text-mafia-gold transition-all duration-200" id="docs-btn" data-t="navRules">
+              REGLAS
+            </a>
+          </nav>
+
+            <!-- Widget de Estado en la Derecha -->
+            <div class="flex items-center gap-4">
+              <!-- Botón para alternar idioma -->
+              <button id="lang-toggle-btn" class="border-2 border-mafia-gold/40 hover:border-mafia-gold bg-mafia-mahogany hover:bg-mafia-mahogany/80 text-mafia-gold font-lilita text-xs px-3 py-1.5 rounded-lg shadow-md cursor-pointer transition-all uppercase">
+                EN
+              </button>
+              <!-- Botón HUD de Ranking -->
+              <button id="trophy-btn" class="flex items-center gap-2 border-2 border-mafia-gold/40 hover:border-mafia-gold bg-mafia-mahogany active:scale-95 px-4 py-2 rounded-xl font-lilita text-sm text-mafia-gold shadow-md cursor-pointer transition-all">
+                <span data-t="trophies">🏆 VER RANKING</span>
+              </button>
+            </div>
+
+        </div>
+      </header>
+
+      <!-- Glowing Wood Divider -->
+      <div class="copper-laser-line"></div>
+
+      <!-- HERO & TÍTULO -->
+      <main class="max-w-full px-6 md:px-16 py-8 flex-grow flex flex-col justify-center">
+        
+        <header class="text-center max-w-4xl mx-auto mb-12 select-none">
+          <h2 class="font-cinzel font-black text-4xl md:text-6xl text-provolone-cheese mb-3 uppercase premium-title" data-t="heroTitle">
+            ¡TABERNA <span class="text-mafia-gold">SPICYCRUST</span>!
+          </h2>
+          <div class="text-xs md:text-sm text-mafia-gold/80 tracking-wider" data-t="heroSubtitle">
+            ¡Rebana ingredientes con ritmo, usa tu elixir y abre cofres legendarios!
+          </div>
+        </header>
+
+        <!-- ================= GRID CENTRAL DE JUEGOS ================= -->
+        <section class="mb-20 w-full" aria-labelledby="grid-title">
+          <div class="flex items-center justify-between border-b border-mafia-gold/20 pb-4 mb-12">
+            <h3 id="grid-title" class="font-cinzel font-extrabold text-lg md:text-2xl text-provolone-cheese uppercase flex items-center gap-2" data-t="gridTitle">
+              👑 ELIGE TU COFRE PIZZA
+            </h3>
+            <span class="text-xs text-mafia-red bg-mafia-red/10 border border-mafia-red/30 px-3 py-1 rounded-full hidden sm:inline" data-t="elixirMax">💧 ELIXIR MÁXIMO: 10/10</span>
+          </div>
+
+          <!-- GRID PRINCIPAL DE JUEGOS CON ARMARIOS DE PIZZA 3D INTERACTIVOS (THREE.JS) -->
+          <div class="flex md:grid md:grid-cols-4 overflow-x-auto md:overflow-x-visible snap-x snap-mandatory gap-6 md:gap-12 pt-6 w-full no-scrollbar">
+
+            <!-- CAJA 1: RHYTHM SLICE -->
+            <div class="flex flex-col items-center max-w-[415px] mx-auto w-[82vw] md:w-full shrink-0 snap-center px-2">
+              <div id="cabinet-3d-1" class="w-full aspect-[0.95] relative play-btn cursor-pointer" data-game="slasher"></div>
+              <!-- Información Flotante Sin Contenedores -->
+              <div class="text-center mt-2 pointer-events-none select-none">
+                <h4 class="font-cinzel font-black text-[#ffd866] text-base sm:text-lg md:text-xl tracking-wider uppercase" data-t="game3Title">RHYTHM SLICE</h4>
+                <div class="text-[#f61b7f] font-lilita text-xs sm:text-xs md:text-sm mt-0.5" data-t="game3Subtitle">LEGENDARIO // 💧 ELIXIR: 4</div>
+                <div class="flex justify-center gap-3 sm:gap-3 md:gap-4 text-[#ffd866]/60 font-lilita text-xs sm:text-[11px] md:text-xs mt-1">
+                  <span data-t="game3Stat1">⚔️ RITMO: 99K</span>
+                  <span data-t="game3Stat2">👑 CRUST: 450</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- CAJA 2: SLICE HUNTER -->
+            <div class="flex flex-col items-center max-w-[415px] mx-auto w-[82vw] md:w-full shrink-0 snap-center px-2">
+              <div id="cabinet-3d-2" class="w-full aspect-[0.95] relative play-btn cursor-pointer" data-game="hunter"></div>
+              <!-- Información Flotante Sin Contenedores -->
+              <div class="text-center mt-2 pointer-events-none select-none">
+                <h4 class="font-cinzel font-black text-[#ffd866] text-base sm:text-lg md:text-xl tracking-wider uppercase" data-t="game4Title">SLICE HUNTER</h4>
+                <div class="text-[#00cc66] font-lilita text-xs sm:text-xs md:text-sm mt-0.5" data-t="game4Subtitle">MÍTICO // 💧 ELIXIR: 2</div>
+                <div class="flex justify-center gap-3 sm:gap-3 md:gap-4 text-[#ffd866]/60 font-lilita text-xs sm:text-[11px] md:text-xs mt-1">
+                  <span data-t="game4Stat1">🎯 CAZA: 100%</span>
+                  <span data-t="game4Stat2">👑 SCORE: 88K</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- CAJA 3: SLASH SLICE -->
+            <div class="flex flex-col items-center max-w-[415px] mx-auto w-[82vw] md:w-full shrink-0 snap-center px-2">
+              <div id="cabinet-3d-3" class="w-full aspect-[0.95] relative play-btn cursor-pointer" data-game="invaders"></div>
+              <!-- Información Flotante Sin Contenedores -->
+              <div class="text-center mt-2 pointer-events-none select-none">
+                <h4 class="font-cinzel font-black text-[#ffd866] text-base sm:text-lg md:text-xl tracking-wider uppercase" data-t="game1Title">SLASH SLICE</h4>
+                <div class="text-[#d85f00] font-lilita text-xs sm:text-xs md:text-sm mt-0.5" data-t="game1Subtitle">ESPECIAL // 💧 ELIXIR: 3</div>
+                <div class="flex justify-center gap-3 sm:gap-3 md:gap-4 text-[#ffd866]/60 font-lilita text-xs sm:text-[11px] md:text-xs mt-1">
+                  <span data-t="game1Stat1">⚡ VELOCIDAD: FAST</span>
+                  <span data-t="game1Stat2">👑 SCORE: 99K</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- CAJA 4: SPICY CHALLENGE -->
+            <div class="flex flex-col items-center max-w-[415px] mx-auto w-[82vw] md:w-full shrink-0 snap-center px-2">
+              <div id="cabinet-3d-4" class="w-full aspect-[0.95] relative play-btn cursor-pointer" data-game="dash"></div>
+              <!-- Información Flotante Sin Contenedores -->
+              <div class="text-center mt-2 pointer-events-none select-none">
+                <h4 class="font-cinzel font-black text-[#ffd866] text-base sm:text-lg md:text-xl tracking-wider uppercase" data-t="game2Title">SPICY CHALLENGE</h4>
+                <div class="text-[#d800a6] font-lilita text-xs sm:text-xs md:text-sm mt-0.5" data-t="game2Subtitle">ÉPICO // 💧 ELIXIR: 5</div>
+                <div class="flex justify-center gap-3 sm:gap-3 md:gap-4 text-[#ffd866]/60 font-lilita text-xs sm:text-[11px] md:text-xs mt-1">
+                  <span data-t="game2Stat1">🔥 DAÑO: 1.2K</span>
+                  <span data-t="game2Stat2">👑 GRID: 6x6</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+      </main>
+
+      <!-- PIE DE PÁGINA (HUD FOOTER) -->
+      <div class="copper-pipe-h"></div>
+      
+      <!-- Glowing Wood Divider -->
+      <div class="copper-laser-line"></div>
+      <footer class="bg-mafia-dark/95 py-8 border-t border-mafia-gold/10 relative z-20">
+        <div class="max-w-full px-6 md:px-16 flex flex-col md:flex-row items-center justify-between gap-4 font-typewriter text-[10px] text-mafia-gold/70">
+          <div data-t="footerCopyright">
+            © 2026 SPICYCRUST. ¡TODOS LOS COFRES LISTOS PARA LA ACCIÓN!
+          </div>
+          
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-xl w-full my-4 md:my-0">
+            <div class="border border-mafia-gold/15 bg-mafia-dark/70 px-3 py-2 rounded-xl text-center shadow-md backdrop-blur-sm transition-all hover:border-mafia-gold/30" data-t="footerStatOpened"></div>
+            <div class="border border-mafia-gold/15 bg-mafia-dark/70 px-3 py-2 rounded-xl text-center shadow-md backdrop-blur-sm transition-all hover:border-mafia-gold/30" data-t="footerStatOnline"></div>
+            <div class="border border-mafia-gold/15 bg-mafia-dark/70 px-3 py-2 rounded-xl text-center shadow-md backdrop-blur-sm transition-all hover:border-mafia-gold/30" data-t="footerStatElixir"></div>
+            <div class="border border-mafia-gold/15 bg-mafia-dark/70 px-3 py-2 rounded-xl text-center shadow-md backdrop-blur-sm transition-all hover:border-mafia-gold/30" data-t="footerStatPizzas"></div>
+          </div>
+          
+          <div class="flex items-center gap-6">
+            <span data-t="footerContract">CONTRATO VERIFICADO</span>
+            <span class="text-mafia-gold/40">//</span>
+            <span class="text-mafia-red hover:underline cursor-pointer font-bold" onclick="alert('Spicy Crust Smart Contract Address: 0xSP1CYCRU5T777777777777777777777777777777')">0xSP1CY...7777</span>
+          </div>
+        </div>
+      </footer>
+
+    </div>
+
+    <!-- ================= MODALES HUD INTERACTIVOS ================= -->
+
+    <!-- MODAL 1: LEADERBOARD -->
+    <div id="leaderboard-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300 p-4" aria-modal="true" role="dialog">
+      <div class="modal-panel max-w-2xl w-full cyber-glass p-6 md:p-8 transform scale-95 opacity-0 transition-all duration-300">
+        
+        <!-- Cabecera del modal -->
+        <div class="flex items-center justify-between border-b border-mafia-gold/20 pb-4 mb-6">
+          <h3 class="font-cinzel font-black text-lg text-provolone-cheese uppercase flex items-center gap-2" data-t="modalLeadTitle">
+            ⚡ TABLA REAL // MEJORES JUGADORES DEL REINO
+          </h3>
+          <button id="leaderboard-close" class="text-mafia-gold/60 hover:text-mafia-red cursor-pointer focus:outline-none" aria-label="Cerrar modal de Leaderboard">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Tabla HUD del Leaderboard -->
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="border-b border-mafia-gold/20 font-cinzel text-[10px] text-mafia-gold/60 uppercase tracking-widest">
+                <th class="px-4 py-2 text-center w-12" data-t="modalLeadColRank">RANGO</th>
+                <th class="px-4 py-2" data-t="modalLeadColTag">TAG_REAL</th>
+                <th class="px-4 py-2" data-t="modalLeadColChest">CAJA DE PIZZA</th>
+                <th class="px-4 py-2 text-right" data-t="modalLeadColTrophy">TROFEOS</th>
+              </tr>
+            </thead>
+            <tbody id="leaderboard-tbody">
+              <!-- Cargado dinámicamente -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Registrar puntuación -->
+        <div class="mt-6 border-t border-mafia-gold/20 pt-6">
+          <h4 class="font-cinzel font-black text-xs text-mafia-gold tracking-widest uppercase mb-3" data-t="modalLeadSubmitTitle">// REPORTAR NUEVOS TROFEOS</h4>
+          <form id="record-form" class="flex flex-col sm:flex-row gap-3">
+            <div class="flex-grow flex gap-2">
+              <input type="text" id="record-name" placeholder="TAG" maxlength="3" class="w-16 bg-[#1a0f0a] border border-[#5d3215] rounded px-2 py-1.5 font-arcade text-xs text-center text-mafia-amber focus:outline-none focus:border-mafia-gold" required>
+              <select id="record-game" class="flex-grow bg-[#1a0f0a] border border-[#5d3215] rounded px-2 py-1.5 font-typewriter text-[10px] text-provolone-cheese focus:outline-none focus:border-mafia-gold">
+                <option value="Rhythm Slice">Rhythm Slice</option>
+                <option value="Spicy Challenge">Spicy Challenge</option>
+                <option value="Slash Slice">Slash Slice</option>
+              </select>
+            </div>
+            <div class="flex gap-2">
+              <input type="number" id="record-score" placeholder="VALOR" class="w-28 bg-[#1a0f0a] border border-[#5d3215] rounded px-2 py-1.5 font-arcade text-xs text-center text-mafia-amber focus:outline-none focus:border-mafia-gold" required>
+              <button type="submit" class="bg-mafia-red hover:bg-mafia-red/80 border border-mafia-gold/40 text-provolone-cheese font-arcade text-[8px] tracking-widest px-4 py-2 rounded cursor-pointer transition-all" data-t="modalLeadSubmitBtn">SUBMIT</button>
+            </div>
+          </form>
+        </div>
+
+        <p class="text-[9px] text-mafia-gold/40 font-typewriter text-center mt-6">
+          // DATA STREAMS PERSISTED VIA DISTRIBUTED ZK FUSION DATASETS.
+        </p>
+      </div>
+    </div>
+
+
+    <!-- MODAL 2: DOCS -->
+    <div id="docs-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300 p-4" aria-modal="true" role="dialog">
+      <div class="modal-panel max-w-2xl w-full cyber-glass p-6 md:p-8 transform scale-95 opacity-0 transition-all duration-300">
+        
+        <!-- Cabecera del modal -->
+        <div class="flex items-center justify-between border-b border-mafia-gold/20 pb-4 mb-6">
+          <h3 class="font-cinzel font-black text-lg text-provolone-cheese uppercase flex items-center gap-2" data-t="modalRulesTitle">
+            🖳 DIRECTIVAS REALES // WIKI DE LA TABERNA
+          </h3>
+          <button id="docs-close" class="text-mafia-gold/60 hover:text-mafia-red cursor-pointer focus:outline-none" aria-label="Cerrar modal de Documentación">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Contenido Técnico Estilizado -->
+        <div class="space-y-6 overflow-y-auto max-h-[60vh] pr-2 text-xs md:text-sm font-light text-provolone-cheese/80 leading-relaxed font-typewriter">
+          
+          <div>
+            <h4 class="text-mafia-green font-cinzel font-black tracking-wider text-xs mb-2 uppercase" data-t="modalRulesSec1Title">// DEFENSA DE ELIXIR ZK</h4>
+            <p data-t="modalRulesSec1Text">La red real de SpicyCrust utiliza Pruebas de Conocimiento Cero (Zero Knowledge Proofs) para verificar y encriptar los reportes de trofeos de los jugadores de manera totalmente segura y descentralizada.</p>
+          </div>
+
+          <div>
+            <h4 class="text-mafia-amber font-cinzel font-black tracking-wider text-xs mb-2 uppercase" data-t="modalRulesSec2Title">// TABERNA DESARROLLADORES</h4>
+            <p class="mb-2" data-t="modalRulesSec2Text">Puedes compilar y agregar tus propias cajas de pizza al ecosistema usando las herramientas CLI reales.</p>
+            <div class="bg-[#1a0f0a] p-3 border border-[#5d3215] rounded text-[10px] text-mafia-amber overflow-x-auto whitespace-pre">
+# Instalar el compilador oficial del reino
+pnpm i -g @spicycrust/tavern-compiler
+
+# Iniciar un nuevo proyecto de cofre de pizza
+spicycrust init my-royal-chest --template tavern
+
+# Validar y subir tus trofeos a la blockchain
+spicycrust verify --contract 0xSP1CYCRU5T777777</div>
+          </div>
+
+          <div>
+            <h4 class="text-mafia-red font-cinzel font-black tracking-wider text-xs mb-2 uppercase" data-t="modalRulesSec3Title">// BARAJA COMPACTA A 60 FPS</h4>
+            <p data-t="modalRulesSec3Text">Este sistema corre sobre un motor optimizado libre de dependencias pesadas en tiempo de ejecución, procesando el renderizado de cartas y cajas a 60 FPS estables.</p>
+          </div>
+
+        </div>
+
+        <p class="text-[9px] text-mafia-gold/40 font-typewriter text-center mt-6">
+          // SPICYCRUST ROYAL DIRECTIVES // BUILD 1.9.0 // COMPILER: ONLINE
+        </p>
+      </div>
+    </div>
+
+    <!-- MODAL 3: CONECTAR WALLET (MULTI-MODAL) -->
+    <div id="auth-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300 p-4" aria-modal="true" role="dialog">
+      <div class="modal-panel max-w-md w-full cyber-glass p-6 md:p-8 transform scale-95 opacity-0 transition-all duration-300">
+        
+        <!-- Cabecera del modal -->
+        <div class="flex items-center justify-between border-b border-mafia-gold/20 pb-4 mb-6">
+          <h3 class="font-cinzel font-black text-lg text-provolone-cheese uppercase flex items-center gap-2">
+            🔑 CONECTAR WALLET / CONNECT
+          </h3>
+          <button id="auth-close" class="text-mafia-gold/60 hover:text-mafia-red cursor-pointer focus:outline-none" aria-label="Cerrar modal de autenticación">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <div class="space-y-4">
+          <!-- 1. Google / Email (Privy Web2) -->
+          <button id="auth-google" class="w-full flex items-center justify-between p-4 bg-mafia-mahogany hover:bg-mafia-amber border-2 border-mafia-gold/40 hover:border-white rounded-xl text-white font-lilita text-sm shadow-md transition-all cursor-pointer group">
+            <span class="flex items-center gap-3">
+              <span>📧</span>
+              <span>GOOGLE / EMAIL (PRIVY)</span>
+            </span>
+            <span class="text-[9px] bg-mafia-green/20 text-mafia-green border border-mafia-green/30 px-2 py-0.5 rounded uppercase">INSTANT</span>
+          </button>
+
+          <!-- 2. Passkey (Biometrics) -->
+          <button id="auth-passkey" class="w-full flex items-center justify-between p-4 bg-mafia-mahogany hover:bg-mafia-amber border-2 border-mafia-gold/40 hover:border-white rounded-xl text-white font-lilita text-sm shadow-md transition-all cursor-pointer group">
+            <span class="flex items-center gap-3">
+              <span>👤</span>
+              <span>BIOMETRÍA (PASSKEYS)</span>
+            </span>
+            <span class="text-[9px] bg-mafia-green/20 text-mafia-green border border-mafia-green/30 px-2 py-0.5 rounded uppercase">PASSKEY</span>
+          </button>
+
+          <!-- 3. Stellar Wallets Kit (DeFi con 6-8 wallets) -->
+          <button id="auth-defi" class="w-full flex items-center justify-between p-4 bg-[#1a0f0a] hover:bg-[#3d1d07] border-2 border-mafia-gold/20 hover:border-mafia-gold/60 rounded-xl text-white font-lilita text-sm shadow-md transition-all cursor-pointer group">
+            <span class="flex items-center gap-3">
+              <span>🛸</span>
+              <span>STELLAR WALLETS KIT</span>
+            </span>
+            <span class="text-[9px] bg-mafia-gold/15 text-mafia-gold border border-mafia-gold/30 px-2 py-0.5 rounded uppercase">6-8 WALLETS</span>
+          </button>
+        </div>
+
+        <p class="text-[9px] text-mafia-gold/40 font-typewriter text-center mt-6">
+          // ONBOARDING POWERED BY DECENTRALIZED STELLAR AUTHENTICATION.
+        </p>
+      </div>
+    </div>
+
+    <!-- Contenedor de Canvases Ocultos para alimentar las texturas 3D -->
+    <div style="display: none;">
+      <canvas id="game-canvas-1"></canvas>
+      <canvas id="game-canvas-2"></canvas>
+      <canvas id="game-canvas-3"></canvas>
+      <canvas id="game-canvas-4"></canvas>
+    </div>
+
+    <!-- Scripts -->
+  </body>
+</html>

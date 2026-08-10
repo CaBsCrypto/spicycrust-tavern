@@ -1,0 +1,6 @@
+# Clandestine Syndicate Robots.txt // Cosa Nostra 2026
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: https://spicycrust.com/sitemap.xml

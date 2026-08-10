@@ -1,0 +1,308 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Inter:wght@300;400;500;600;700&family=Lilita+One&family=Orbitron:wght@500;600;700;800;900&family=Press+Start+2P&family=Share+Tech+Mono&family=Special+Elite&display=swap');
+@import "tailwindcss";
+
+@theme {
+  /* Clash Royale / Royal Tavern Palette — aligned with PizzaDAO 2026 season tokens.
+     Note: @theme uses static values (Tailwind compile-time); CSS var() references
+     from pizzaverse-theme.css are used at runtime in component rules below. */
+  --color-mafia-dark: #1A0800;      /* pv-dark: deep oven dark */
+  --color-mafia-mahogany: #4d2410;  /* Rich Wood Panel (unchanged) */
+  --color-mafia-gold: #E9C46A;      /* pv-accent: golden yellow */
+  --color-mafia-amber: #F4A261;     /* pv-secondary: cheese orange */
+  --color-mafia-red: #D62828;       /* pv-primary: pizza sauce red */
+  --color-mafia-green: #2ecc71;     /* Emerald Green Status (unchanged) */
+  --color-provolone-cheese: #ffffff; /* White Text (unchanged) */
+
+  --font-lilita: "Lilita One", sans-serif;
+  --font-orbitron: "Lilita One", sans-serif;
+  --font-arcade: "Press Start 2P", system-ui;
+  --font-inter: "Inter", sans-serif;
+  --font-cinzel: "Lilita One", sans-serif;
+  --font-typewriter: "Lilita One", sans-serif;
+
+  --animate-neon-flow: neon-flow 6s linear infinite;
+  --animate-pulse-glow: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Layer 3: apply SpicyCrust per-game accent */
+html, body {
+  background-color: var(--color-mafia-dark) !important;
+  color: var(--color-provolone-cheese) !important;
+  font-family: var(--font-inter);
+}
+
+html {
+  /* Layer 3 — SpicyCrust game accent */
+  --pv-game-accent:      #D62828;
+  --pv-game-accent-glow: rgba(214, 40, 40, 0.4);
+  --pv-game-accent-dark: #7f1d1d;
+}
+
+/* Force Lilita One on all game headers, navigation, buttons, and custom headings */
+h1, h2, h3, h4, h5, h6, nav, button, .font-cinzel, .font-typewriter, .neon-sign-italian {
+  font-family: "Lilita One", sans-serif !important;
+}
+
+body {
+  background: 
+    linear-gradient(rgba(15, 11, 9, 0.82), rgba(38, 20, 10, 0.94)), 
+    url('/speakeasy_bg.png') no-repeat center center fixed !important;
+  background-size: cover !important;
+}
+
+/* Animations */
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(255, 216, 102, 0.3), 0 0 30px rgba(255, 216, 102, 0.1);
+    border-color: rgba(255, 216, 102, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(255, 216, 102, 0.7), 0 0 45px rgba(255, 216, 102, 0.3);
+    border-color: rgba(255, 216, 102, 0.8);
+  }
+}
+
+/* 3D Glassmorphism Panel (Castle Stone style) */
+.cyber-glass {
+  background: linear-gradient(135deg, rgba(26, 18, 14, 0.98) 0%, rgba(15, 11, 9, 0.99) 100%);
+  backdrop-filter: blur(16px);
+  border: 3px solid transparent;
+  border-image: linear-gradient(to bottom, #ffd866, #b38600 50%, #4d3300) 1;
+  box-shadow: 
+    0 20px 50px rgba(0, 0, 0, 0.95),
+    0 0 15px rgba(255, 216, 102, 0.15);
+}
+
+/* Custom Scrollbar for Tavern UI */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #1a0f0a;
+}
+::-webkit-scrollbar-thumb {
+  background: #5d3215;
+  border: 2px solid #1a0f0a;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-mafia-gold);
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Clash Royale Style Tridimensional Button */
+.clash-button {
+  background: linear-gradient(180deg, #ff9b26 0%, #d85f00 100%);
+  border: 3px solid #3d1d07;
+  border-bottom: 7px solid #200f04;
+  border-radius: 12px;
+  font-family: var(--font-lilita);
+  color: #fff;
+  text-shadow: 0 2px 0 #7c3500;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  transition: transform 0.08s, border-bottom-width 0.08s;
+  cursor: pointer;
+  outline: none;
+}
+
+.clash-button:active {
+  transform: translateY(4px);
+  border-bottom-width: 3px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+}
+
+/* Custom text and neon glow shortcuts */
+.glow-gold {
+  text-shadow: 0 3px 0 #8c6000, 0 0 10px rgba(255, 216, 102, 0.4);
+}
+.glow-red {
+  text-shadow: 0 3px 0 #900a4a, 0 0 10px rgba(246, 27, 127, 0.4);
+}
+.glow-yellow {
+  text-shadow: 0 3px 0 #b36200;
+}
+.glow-green {
+  text-shadow: 0 2px 0 #1b7a43;
+}
+
+#unboxing-overlay {
+  background: 
+    linear-gradient(rgba(15, 11, 9, 0.78), rgba(15, 11, 9, 0.96)), 
+    url('/speakeasy_bg.png') no-repeat center center fixed !important;
+  background-size: cover !important;
+}
+
+/* Wood Divider Line */
+.copper-laser-line {
+  height: 1px;
+  width: 100%;
+  background: linear-gradient(90deg, transparent 0%, rgba(233, 196, 106, 0.2) 20%, rgba(233, 196, 106, 0.2) 80%, transparent 100%);
+}
+
+/* Tavern Header sign */
+.neon-sign-italian {
+  font-family: var(--font-lilita);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-mafia-gold);
+  text-shadow: 
+    0 4px 0 #3d1d07,
+    0 0 12px rgba(255, 216, 102, 0.4);
+}
+
+.neon-glow-red {
+  text-shadow: 0 2px 0 #7e0c0c;
+  color: #ff5050;
+}
+.neon-glow-yellow {
+  text-shadow: 0 2px 0 #8c6000;
+  color: var(--color-mafia-gold);
+}
+.neon-glow-green {
+  text-shadow: 0 2px 0 #1b7a43;
+  color: var(--color-mafia-green);
+}
+
+/* Elixir drops indicator */
+.elixir-drop {
+  width: 16px;
+  height: 22px;
+  background-color: var(--color-mafia-red);
+  border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+  box-shadow: inset -2px -2px 5px rgba(0, 0, 0, 0.3), 0 0 8px rgba(246, 27, 127, 0.6);
+  position: relative;
+  display: inline-block;
+}
+
+.elixir-drop::after {
+  content: '';
+  position: absolute;
+  top: 4px; left: 4px;
+  width: 4px; height: 6px;
+  background-color: rgba(255, 255, 255, 0.7);
+  border-radius: 50%;
+}
+
+/* ================= CLASH CHARACTER CARD COMPONENT ================= */
+.clash-character-card {
+  background: #2b1405;
+  border: 4px solid #ffd866;
+  border-radius: 16px;
+  box-shadow: 
+    0 10px 25px rgba(0, 0, 0, 0.6),
+    inset 0 3px 0 rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.clash-character-card:hover {
+  transform: translateY(-8px) scale(1.03);
+  border-color: #ffffff;
+  box-shadow: 
+    0 0 25px rgba(255, 216, 102, 0.6),
+    0 15px 35px rgba(0, 0, 0, 0.8);
+}
+
+.pizza-light-beam {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(255, 216, 102, 0.15) 0%, transparent 70%);
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+/* Card Rarity Badge */
+.rarity-banner {
+  font-family: var(--font-lilita);
+  font-size: 9px;
+  padding: 2px 8px;
+  color: #fff;
+  text-transform: uppercase;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+}
+
+.rarity-banner.legendary {
+  background: linear-gradient(135deg, #8a2be2 0%, #4a0082 100%);
+}
+
+.rarity-banner.epic {
+  background: linear-gradient(135deg, #d800a6 0%, #7d005e 100%);
+}
+
+.rarity-banner.rare {
+  background: linear-gradient(135deg, #d85f00 0%, #803000 100%);
+}
+
+/* UI Stats for Tavern */
+.clash-stat-badge {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  font-family: var(--font-lilita);
+  font-size: 10px;
+  background-color: rgba(15, 11, 9, 0.6);
+  border: 1.5px solid #3d1d07;
+  border-radius: 6px;
+  padding: 3px 8px;
+  color: #fff;
+}
+
+/* Micro-interacciones premium para enlaces de navegación */
+nav a {
+  transition: color 0.2s ease;
+}
+
+nav a:hover {
+  color: #ffffff !important;
+}
+
+/* Efectos hover de los botones clash */
+.clash-button:hover {
+  filter: brightness(1.08);
+  box-shadow: 0 6px 16px rgba(255, 155, 38, 0.3);
+}
+
+/* Animación de respiración de texto suave */
+@keyframes text-glow-breath {
+  0%, 100% {
+    text-shadow: 0 2px 4px rgba(255, 216, 102, 0.1);
+  }
+  50% {
+    text-shadow: 0 2px 8px rgba(255, 216, 102, 0.3);
+  }
+}
+
+.glow-breath {
+  animation: text-glow-breath 3s ease-in-out infinite;
+}
+
+/* --- UI SIMPLIFICATION & CLEANUP --- */
+
+.premium-header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: rgba(26, 18, 14, 0.9);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(233, 196, 106, 0.15);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
+}
+
+.premium-title {
+  color: #ffffff;
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+}
+
+

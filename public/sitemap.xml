@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Main Hub: La Cosa Nostra Cyber-Speakeasy -->
+  <url>
+    <loc>https://spicycrust.com/</loc>
+    <lastmod>2026-06-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  
+  <!-- Micro-Frontend 1: Rhythm Slice (Stellar ZK Rhythm Game) -->
+  <url>
+    <loc>https://rhythmslice.spicycrust.com/</loc>
+    <lastmod>2026-06-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Micro-Frontend 2: Spicy Challenge (Midnight Shielded L2 Arena) -->
+  <url>
+    <loc>https://spicychallenge.spicycrust.com/</loc>
+    <lastmod>2026-06-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Micro-Frontend 3: Slash Slice (Retro Pizza Shred Arcade) -->
+  <url>
+    <loc>https://slashslice.spicycrust.com/</loc>
+    <lastmod>2026-06-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+</urlset>
