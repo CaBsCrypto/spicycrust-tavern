@@ -4,18 +4,16 @@ import { initPrivyReactBridge } from '../components/PrivyAuthBridge.jsx';
 // Configuración de variables de entorno para Privy & Avalanche C-Chain
 const PRIVY_APP_ID = import.meta.env.VITE_PRIVY_APP_ID || 'cmqdk627p00na0cjsi6ioszjx';
 const HUB_ORIGIN_URL = import.meta.env.VITE_HUB_ORIGIN_URL || 'https://spicycrust.com';
-const ENABLE_PRIVY = import.meta.env.VITE_ENABLE_PRIVY !== 'false'; // Toggle ON por defecto
+const ENABLE_PRIVY = import.meta.env.VITE_ENABLE_PRIVY !== 'false';
 
 export function isPrivyEnabled() {
   return ENABLE_PRIVY;
 }
 
-// Check si una dirección es un formato EVM válido (0x + 40 hex chars)
 export function isValidEvmAddress(address) {
   return typeof address === 'string' && /^0x[a-fA-F0-9]{40}$/.test(address);
 }
 
-// Helpers para manejo de Cookies compartidas (.spicycrust.com)
 export function setWalletCookie(address) {
   if (!address) return;
   const isProd = window.location.hostname.endsWith('spicycrust.com');
@@ -36,7 +34,6 @@ export function deleteWalletCookie() {
   document.cookie = `evm_wallet=; path=/; max-age=0${domain}; Secure; SameSite=Lax`;
 }
 
-// Transmisión de sesión vía postMessage (Cross-Domain)
 export function broadcastWalletSync(address) {
   const payload = {
     type: 'HUB_WALLET_SYNC',
@@ -59,9 +56,16 @@ export function broadcastWalletSync(address) {
 export class AuthSystem {
   static init() {
     window.AuthSystemUpdateUI = () => this.updateHeaderUI();
-    this.triggerBtn = document.getElementById('trophy-btn'); // Botón principal "CONECTAR WALLET"
+    this.triggerBtn = document.getElementById('trophy-btn');
+    
+    // Modal de Perfil
+    this.profileModal = document.getElementById('profile-modal');
+    this.profileCloseBtn = document.getElementById('profile-close');
+    this.profileCopyBtn = document.getElementById('profile-copy-btn');
+    this.profileLogoutBtn = document.getElementById('profile-logout-btn');
+    this.profileAddressSpan = document.getElementById('profile-address');
 
-    // Escuchar mensajes entrantes (postMessage) desde subdominios/juegos
+    // Listener postMessage
     window.addEventListener('message', (event) => {
       const { type, address } = event.data || {};
       if ((type === 'HUB_WALLET_SYNC' || type === 'GAME_WALLET_SYNC') && isValidEvmAddress(address)) {
@@ -72,26 +76,63 @@ export class AuthSystem {
       }
     });
 
-    // Inicializar el Bridge de React con PrivyProvider oficial
     if (ENABLE_PRIVY) {
       initPrivyReactBridge();
     }
 
-    // Vincular apertura de login con el modal oficial de Privy
+    // Al hacer clic en el botón del header
     if (this.triggerBtn) {
       this.triggerBtn.addEventListener('click', (e) => {
         e.preventDefault();
         Sound.playToggleSound();
         const activeWallet = getWalletCookie();
-        if (activeWallet) {
-          this.logout();
+        if (activeWallet && isValidEvmAddress(activeWallet)) {
+          // Si ya está logueado, ABRIR PERFIL (en lugar de desconectar directo)
+          this.openProfileModal(activeWallet);
         } else {
+          // Si no está logueado, abrir modal de Privy
           this.handlePrivyLogin();
         }
       });
     }
 
-    // Verificar estado inicial y sincronizar
+    // Controles del modal de perfil
+    if (this.profileCloseBtn) {
+      this.profileCloseBtn.addEventListener('click', () => {
+        Sound.playToggleSound();
+        this.closeProfileModal();
+      });
+    }
+
+    if (this.profileLogoutBtn) {
+      this.profileLogoutBtn.addEventListener('click', () => {
+        this.closeProfileModal();
+        this.logout();
+      });
+    }
+
+    if (this.profileCopyBtn) {
+      this.profileCopyBtn.addEventListener('click', () => {
+        const activeWallet = getWalletCookie();
+        if (activeWallet) {
+          navigator.clipboard.writeText(activeWallet);
+          Sound.playHoverBlip();
+          const origText = this.profileCopyBtn.textContent;
+          this.profileCopyBtn.textContent = '✅ ¡COPIADO!';
+          setTimeout(() => {
+            this.profileCopyBtn.textContent = origText;
+          }, 2000);
+        }
+      });
+    }
+
+    window.addEventListener('click', (e) => {
+      if (e.target === this.profileModal) {
+        Sound.playToggleSound();
+        this.closeProfileModal();
+      }
+    });
+
     const existing = getWalletCookie();
     if (existing) {
       broadcastWalletSync(existing);
@@ -99,7 +140,38 @@ export class AuthSystem {
     this.updateHeaderUI();
   }
 
-  // Lanza directamente el Modal Oficial Nativo de Privy SDK
+  static openProfileModal(address) {
+    if (!this.profileModal) return;
+
+    if (this.profileAddressSpan) {
+      this.profileAddressSpan.textContent = address;
+    }
+
+    this.profileModal.classList.remove('hidden');
+    void this.profileModal.offsetWidth;
+    this.profileModal.style.opacity = '1';
+    
+    const panel = this.profileModal.querySelector('.modal-panel');
+    if (panel) {
+      panel.style.transform = 'scale(1)';
+      panel.style.opacity = '1';
+    }
+  }
+
+  static closeProfileModal() {
+    if (!this.profileModal) return;
+
+    this.profileModal.style.opacity = '0';
+    const panel = this.profileModal.querySelector('.modal-panel');
+    if (panel) {
+      panel.style.transform = 'scale(0.95)';
+      panel.style.opacity = '0';
+    }
+    setTimeout(() => {
+      this.profileModal.classList.add('hidden');
+    }, 300);
+  }
+
   static async handlePrivyLogin() {
     Sound.playHoverBlip();
 
@@ -108,7 +180,6 @@ export class AuthSystem {
       return;
     }
 
-    // Fallback amigable si VITE_ENABLE_PRIVY=false
     const email = prompt(
       window.localStorage.getItem('lang') === 'en'
         ? 'Enter your Email for local test session:'
@@ -121,7 +192,6 @@ export class AuthSystem {
     }
   }
 
-  // Generar una dirección EVM determinista (0x...) para fallbacks
   static async deriveEvmAddress(seedText) {
     const encoder = new TextEncoder();
     const data = encoder.encode(seedText);

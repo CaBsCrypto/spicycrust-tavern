@@ -406,8 +406,63 @@ spicycrust verify --contract 0xSP1CYCRU5T777777</div>
       </div>
     </div>
 
-    <!-- MODAL 3: CONECTAR WALLET (MULTI-MODAL) -->
-    <!-- El Modal de Autenticación Oficial de Privy SDK se renderiza nativamente mediante PrivyProvider -->
+    <!-- MODAL 3: PERFIL DE JUGADOR / WALLET (AVALANCHE) -->
+    <div id="profile-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300 p-4" aria-modal="true" role="dialog">
+      <div class="modal-panel max-w-md w-full cyber-glass p-6 md:p-8 transform scale-95 opacity-0 transition-all duration-300">
+        
+        <!-- Cabecera del modal -->
+        <div class="flex items-center justify-between border-b border-mafia-gold/20 pb-4 mb-6">
+          <h3 class="font-cinzel font-black text-lg text-provolone-cheese uppercase flex items-center gap-2">
+            👤 PERFIL DE CHEF / WALLET EVM
+          </h3>
+          <button id="profile-close" class="text-mafia-gold/60 hover:text-mafia-red cursor-pointer focus:outline-none" aria-label="Cerrar perfil">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Info de Billetera -->
+        <div class="space-y-4 font-typewriter">
+          <div class="bg-[#1a0f0a] border border-[#5d3215] rounded-xl p-4">
+            <div class="text-[10px] text-mafia-gold/60 uppercase tracking-widest mb-1">Billetera Conectada (EVM)</div>
+            <div class="flex items-center justify-between gap-2">
+              <span id="profile-address" class="text-xs font-mono font-bold text-mafia-amber truncate">0x0000...0000</span>
+              <button id="profile-copy-btn" class="bg-mafia-gold/15 hover:bg-mafia-gold/30 border border-mafia-gold/30 text-mafia-gold text-[10px] px-3 py-1 rounded cursor-pointer transition-all shrink-0">
+                📋 COPIAR
+              </button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div class="bg-[#1a0f0a] border border-[#5d3215] rounded-xl p-3 text-center">
+              <div class="text-[9px] text-mafia-gold/50 uppercase tracking-wider mb-1">Red Blockchain</div>
+              <div class="text-xs font-bold text-mafia-green flex items-center justify-center gap-1">
+                <span class="h-2 w-2 rounded-full bg-mafia-green animate-pulse"></span>
+                Avalanche Fuji
+              </div>
+            </div>
+
+            <div class="bg-[#1a0f0a] border border-[#5d3215] rounded-xl p-3 text-center">
+              <div class="text-[9px] text-mafia-gold/50 uppercase tracking-wider mb-1">Sincronización</div>
+              <div class="text-xs font-bold text-blue-400">
+                .spicycrust.com
+              </div>
+            </div>
+          </div>
+
+          <!-- Botón de Desconexión Explícita -->
+          <button id="profile-logout-btn" class="w-full mt-4 flex items-center justify-center gap-2 p-3 bg-red-900/30 hover:bg-red-800/60 border border-red-500/40 text-red-300 font-lilita text-xs rounded-xl shadow-md transition-all cursor-pointer">
+            <span>🚪</span>
+            <span>DESCONECTAR BILLETERA</span>
+          </button>
+        </div>
+
+        <p class="text-[9px] text-mafia-gold/40 font-typewriter text-center mt-6">
+          // PRIVY & AVALANCHE SESSION ACTIVE.
+        </p>
+      </div>
+    </div>
 
     <!-- Contenedor de Canvases Ocultos para alimentar las texturas 3D -->
     <div style="display: none;">
