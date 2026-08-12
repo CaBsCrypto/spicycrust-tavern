@@ -146,7 +146,7 @@ export class AuthSystem {
       });
     }
 
-    // Botón Faucet de Prueba
+    // Botón Faucet de Prueba con alternativas súper estables
     if (this.dropdownFaucetBtn) {
       this.dropdownFaucetBtn.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -155,7 +155,23 @@ export class AuthSystem {
         if (activeWallet) {
           navigator.clipboard.writeText(activeWallet);
         }
-        window.open('https://faucet.avax.network/', '_blank');
+        
+        const choice = prompt(
+          "Selecciona tu Faucet de Avalanche Fuji (Tu dirección ya fue copiada al portapapeles):\n\n" +
+          "1. Chainlink Faucet (Recomendado - Rápido sin bloqueos)\n" +
+          "2. QuickNode Avalanche Faucet\n" +
+          "3. Official Avalanche Faucet\n\n" +
+          "Ingresa 1, 2 o 3:",
+          "1"
+        );
+
+        if (choice === "2") {
+          window.open('https://faucet.quicknode.com/avalanche/fuji', '_blank');
+        } else if (choice === "3") {
+          window.open('https://faucet.avax.network/', '_blank');
+        } else if (choice !== null) {
+          window.open('https://faucets.chain.link/fuji', '_blank');
+        }
       });
     }
 
@@ -172,7 +188,7 @@ export class AuthSystem {
             const testPayload = `SpicyCrust Gasless Relayer Test:\nPlayer: ${activeWallet}\nScore: 77777\nTimestamp: ${Date.now()}`;
             const signature = await window.PrivySignMessageTrigger(testPayload);
             Sound.playInsertCoin();
-            alert(`✅ FIRMA DIGITAL GENERADA EXITOSAMENTE FOR THE RELAYER:\n\nPayload:\n${testPayload}\n\nFirma cryptographic (EIP-712):\n${signature.substring(0, 30)}...${signature.substring(signature.length - 20)}`);
+            alert(`✅ FIRMA DIGITAL GENERADA EXITOSAMENTE FOR THE RELAYER:\n\nPayload:\n${testPayload}\n\nFirma criptográfica (EIP-712):\n${signature.substring(0, 30)}...${signature.substring(signature.length - 20)}`);
           } else {
             alert('El SDK de Privy no está listo para firmar.');
           }
