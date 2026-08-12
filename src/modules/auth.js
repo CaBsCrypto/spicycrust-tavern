@@ -34,6 +34,31 @@ export function deleteWalletCookie() {
   document.cookie = `evm_wallet=; path=/; max-age=0${domain}; Secure; SameSite=Lax`;
 }
 
+export async function fetchAvaxBalance(address) {
+  if (!isValidEvmAddress(address)) return '0.0000';
+  try {
+    const res = await fetch('https://api.avax-test.network/ext/bc/C/rpc', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'eth_getBalance',
+        params: [address, 'latest']
+      })
+    });
+    const data = await res.json();
+    if (data && data.result) {
+      const balanceWei = BigInt(data.result);
+      const balanceAvax = Number(balanceWei) / 1e18;
+      return balanceAvax.toFixed(4);
+    }
+  } catch (err) {
+    console.warn('[RPC] Could not fetch AVAX Fuji balance:', err);
+  }
+  return '0.0000';
+}
+
 export function broadcastWalletSync(address) {
   const payload = {
     type: 'HUB_WALLET_SYNC',
@@ -58,11 +83,14 @@ export class AuthSystem {
     window.AuthSystemUpdateUI = () => this.updateHeaderUI();
     this.triggerBtn = document.getElementById('trophy-btn');
     
-    // Elements del Dropdown de Perfil
+    // Elementos del Dropdown de Perfil
     this.dropdown = document.getElementById('profile-dropdown');
     this.dropdownCopyBtn = document.getElementById('dropdown-copy-btn');
     this.dropdownLogoutBtn = document.getElementById('dropdown-logout-btn');
     this.dropdownAddressSpan = document.getElementById('dropdown-address');
+    this.dropdownBalanceSpan = document.getElementById('dropdown-balance');
+    this.dropdownFaucetBtn = document.getElementById('dropdown-faucet-btn');
+    this.dropdownSignBtn = document.getElementById('dropdown-sign-btn');
 
     // Listener postMessage
     window.addEventListener('message', (event) => {
@@ -87,7 +115,6 @@ export class AuthSystem {
         Sound.playToggleSound();
         const activeWallet = getWalletCookie();
         if (activeWallet && isValidEvmAddress(activeWallet)) {
-          // Desplegar Dropdown de Perfil
           this.toggleDropdown(activeWallet);
         } else {
           this.handlePrivyLogin();
@@ -119,6 +146,43 @@ export class AuthSystem {
       });
     }
 
+    // Botón Faucet de Prueba
+    if (this.dropdownFaucetBtn) {
+      this.dropdownFaucetBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        Sound.playHoverBlip();
+        const activeWallet = getWalletCookie();
+        if (activeWallet) {
+          navigator.clipboard.writeText(activeWallet);
+        }
+        window.open('https://faucet.avax.network/', '_blank');
+      });
+    }
+
+    // Botón Prueba de Firma Relayer (Gasless)
+    if (this.dropdownSignBtn) {
+      this.dropdownSignBtn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        Sound.playHoverBlip();
+        const activeWallet = getWalletCookie();
+        if (!activeWallet) return;
+
+        try {
+          if (typeof window.PrivySignMessageTrigger === 'function') {
+            const testPayload = `SpicyCrust Gasless Relayer Test:\nPlayer: ${activeWallet}\nScore: 77777\nTimestamp: ${Date.now()}`;
+            const signature = await window.PrivySignMessageTrigger(testPayload);
+            Sound.playInsertCoin();
+            alert(`✅ FIRMA DIGITAL GENERADA EXITOSAMENTE FOR THE RELAYER:\n\nPayload:\n${testPayload}\n\nFirma cryptographic (EIP-712):\n${signature.substring(0, 30)}...${signature.substring(signature.length - 20)}`);
+          } else {
+            alert('El SDK de Privy no está listo para firmar.');
+          }
+        } catch (err) {
+          console.error('[RelayerTest] Error signing payload:', err);
+          alert('No se completó la firma: ' + (err.message || err));
+        }
+      });
+    }
+
     // Cerrar dropdown al hacer clic fuera
     window.addEventListener('click', (e) => {
       if (this.dropdown && !this.dropdown.classList.contains('hidden') && !this.dropdown.contains(e.target)) {
@@ -142,11 +206,17 @@ export class AuthSystem {
     }
   }
 
-  static openDropdown(address) {
+  static async openDropdown(address) {
     if (!this.dropdown) return;
 
     if (this.dropdownAddressSpan) {
       this.dropdownAddressSpan.textContent = address;
+    }
+
+    if (this.dropdownBalanceSpan) {
+      this.dropdownBalanceSpan.textContent = 'Cargando...';
+      const bal = await fetchAvaxBalance(address);
+      this.dropdownBalanceSpan.textContent = `${bal} AVAX`;
     }
 
     this.dropdown.classList.remove('hidden');

@@ -26,7 +26,20 @@ function PrivyController() {
         logout();
       }
     };
-  }, [ready, login, logout]);
+
+    window.PrivySignMessageTrigger = async (messageText) => {
+      const activeWallet = wallets.find(w => w.address?.startsWith('0x'));
+      if (activeWallet) {
+        const provider = await activeWallet.getEthereumProvider();
+        const signature = await provider.request({
+          method: 'personal_sign',
+          params: [messageText, activeWallet.address]
+        });
+        return signature;
+      }
+      throw new Error('No embedded wallet active');
+    };
+  }, [ready, login, logout, wallets]);
 
   // Sincronizar billetera EVM tan pronto como el usuario se autentique
   useEffect(() => {
