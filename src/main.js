@@ -22,29 +22,35 @@ document.addEventListener('DOMContentLoaded', () => {
   // para que se dibujen en segundo plano durante la introducción 3D
   Games.start();
   
-  // 1. Iniciar la fase cinemática de unboxing en 3D (Three.js)
-  // Al completarse la animación 3D de apertura de la caja, se ejecuta el callback.
-  initUnboxing3D(() => {
-    
-    // --- DASHBOARD DESBLOQUEADO ---
-    
+  // 1. Verificar si la caja ya fue abierta en esta sesión o si hay billetera conectada
+  const isUnboxed = sessionStorage.getItem('spicycrust_unboxed') === 'true' || Boolean(getWalletCookie());
 
-    
-    // Inicializar el logo 3D giratorio
+  const unlockDashboard = () => {
+    sessionStorage.setItem('spicycrust_unboxed', 'true');
     initLogo3D();
-
-    // Inicializar los armarios interactivos 3D de las cartas de juego
     initCabinet3D();
-    
-    // Inicializar modales de Leaderboard y Docs
     initModals();
-    
-    // Inicializar el captador de leads de la tarjeta 4
     initLeads();
-    
-    // Inicializar listeners de sonido e interacciones del Dashboard
     setupDashboardInteractions();
-  });
+  };
+
+  if (isUnboxed) {
+    const overlay = document.getElementById('unboxing-overlay');
+    if (overlay) {
+      overlay.style.display = 'none';
+    }
+    const dashboard = document.getElementById('dashboard-main');
+    if (dashboard) {
+      dashboard.style.opacity = '1';
+      dashboard.style.transform = 'scale(1)';
+      dashboard.style.pointerEvents = 'auto';
+    }
+    unlockDashboard();
+  } else {
+    initUnboxing3D(() => {
+      unlockDashboard();
+    });
+  }
 
   // Efectos de sonido preliminares durante la fase de carga (Unboxing Button)
   const openBoxBtn = document.getElementById('open-box-btn');

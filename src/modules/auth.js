@@ -58,12 +58,11 @@ export class AuthSystem {
     window.AuthSystemUpdateUI = () => this.updateHeaderUI();
     this.triggerBtn = document.getElementById('trophy-btn');
     
-    // Modal de Perfil
-    this.profileModal = document.getElementById('profile-modal');
-    this.profileCloseBtn = document.getElementById('profile-close');
-    this.profileCopyBtn = document.getElementById('profile-copy-btn');
-    this.profileLogoutBtn = document.getElementById('profile-logout-btn');
-    this.profileAddressSpan = document.getElementById('profile-address');
+    // Elements del Dropdown de Perfil
+    this.dropdown = document.getElementById('profile-dropdown');
+    this.dropdownCopyBtn = document.getElementById('dropdown-copy-btn');
+    this.dropdownLogoutBtn = document.getElementById('dropdown-logout-btn');
+    this.dropdownAddressSpan = document.getElementById('dropdown-address');
 
     // Listener postMessage
     window.addEventListener('message', (event) => {
@@ -84,52 +83,46 @@ export class AuthSystem {
     if (this.triggerBtn) {
       this.triggerBtn.addEventListener('click', (e) => {
         e.preventDefault();
+        e.stopPropagation();
         Sound.playToggleSound();
         const activeWallet = getWalletCookie();
         if (activeWallet && isValidEvmAddress(activeWallet)) {
-          // Si ya está logueado, ABRIR PERFIL (en lugar de desconectar directo)
-          this.openProfileModal(activeWallet);
+          // Desplegar Dropdown de Perfil
+          this.toggleDropdown(activeWallet);
         } else {
-          // Si no está logueado, abrir modal de Privy
           this.handlePrivyLogin();
         }
       });
     }
 
-    // Controles del modal de perfil
-    if (this.profileCloseBtn) {
-      this.profileCloseBtn.addEventListener('click', () => {
-        Sound.playToggleSound();
-        this.closeProfileModal();
-      });
-    }
-
-    if (this.profileLogoutBtn) {
-      this.profileLogoutBtn.addEventListener('click', () => {
-        this.closeProfileModal();
+    // Eventos del Dropdown
+    if (this.dropdownLogoutBtn) {
+      this.dropdownLogoutBtn.addEventListener('click', () => {
+        this.closeDropdown();
         this.logout();
       });
     }
 
-    if (this.profileCopyBtn) {
-      this.profileCopyBtn.addEventListener('click', () => {
+    if (this.dropdownCopyBtn) {
+      this.dropdownCopyBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
         const activeWallet = getWalletCookie();
         if (activeWallet) {
           navigator.clipboard.writeText(activeWallet);
           Sound.playHoverBlip();
-          const origText = this.profileCopyBtn.textContent;
-          this.profileCopyBtn.textContent = '✅ ¡COPIADO!';
+          const origText = this.dropdownCopyBtn.textContent;
+          this.dropdownCopyBtn.textContent = '✅ ¡COPIADO!';
           setTimeout(() => {
-            this.profileCopyBtn.textContent = origText;
+            this.dropdownCopyBtn.textContent = origText;
           }, 2000);
         }
       });
     }
 
+    // Cerrar dropdown al hacer clic fuera
     window.addEventListener('click', (e) => {
-      if (e.target === this.profileModal) {
-        Sound.playToggleSound();
-        this.closeProfileModal();
+      if (this.dropdown && !this.dropdown.classList.contains('hidden') && !this.dropdown.contains(e.target)) {
+        this.closeDropdown();
       }
     });
 
@@ -140,36 +133,36 @@ export class AuthSystem {
     this.updateHeaderUI();
   }
 
-  static openProfileModal(address) {
-    if (!this.profileModal) return;
-
-    if (this.profileAddressSpan) {
-      this.profileAddressSpan.textContent = address;
-    }
-
-    this.profileModal.classList.remove('hidden');
-    void this.profileModal.offsetWidth;
-    this.profileModal.style.opacity = '1';
-    
-    const panel = this.profileModal.querySelector('.modal-panel');
-    if (panel) {
-      panel.style.transform = 'scale(1)';
-      panel.style.opacity = '1';
+  static toggleDropdown(address) {
+    if (!this.dropdown) return;
+    if (this.dropdown.classList.contains('hidden')) {
+      this.openDropdown(address);
+    } else {
+      this.closeDropdown();
     }
   }
 
-  static closeProfileModal() {
-    if (!this.profileModal) return;
+  static openDropdown(address) {
+    if (!this.dropdown) return;
 
-    this.profileModal.style.opacity = '0';
-    const panel = this.profileModal.querySelector('.modal-panel');
-    if (panel) {
-      panel.style.transform = 'scale(0.95)';
-      panel.style.opacity = '0';
+    if (this.dropdownAddressSpan) {
+      this.dropdownAddressSpan.textContent = address;
     }
+
+    this.dropdown.classList.remove('hidden');
+    void this.dropdown.offsetWidth;
+    this.dropdown.classList.remove('opacity-0', 'scale-95');
+    this.dropdown.classList.add('opacity-100', 'scale-100');
+  }
+
+  static closeDropdown() {
+    if (!this.dropdown) return;
+
+    this.dropdown.classList.remove('opacity-100', 'scale-100');
+    this.dropdown.classList.add('opacity-0', 'scale-95');
     setTimeout(() => {
-      this.profileModal.classList.add('hidden');
-    }, 300);
+      this.dropdown.classList.add('hidden');
+    }, 200);
   }
 
   static async handlePrivyLogin() {
