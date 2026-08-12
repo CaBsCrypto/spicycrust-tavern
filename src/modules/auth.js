@@ -147,7 +147,7 @@ export class AuthSystem {
       });
     }
 
-    // Botón Faucet de Prueba (SOLO PEGAR DIRECCIÓN - SIN CONECTAR WALLET)
+    // Botón Faucet de Prueba Directa
     if (this.dropdownFaucetBtn) {
       this.dropdownFaucetBtn.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -158,20 +158,20 @@ export class AuthSystem {
         }
         
         const choice = prompt(
-          "Selecciona un Faucet directo (Sin necesidad de conectar billeteras externas, tu dirección ya fue copiada al portapapeles):\n\n" +
-          "1. QuickNode Faucet (Solo pegar 0x... y enviar)\n" +
-          "2. Triangle Avalanche Faucet\n" +
-          "3. Thirdweb Avalanche Fuji Faucet\n\n" +
+          "Selecciona un Faucet directo de Avalanche Fuji (Dirección 0x... copiada):\n\n" +
+          "1. Thirdweb Faucet (Sin wallet ni registro)\n" +
+          "2. Chainstack Faucet (Sin registro)\n" +
+          "3. Triangle Faucet\n\n" +
           "Ingresa 1, 2 o 3:",
           "1"
         );
 
         if (choice === "2") {
-          window.open('https://faucet.triangleplatform.com/avalanche/fuji', '_blank');
+          window.open('https://faucet.chainstack.com/avalanche-fuji-faucet', '_blank');
         } else if (choice === "3") {
-          window.open('https://thirdweb.com/faucet/avalanche-fuji', '_blank');
+          window.open('https://faucet.triangleplatform.com/avalanche/fuji', '_blank');
         } else if (choice !== null) {
-          window.open('https://faucet.quicknode.com/avalanche/fuji', '_blank');
+          window.open('https://thirdweb.com/faucet/avalanche-fuji', '_blank');
         }
       });
     }
