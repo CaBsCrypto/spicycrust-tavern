@@ -2,7 +2,7 @@ import { Sound } from './sound.js';
 import { create, avalancheFuji, avalanche } from '@privy-io/js-sdk-core';
 
 // Configuración de variables de entorno para Privy & Avalanche C-Chain
-const PRIVY_APP_ID = import.meta.env.VITE_PRIVY_APP_ID || 'clx_spicycrust_app_id';
+const PRIVY_APP_ID = import.meta.env.VITE_PRIVY_APP_ID || 'cmqdk627p00na0cjsi6ioszjx';
 const HUB_ORIGIN_URL = import.meta.env.VITE_HUB_ORIGIN_URL || 'https://spicycrust.com';
 const ENABLE_PRIVY = import.meta.env.VITE_ENABLE_PRIVY !== 'false'; // Toggle ON por defecto, se apaga si VITE_ENABLE_PRIVY=false
 
