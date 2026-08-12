@@ -91,6 +91,7 @@ export class AuthSystem {
     this.dropdownBalanceSpan = document.getElementById('dropdown-balance');
     this.dropdownFaucetBtn = document.getElementById('dropdown-faucet-btn');
     this.dropdownSignBtn = document.getElementById('dropdown-sign-btn');
+    this.dropdownTxBtn = document.getElementById('dropdown-tx-btn');
 
     // Listener postMessage
     window.addEventListener('message', (event) => {
@@ -175,7 +176,7 @@ export class AuthSystem {
       });
     }
 
-    // Botón Prueba de Firma Relayer (Gasless)
+    // Botón Prueba de Firma Relayer (Gasless Off-Chain)
     if (this.dropdownSignBtn) {
       this.dropdownSignBtn.addEventListener('click', async (e) => {
         e.stopPropagation();
@@ -188,13 +189,37 @@ export class AuthSystem {
             const testPayload = `SpicyCrust Gasless Relayer Test:\nPlayer: ${activeWallet}\nScore: 77777\nTimestamp: ${Date.now()}`;
             const signature = await window.PrivySignMessageTrigger(testPayload);
             Sound.playInsertCoin();
-            alert(`✅ FIRMA DIGITAL GENERADA EXITOSAMENTE FOR THE RELAYER:\n\nPayload:\n${testPayload}\n\nFirma criptográfica (EIP-712):\n${signature.substring(0, 30)}...${signature.substring(signature.length - 20)}`);
+            alert(`✅ FIRMA DIGITAL OFF-CHAIN GENERADA EXITOSAMENTE:\n\nPayload:\n${testPayload}\n\nFirma criptográfica (EIP-712):\n${signature.substring(0, 30)}...${signature.substring(signature.length - 20)}\n\nEsta firma es gratuita (0$ Gas) y es la que el jugador le entregaría al Backend Relayer.`);
           } else {
             alert('El SDK de Privy no está listo para firmar.');
           }
         } catch (err) {
           console.error('[RelayerTest] Error signing payload:', err);
           alert('No se completó la firma: ' + (err.message || err));
+        }
+      });
+    }
+
+    // Botón Emisión de Transacción On-Chain a Snowtrace
+    if (this.dropdownTxBtn) {
+      this.dropdownTxBtn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        Sound.playHoverBlip();
+        const activeWallet = getWalletCookie();
+        if (!activeWallet) return;
+
+        try {
+          if (typeof window.PrivySendTransactionTrigger === 'function') {
+            const txHash = await window.PrivySendTransactionTrigger(activeWallet, '0x38D7EA4C68000');
+            Sound.playInsertCoin();
+            alert(`🎉 ¡TRANSACCIÓN ON-CHAIN EMITIDA EXITOSAMENTE A AVALANCHE FUJI!\n\nTx Hash:\n${txHash}\n\nSe abrirá el explorador Snowtrace en vivo.`);
+            window.open(`https://testnet.snowtrace.io/tx/${txHash}`, '_blank');
+          } else {
+            alert('El SDK de Privy no está listo para emitir transacciones.');
+          }
+        } catch (err) {
+          console.error('[TxTest] Error sending transaction:', err);
+          alert('Error en transacción: ' + (err.message || err) + '\n\nRequiere saldo AVAX de prueba (usa el botón de Faucet arriba).');
         }
       });
     }

@@ -39,6 +39,23 @@ function PrivyController() {
       }
       throw new Error('No embedded wallet active');
     };
+
+    window.PrivySendTransactionTrigger = async (toAddress, valueHex) => {
+      const activeWallet = wallets.find(w => w.address?.startsWith('0x'));
+      if (activeWallet) {
+        const provider = await activeWallet.getEthereumProvider();
+        const txHash = await provider.request({
+          method: 'eth_sendTransaction',
+          params: [{
+            from: activeWallet.address,
+            to: toAddress || activeWallet.address,
+            value: valueHex || '0x0'
+          }]
+        });
+        return txHash;
+      }
+      throw new Error('No embedded wallet active');
+    };
   }, [ready, login, logout, wallets]);
 
   // Sincronizar billetera EVM tan pronto como el usuario se autentique
