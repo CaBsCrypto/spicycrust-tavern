@@ -11,7 +11,7 @@ function PrivyController() {
   const { login, logout, authenticated, user, ready } = usePrivy();
   const { wallets } = useWallets();
 
-  // Exponer triggers globales para JS vanilla (main.js / auth.js)
+  // Exponer triggers globales para JS vanilla y responder a solicitudes de iframes
   useEffect(() => {
     window.PrivyLoginTrigger = () => {
       if (ready) {
@@ -56,6 +56,24 @@ function PrivyController() {
       }
       throw new Error('No embedded wallet active');
     };
+
+    // Escuchar mensajes de iframes (subjuegos) para Login y Firma de Puntajes
+    const handleGameIframeMessage = async (event) => {
+      const { type, payload } = event.data || {};
+      if (type === 'GAME_LOGIN_REQUEST') {
+        if (ready) login();
+      } else if (type === 'GAME_SIGN_REQUEST' && payload) {
+        try {
+          const sig = await window.PrivySignMessageTrigger(payload);
+          event.source?.postMessage({ type: 'HUB_SIGN_RESPONSE', signature: sig }, '*');
+        } catch (err) {
+          event.source?.postMessage({ type: 'HUB_SIGN_RESPONSE', error: err.message || err }, '*');
+        }
+      }
+    };
+
+    window.addEventListener('message', handleGameIframeMessage);
+    return () => window.removeEventListener('message', handleGameIframeMessage);
   }, [ready, login, logout, wallets]);
 
   // Sincronizar billetera EVM tan pronto como el usuario se autentique
