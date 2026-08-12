@@ -407,34 +407,7 @@ spicycrust verify --contract 0xSP1CYCRU5T777777</div>
     </div>
 
     <!-- MODAL 3: CONECTAR WALLET (MULTI-MODAL) -->
-    <div id="auth-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300 p-4" aria-modal="true" role="dialog">
-      <div class="modal-panel max-w-md w-full cyber-glass p-6 md:p-8 transform scale-95 opacity-0 transition-all duration-300">
-        
-        <!-- Cabecera del modal -->
-        <div class="flex items-center justify-between border-b border-mafia-gold/20 pb-4 mb-6">
-          <h3 class="font-cinzel font-black text-lg text-provolone-cheese uppercase flex items-center gap-2">
-            🔑 CONECTAR WALLET / CONNECT
-          </h3>
-          <button id="auth-close" class="text-mafia-gold/60 hover:text-mafia-red cursor-pointer focus:outline-none" aria-label="Cerrar modal de autenticación">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-
-        <div class="space-y-4 py-2">
-          <!-- Botón Único Oficial de Privy SDK -->
-          <button id="auth-privy-login" class="w-full flex items-center justify-center gap-3 p-5 bg-gradient-to-r from-mafia-mahogany to-[#3d1d07] hover:from-mafia-amber hover:to-mafia-red border-2 border-mafia-gold/60 hover:border-white rounded-2xl text-white font-lilita text-base shadow-xl transition-all cursor-pointer group">
-            <span class="text-xl">🔐</span>
-            <span class="tracking-wider">INICIAR SESIÓN CON PRIVY (AVALANCHE)</span>
-          </button>
-        </div>
-
-        <p class="text-[9px] text-mafia-gold/40 font-typewriter text-center mt-6">
-          // ONBOARDING POWERED BY OFFICIAL PRIVY SDK & AVALANCHE C-CHAIN (EVM).
-        </p>
-      </div>
-    </div>
+    <!-- El Modal de Autenticación Oficial de Privy SDK se renderiza nativamente mediante PrivyProvider -->
 
     <!-- Contenedor de Canvases Ocultos para alimentar las texturas 3D -->
     <div style="display: none;">
