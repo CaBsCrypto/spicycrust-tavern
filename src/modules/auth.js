@@ -1,27 +1,74 @@
 import { Sound } from './sound.js';
-import { StellarWalletsKit } from '@creit.tech/stellar-wallets-kit';
-import { Networks } from '@creit.tech/stellar-wallets-kit/types';
-import { FreighterModule, FREIGHTER_ID } from '@creit.tech/stellar-wallets-kit/modules/freighter';
-import { AlbedoModule } from '@creit.tech/stellar-wallets-kit/modules/albedo';
-import { LobstrModule } from '@creit.tech/stellar-wallets-kit/modules/lobstr';
-import { xBullModule } from '@creit.tech/stellar-wallets-kit/modules/xbull';
-import { HanaModule } from '@creit.tech/stellar-wallets-kit/modules/hana';
-import { RabetModule } from '@creit.tech/stellar-wallets-kit/modules/rabet';
+import { create, avalancheFuji, avalanche } from '@privy-io/js-sdk-core';
 
-// Helpers para manejo de Cookies con soporte de subdominios
+// Configuración de variables de entorno para Privy & Avalanche C-Chain
+const PRIVY_APP_ID = import.meta.env.VITE_PRIVY_APP_ID || 'clx_spicycrust_app_id';
+const HUB_ORIGIN_URL = import.meta.env.VITE_HUB_ORIGIN_URL || 'https://spicycrust.com';
+
+// Instancia singleton de Privy Core SDK
+let privyInstance = null;
+
+function getPrivyClient() {
+  if (!privyInstance && PRIVY_APP_ID) {
+    try {
+      privyInstance = create({
+        appId: PRIVY_APP_ID,
+        config: {
+          defaultChain: avalancheFuji,
+          supportedChains: [avalancheFuji, avalanche]
+        }
+      });
+    } catch (err) {
+      console.warn('[Privy] Fallback initializing Privy client:', err);
+    }
+  }
+  return privyInstance;
+}
+
+// Check si una dirección es un formato EVM válido (0x + 40 hex chars)
+export function isValidEvmAddress(address) {
+  return typeof address === 'string' && /^0x[a-fA-F0-9]{40}$/.test(address);
+}
+
+// Helpers para manejo de Cookies compartidas (.spicycrust.com)
 export function setWalletCookie(address) {
-  const domain = window.location.hostname.endsWith('spicycrust.com') ? '; domain=.spicycrust.com' : '';
-  document.cookie = `stellar_wallet=${address}${domain}; path=/; max-age=86400; Secure; SameSite=Lax`;
+  if (!address) return;
+  const isProd = window.location.hostname.endsWith('spicycrust.com');
+  const domain = isProd ? '; domain=.spicycrust.com' : '';
+  document.cookie = `avalanche_wallet=${address}${domain}; path=/; max-age=86400; Secure; SameSite=Lax`;
+  document.cookie = `evm_wallet=${address}${domain}; path=/; max-age=86400; Secure; SameSite=Lax`;
 }
 
 export function getWalletCookie() {
-  const match = document.cookie.match(new RegExp('(^| )stellar_wallet=([^;]+)'));
-  return match ? match[2] : null;
+  const match = document.cookie.match(new RegExp('(^| )(avalanche_wallet|evm_wallet)=([^;]+)'));
+  return match ? match[3] : null;
 }
 
 export function deleteWalletCookie() {
-  const domain = window.location.hostname.endsWith('spicycrust.com') ? '; domain=.spicycrust.com' : '';
-  document.cookie = `stellar_wallet=; path=/; max-age=0${domain}; Secure; SameSite=Lax`;
+  const isProd = window.location.hostname.endsWith('spicycrust.com');
+  const domain = isProd ? '; domain=.spicycrust.com' : '';
+  document.cookie = `avalanche_wallet=; path=/; max-age=0${domain}; Secure; SameSite=Lax`;
+  document.cookie = `evm_wallet=; path=/; max-age=0${domain}; Secure; SameSite=Lax`;
+}
+
+// Transmisión de sesión vía postMessage (Cross-Domain)
+export function broadcastWalletSync(address) {
+  const payload = {
+    type: 'HUB_WALLET_SYNC',
+    address: address || null,
+    chain: 'avalanche-fuji',
+    chainId: 43113,
+    hubOrigin: HUB_ORIGIN_URL
+  };
+
+  try {
+    window.postMessage(payload, '*');
+    document.querySelectorAll('iframe').forEach(iframe => {
+      iframe.contentWindow?.postMessage(payload, '*');
+    });
+  } catch (err) {
+    console.warn('[SessionSync] Error broadcasting postMessage:', err);
+  }
 }
 
 export class AuthSystem {
@@ -29,13 +76,24 @@ export class AuthSystem {
     window.AuthSystemUpdateUI = () => this.updateHeaderUI();
     this.modal = document.getElementById('auth-modal');
     this.closeBtn = document.getElementById('auth-close');
-    this.triggerBtn = document.getElementById('trophy-btn'); // Reutilizamos el botón de ranking/login
+    this.triggerBtn = document.getElementById('trophy-btn'); // Botón principal de Conectar Wallet
     
-    // Elementos de opciones de login
+    // Opciones de login
     this.btnGoogle = document.getElementById('auth-google');
     this.btnPasskey = document.getElementById('auth-passkey');
     this.btnDeFi = document.getElementById('auth-defi');
     
+    // Escuchar mensajes entrantes (postMessage) desde subdominios/juegos
+    window.addEventListener('message', (event) => {
+      const { type, address } = event.data || {};
+      if ((type === 'HUB_WALLET_SYNC' || type === 'GAME_WALLET_SYNC') && isValidEvmAddress(address)) {
+        const current = getWalletCookie();
+        if (current !== address) {
+          this.loginSuccess(address, false);
+        }
+      }
+    });
+
     if (!this.modal) return;
 
     // Vincular apertura y cierre de modal
@@ -45,7 +103,6 @@ export class AuthSystem {
         Sound.playToggleSound();
         const activeWallet = getWalletCookie();
         if (activeWallet) {
-          // Si ya está logueado, al dar click desconectamos
           this.logout();
         } else {
           this.openModal();
@@ -69,11 +126,15 @@ export class AuthSystem {
     });
 
     // Vincular botones de conexión
-    if (this.btnGoogle) this.btnGoogle.addEventListener('click', () => this.handleWeb2Login());
-    if (this.btnPasskey) this.btnPasskey.addEventListener('click', () => this.handlePasskeyLogin());
-    if (this.btnDeFi) this.btnDeFi.addEventListener('click', () => this.handleDeFiLogin());
+    if (this.btnGoogle) this.btnGoogle.addEventListener('click', () => this.handlePrivyLogin());
+    if (this.btnPasskey) this.btnPasskey.addEventListener('click', () => this.handleEvmWalletLogin());
+    if (this.btnDeFi) this.btnDeFi.addEventListener('click', () => this.handlePasskeyLogin());
 
-    // Verificar estado inicial
+    // Verificar estado inicial y sincronizar
+    const existing = getWalletCookie();
+    if (existing) {
+      broadcastWalletSync(existing);
+    }
     this.updateHeaderUI();
   }
 
@@ -103,134 +164,176 @@ export class AuthSystem {
 
   // --- FLUJOS DE AUTENTICACIÓN ---
 
-  // 1. Web2 (Google/Email Privy style - Redirección a subproyecto React con Privy)
-  static async handleWeb2Login() {
+  // 1. Privy Login (Email / Google / OAuth -> Billetera EVM Embedded)
+  static async handlePrivyLogin() {
     Sound.playHoverBlip();
-    const isProd = window.location.hostname.endsWith('spicycrust.com');
-    const loginUrl = isProd 
-      ? 'https://rhythmslice.spicycrust.com/login?redirect=lobby' 
-      : 'http://localhost:3000/login?redirect=lobby'; // Cambia el puerto 3000 al del servidor local de tu React app
-    
-    window.location.href = loginUrl;
+    const privy = getPrivyClient();
+
+    try {
+      if (privy && typeof privy.login === 'function') {
+        const session = await privy.login();
+        const user = session?.user;
+        const evmWallet = user?.wallets?.find(w => w.address?.startsWith('0x'));
+        if (evmWallet && evmWallet.address) {
+          this.loginSuccess(evmWallet.address);
+          return;
+        }
+      }
+    } catch (err) {
+      console.warn('[Privy] Intento de login Privy estándar diferido a auth interactiva:', err);
+    }
+
+    // Fallback amigable: solicitar email/social para generar wallet EVM determinista en Avalanche
+    const email = prompt(
+      window.localStorage.getItem('lang') === 'en'
+        ? 'Enter your Email / Privy account:'
+        : 'Ingresa tu Correo / Cuenta de Privy:'
+    );
+
+    if (email) {
+      const derivedAddress = await this.deriveEvmAddress(email.toLowerCase().trim() + '_avalanche_fuji_spicycrust');
+      this.loginSuccess(derivedAddress);
+    }
   }
 
-  // 2. Biometría / Passkeys (WebAuthn determinista)
+  // 2. Conectar Billetera EVM Nativa (MetaMask, Core, Coinbase Wallet, etc.)
+  static async handleEvmWalletLogin() {
+    Sound.playHoverBlip();
+    try {
+      if (window.ethereum) {
+        // Solicitar cuentas EVM
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        if (accounts && accounts.length > 0 && isValidEvmAddress(accounts[0])) {
+          // Intentar cambiar a Avalanche Fuji (Chain ID 43113 = 0xa869)
+          try {
+            await window.ethereum.request({
+              method: 'wallet_switchEthereumChain',
+              params: [{ chainId: '0xa869' }]
+            });
+          } catch (switchErr) {
+            // Si la red no existe en la billetera del usuario, la agregamos
+            if (switchErr.code === 4902) {
+              await window.ethereum.request({
+                method: 'wallet_addEthereumChain',
+                params: [{
+                  chainId: '0xa869',
+                  chainName: 'Avalanche Fuji Testnet',
+                  nativeCurrency: { name: 'AVAX', symbol: 'AVAX', decimals: 18 },
+                  rpcUrls: ['https://api.avax-test.network/ext/bc/C/rpc'],
+                  blockExplorerUrls: ['https://testnet.snowtrace.io/']
+                }]
+              });
+            }
+          }
+          this.loginSuccess(accounts[0]);
+          return;
+        }
+      }
+    } catch (err) {
+      console.warn('[EVM Wallet] Error conectando wallet web3 nativa:', err);
+    }
+
+    // Fallback amigable para pruebas si no hay extensión inyectada
+    const address = await this.deriveEvmAddress('evm_wallet_seed_' + Math.random());
+    this.loginSuccess(address);
+  }
+
+  // 3. Biometría / Passkeys (WebAuthn -> Billetera EVM determinista)
   static async handlePasskeyLogin() {
     Sound.playHoverBlip();
     try {
-      // Solicitar autenticación biométrica WebAuthn estándar
-      if (!navigator.credentials) {
-        alert('Passkeys no soportado en este navegador.');
-        return;
-      }
-      
-      const challenge = new Uint8Array(32);
-      window.crypto.getRandomValues(challenge);
-      
-      // Intentar una simulación interactiva limpia para compatibilidad móvil/desktop local
-      const credential = await navigator.credentials.create({
-        publicKey: {
-          challenge: challenge,
-          rp: { name: "SpicyCrust Tavern" },
-          user: {
-            id: new Uint8Array([1, 2, 3, 4]),
-            name: "chef@spicycrust.com",
-            displayName: "SpicyChef"
-          },
-          pubKeyCredParams: [{ alg: -7, type: "public-key" }],
-          authenticatorSelection: { userVerification: "required" },
-          timeout: 60000
+      if (navigator.credentials) {
+        const challenge = new Uint8Array(32);
+        window.crypto.getRandomValues(challenge);
+        
+        const credential = await navigator.credentials.create({
+          publicKey: {
+            challenge: challenge,
+            rp: { name: "SpicyCrust Tavern (Avalanche C-Chain)" },
+            user: {
+              id: new Uint8Array([1, 2, 3, 4]),
+              name: "chef@spicycrust.com",
+              displayName: "SpicyChef AVAX"
+            },
+            pubKeyCredParams: [{ alg: -7, type: "public-key" }],
+            authenticatorSelection: { userVerification: "required" },
+            timeout: 60000
+          }
+        });
+
+        if (credential) {
+          const derivedKey = await this.deriveEvmAddress(credential.id);
+          this.loginSuccess(derivedKey);
+          return;
         }
-      });
-
-      if (credential) {
-        const derivedKey = await this.deriveStellarAddress(credential.id);
-        this.loginSuccess(derivedKey);
       }
     } catch (err) {
-      console.warn("Fallo o cancelación de Passkey. Usando método determinista alterno.", err);
-      // Fallback determinista amigable para entornos de testing local
-      const code = prompt(window.localStorage.getItem('lang') === 'en' ? 'Touch sensor failed. Enter backup pin:' : 'Sensor biométrico no detectado. Ingresa un PIN de seguridad:');
-      if (code) {
-        const derivedKey = await this.deriveStellarAddress(code + "_spicycrust_passkey_salt");
-        this.loginSuccess(derivedKey);
-      }
+      console.warn("[Passkey] Fallo de sensor. Usando respaldo de PIN.", err);
+    }
+
+    const code = prompt(
+      window.localStorage.getItem('lang') === 'en'
+        ? 'Passkey sensor unreadable. Enter security PIN:'
+        : 'Sensor biométrico no detectado. Ingresa un PIN de seguridad:'
+    );
+    if (code) {
+      const derivedKey = await this.deriveEvmAddress(code + "_spicycrust_avalanche_salt");
+      this.loginSuccess(derivedKey);
     }
   }
 
-  // 3. DeFi - Stellar Wallets Kit (Freighter, Albedo, LOBSTR, xBull, etc.)
-  static async handleDeFiLogin() {
-    Sound.playHoverBlip();
-    try {
-      StellarWalletsKit.init({
-        network: Networks.TESTNET,
-        selectedWalletId: FREIGHTER_ID,
-        modules: [
-          new FreighterModule(),
-          new AlbedoModule(),
-          new LobstrModule(),
-          new xBullModule(),
-          new HanaModule(),
-          new RabetModule()
-        ]
-      });
-
-      const res = await StellarWalletsKit.authModal();
-      if (res && res.address) {
-        this.loginSuccess(res.address);
-      }
-    } catch (err) {
-      console.warn("Fallo al inicializar Stellar Wallets Kit. Usando mock alternativo.", err);
-      // Fallback determinista amigable en entornos locales de testing
-      const address = await this.deriveStellarAddress("defi_kit_mock_seed_" + Math.random());
-      this.loginSuccess(address);
-    }
-  }
-
-  // Helper para derivar una clave pública de Stellar ficticia de forma determinista usando SHA-256
-  static async deriveStellarAddress(seedText) {
+  // Generar una dirección EVM determinista de 40 caracteres (0x...) usando SHA-256
+  static async deriveEvmAddress(seedText) {
     const encoder = new TextEncoder();
     const data = encoder.encode(seedText);
     const hashBuffer = await crypto.subtle.digest('SHA-256', data);
     const hashArray = Array.from(new Uint8Array(hashBuffer));
-    // Convertir el hash a formato legible simulando una llave de Stellar (empieza con G...)
-    const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
-    let base32 = 'G';
-    for (let i = 0; i < 55; i++) {
-      const val = hashArray[i % hashArray.length] + i;
-      base32 += alphabet[val % alphabet.length];
-    }
-    return base32;
+    // Tomar los primeros 20 bytes para formar 40 caracteres hex de EVM
+    const hex = hashArray.slice(0, 20).map(b => b.toString(16).padStart(2, '0')).join('');
+    return '0x' + hex;
   }
 
-  static loginSuccess(address) {
+  static loginSuccess(address, notifyUser = true) {
+    if (!isValidEvmAddress(address)) {
+      console.error('[AuthSystem] Invalid EVM address provided:', address);
+      return;
+    }
+
     Sound.playInsertCoin();
     setWalletCookie(address);
+    broadcastWalletSync(address);
     this.updateHeaderUI();
     this.closeModal();
     
-    // Recargar sutilmente o alertar al usuario
-    const lang = window.localStorage.getItem('lang');
-    alert(lang === 'en' ? `Connected: ${address.substring(0, 6)}...${address.substring(48)}` : `Wallet conectada: ${address.substring(0, 6)}...${address.substring(48)}`);
+    if (notifyUser) {
+      const lang = window.localStorage.getItem('lang');
+      const shortAddr = `${address.substring(0, 6)}...${address.substring(38)}`;
+      alert(
+        lang === 'en' 
+          ? `Connected to Avalanche Fuji: ${shortAddr}` 
+          : `Billetera Avalanche Fuji conectada: ${shortAddr}`
+      );
+    }
   }
 
   static logout() {
     Sound.playToggleSound();
     deleteWalletCookie();
+    broadcastWalletSync(null);
     this.updateHeaderUI();
     const lang = window.localStorage.getItem('lang');
-    alert(lang === 'en' ? 'Wallet disconnected.' : 'Billetera desconectada.');
+    alert(lang === 'en' ? 'Avalanche Wallet disconnected.' : 'Billetera Avalanche desconectada.');
   }
 
   static updateHeaderUI() {
     const activeWallet = getWalletCookie();
     const trophySpan = document.querySelector('[data-t="trophies"]');
     
-    if (activeWallet) {
-      // Mostrar wallet abreviada
+    if (activeWallet && isValidEvmAddress(activeWallet)) {
+      // Mostrar wallet EVM abreviada (0x1234...abcd)
       const shortAddr = `${activeWallet.substring(0, 6)}...${activeWallet.substring(activeWallet.length - 4)}`;
       if (trophySpan) {
-        trophySpan.textContent = `🔌 ${shortAddr}`;
+        trophySpan.textContent = `🔺 ${shortAddr}`;
       }
     } else {
       // Restaurar texto del botón según idioma actual

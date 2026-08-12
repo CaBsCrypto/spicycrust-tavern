@@ -7,7 +7,7 @@ import { initLeads } from './modules/leads.js';
 import { initLogo3D } from './modules/logo3d.js';
 import { initCabinet3D } from './modules/cabinet3d.js';
 import { initTranslations } from './modules/translation.js';
-import { AuthSystem } from './modules/auth.js';
+import { AuthSystem, getWalletCookie } from './modules/auth.js';
 import { GAME_URLS, GAME_META } from './config/games.js';
 
 // Inicialización general al cargar el DOM
@@ -94,10 +94,14 @@ function setupDashboardInteractions() {
       
       const gameType = btn.getAttribute('data-game');
       
-      // Redirecciones a juegos — URL resuelta por entorno (dev: localhost, prod: subdominio)
-      const url = GAME_URLS[gameType]
-      if (url) {
-        window.location.href = url
+      // Redirecciones a juegos — URL resuelta por entorno con transmisión de billetera EVM
+      const baseUrl = GAME_URLS[gameType];
+      if (baseUrl) {
+        const activeWallet = getWalletCookie();
+        const fullUrl = activeWallet 
+          ? `${baseUrl}?embed=1&mode=game&address=${encodeURIComponent(activeWallet)}`
+          : `${baseUrl}?mode=game`;
+        window.location.href = fullUrl;
       }
     });
   });

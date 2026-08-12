@@ -260,8 +260,8 @@ export function initCabinet3D() {
 
   // Cargar las 4 cajas con un ángulo sutil inicial (ladeado hacia el centro)
   addCabinet('cabinet-3d-1', 'game-canvas-3', 'game3', 0.3);
-  addCabinet('cabinet-3d-2', 'game-canvas-4', 'game4', 0.15);
-  addCabinet('cabinet-3d-3', 'game-canvas-1', 'game1', -0.15);
+  addCabinet('cabinet-3d-2', 'game-canvas-1', 'game1', 0.15);
+  addCabinet('cabinet-3d-3', 'game-canvas-4', 'game4', -0.15);
   addCabinet('cabinet-3d-4', 'game-canvas-2', 'game2', -0.3);
 
   // Ajustar tamaño del canvas compartido
