@@ -88,10 +88,8 @@ export class AuthSystem {
     this.closeBtn = document.getElementById('auth-close');
     this.triggerBtn = document.getElementById('trophy-btn'); // Botón principal de Conectar Wallet
     
-    // Opciones de login
-    this.btnGoogle = document.getElementById('auth-google');
-    this.btnPasskey = document.getElementById('auth-passkey');
-    this.btnDeFi = document.getElementById('auth-defi');
+    // Botón único de login oficial Privy
+    this.btnPrivyLogin = document.getElementById('auth-privy-login');
     
     // Escuchar mensajes entrantes (postMessage) desde subdominios/juegos
     window.addEventListener('message', (event) => {
@@ -115,7 +113,8 @@ export class AuthSystem {
         if (activeWallet) {
           this.logout();
         } else {
-          this.openModal();
+          // Abrir directamente Privy SDK oficial si se prefiere o mostrar modal con 1 botón
+          this.handlePrivyLogin();
         }
       });
     }
@@ -135,10 +134,10 @@ export class AuthSystem {
       }
     });
 
-    // Vincular botones de conexión
-    if (this.btnGoogle) this.btnGoogle.addEventListener('click', () => this.handlePrivyLogin());
-    if (this.btnPasskey) this.btnPasskey.addEventListener('click', () => this.handleEvmWalletLogin());
-    if (this.btnDeFi) this.btnDeFi.addEventListener('click', () => this.handlePasskeyLogin());
+    // Vincular botón único oficial de Privy
+    if (this.btnPrivyLogin) {
+      this.btnPrivyLogin.addEventListener('click', () => this.handlePrivyLogin());
+    }
 
     // Verificar estado inicial y sincronizar
     const existing = getWalletCookie();
