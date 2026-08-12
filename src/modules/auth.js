@@ -147,7 +147,7 @@ export class AuthSystem {
       });
     }
 
-    // Botón Faucet de Prueba Directa
+    // Botón Faucet de Prueba Directa (Core App Oficial & Chainstack)
     if (this.dropdownFaucetBtn) {
       this.dropdownFaucetBtn.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -158,10 +158,10 @@ export class AuthSystem {
         }
         
         const choice = prompt(
-          "Selecciona un Faucet directo de Avalanche Fuji (Dirección 0x... copiada):\n\n" +
-          "1. Thirdweb Faucet (Sin wallet ni registro)\n" +
-          "2. Chainstack Faucet (Sin registro)\n" +
-          "3. Triangle Faucet\n\n" +
+          "Selecciona un Faucet activo de Avalanche Fuji (Dirección 0x... copiada):\n\n" +
+          "1. Core App Testnet Faucet (Oficial Ava Labs)\n" +
+          "2. Chainstack Faucet\n" +
+          "3. QuickNode Faucet\n\n" +
           "Ingresa 1, 2 o 3:",
           "1"
         );
@@ -169,9 +169,9 @@ export class AuthSystem {
         if (choice === "2") {
           window.open('https://faucet.chainstack.com/avalanche-fuji-faucet', '_blank');
         } else if (choice === "3") {
-          window.open('https://faucet.triangleplatform.com/avalanche/fuji', '_blank');
+          window.open('https://faucet.quicknode.com/avalanche/fuji', '_blank');
         } else if (choice !== null) {
-          window.open('https://thirdweb.com/faucet/avalanche-fuji', '_blank');
+          window.open('https://core.app/tools/testnet-faucet/', '_blank');
         }
       });
     }
