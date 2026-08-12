@@ -147,7 +147,7 @@ export class AuthSystem {
       });
     }
 
-    // Botón Faucet de Prueba Directa (Core App Oficial & Chainstack)
+    // Botón Faucet de Prueba Directa (Fuji PoW Faucet sin requisitos ni login)
     if (this.dropdownFaucetBtn) {
       this.dropdownFaucetBtn.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -158,20 +158,20 @@ export class AuthSystem {
         }
         
         const choice = prompt(
-          "Selecciona un Faucet activo de Avalanche Fuji (Dirección 0x... copiada):\n\n" +
-          "1. Core App Testnet Faucet (Oficial Ava Labs)\n" +
-          "2. Chainstack Faucet\n" +
-          "3. QuickNode Faucet\n\n" +
+          "Faucets de Avalanche Fuji (Dirección 0x... copiada):\n\n" +
+          "1. PK910 Fuji Faucet (RECOMENDADO - 100% LIBRE, mina saldo sin registros ni redes sociales)\n" +
+          "2. Core App Faucet (Ava Labs)\n" +
+          "3. Chainstack Faucet\n\n" +
           "Ingresa 1, 2 o 3:",
           "1"
         );
 
         if (choice === "2") {
-          window.open('https://faucet.chainstack.com/avalanche-fuji-faucet', '_blank');
-        } else if (choice === "3") {
-          window.open('https://faucet.quicknode.com/avalanche/fuji', '_blank');
-        } else if (choice !== null) {
           window.open('https://core.app/tools/testnet-faucet/', '_blank');
+        } else if (choice === "3") {
+          window.open('https://faucet.chainstack.com/avalanche-fuji-faucet', '_blank');
+        } else if (choice !== null) {
+          window.open('https://fuji-faucet.pk910.de/', '_blank');
         }
       });
     }
