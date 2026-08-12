@@ -4,11 +4,21 @@ import { create, avalancheFuji, avalanche } from '@privy-io/js-sdk-core';
 // Configuración de variables de entorno para Privy & Avalanche C-Chain
 const PRIVY_APP_ID = import.meta.env.VITE_PRIVY_APP_ID || 'clx_spicycrust_app_id';
 const HUB_ORIGIN_URL = import.meta.env.VITE_HUB_ORIGIN_URL || 'https://spicycrust.com';
+const ENABLE_PRIVY = import.meta.env.VITE_ENABLE_PRIVY !== 'false'; // Toggle ON por defecto, se apaga si VITE_ENABLE_PRIVY=false
+
+export function isPrivyEnabled() {
+  return ENABLE_PRIVY;
+}
 
 // Instancia singleton de Privy Core SDK
 let privyInstance = null;
 
 function getPrivyClient() {
+  if (!ENABLE_PRIVY) {
+    console.info('[Privy] Privy authentication is currently DISABLED via VITE_ENABLE_PRIVY=false.');
+    return null;
+  }
+
   if (!privyInstance && PRIVY_APP_ID) {
     try {
       privyInstance = create({
