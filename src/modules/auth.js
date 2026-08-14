@@ -34,6 +34,53 @@ export function deleteWalletCookie() {
   document.cookie = `evm_wallet=; path=/; max-age=0${domain}; Secure; SameSite=Lax`;
 }
 
+// Notificación Flotante Cyberpunk / Mafia (Reemplaza los alert nativos del navegador)
+export function showCyberToast(title, message, icon = '🔺', duration = 4500) {
+  const existing = document.querySelectorAll('.cyber-toast-notification');
+  existing.forEach(el => el.remove());
+
+  const notif = document.createElement('div');
+  notif.className = 'cyber-toast-notification fixed top-6 right-6 z-[99999] bg-[#16110f]/95 border-2 border-[#C5A059]/60 rounded-2xl p-4 max-w-md w-[90vw] sm:w-96 shadow-[0_12px_40px_rgba(0,0,0,0.9)] backdrop-blur-xl flex flex-col gap-2 transform -translate-y-6 opacity-0 transition-all duration-300 pointer-events-auto';
+  
+  notif.innerHTML = `
+    <div class="flex items-center justify-between border-b border-[#C5A059]/25 pb-2">
+      <div class="flex items-center gap-2 text-[#E5A93C] font-cinzel font-bold text-xs tracking-wider">
+        <span class="text-base">${icon}</span>
+        <span>${title.toUpperCase()}</span>
+      </div>
+      <button class="toast-close text-[#C5A059]/50 hover:text-[#C5A059] text-xs font-mono px-1 cursor-pointer transition-colors">✕</button>
+    </div>
+    <p class="text-xs text-[#EFEBE4]/90 font-typewriter tracking-wide leading-relaxed break-words whitespace-pre-wrap">
+      ${message}
+    </p>
+  `;
+
+  document.body.appendChild(notif);
+  
+  try {
+    Sound.playHoverBlip();
+  } catch (e) {}
+
+  void notif.offsetWidth;
+  notif.classList.remove('-translate-y-6', 'opacity-0');
+  notif.classList.add('translate-y-0', 'opacity-100');
+
+  const closeBtn = notif.querySelector('.toast-close');
+  if (closeBtn) {
+    closeBtn.addEventListener('click', () => removeToast(notif));
+  }
+
+  const timer = setTimeout(() => removeToast(notif), duration);
+
+  function removeToast(el) {
+    clearTimeout(timer);
+    if (!el || !el.parentNode) return;
+    el.classList.remove('translate-y-0', 'opacity-100');
+    el.classList.add('-translate-y-6', 'opacity-0');
+    setTimeout(() => el.remove(), 350);
+  }
+}
+
 export async function fetchAvaxBalance(address) {
   if (!isValidEvmAddress(address)) return '0.0000';
   try {
@@ -140,6 +187,7 @@ export class AuthSystem {
           Sound.playHoverBlip();
           const origText = this.dropdownCopyBtn.textContent;
           this.dropdownCopyBtn.textContent = '✅ ¡COPIADO!';
+          showCyberToast('Dirección Copiada', `Wallet ${activeWallet.substring(0, 8)}... copiada al portapapeles.`, '📋');
           setTimeout(() => {
             this.dropdownCopyBtn.textContent = origText;
           }, 2000);
@@ -147,7 +195,7 @@ export class AuthSystem {
       });
     }
 
-    // Botón Faucet de Prueba Directa (Fuji PoW Faucet sin requisitos ni login)
+    // Botón Faucet de Prueba Directa (PK910 Proof of Work Direct Faucet)
     if (this.dropdownFaucetBtn) {
       this.dropdownFaucetBtn.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -156,23 +204,13 @@ export class AuthSystem {
         if (activeWallet) {
           navigator.clipboard.writeText(activeWallet);
         }
-        
-        const choice = prompt(
-          "Faucets de Avalanche Fuji (Dirección 0x... copiada):\n\n" +
-          "1. PK910 Fuji Faucet (RECOMENDADO - 100% LIBRE, mina saldo sin registros ni redes sociales)\n" +
-          "2. Core App Faucet (Ava Labs)\n" +
-          "3. Chainstack Faucet\n\n" +
-          "Ingresa 1, 2 o 3:",
-          "1"
+        showCyberToast(
+          'Faucet Avalanche Fuji', 
+          'Dirección copiada. Abriendo minador PK910 de prueba (100% libre sin registros)...', 
+          '🚰', 
+          5000
         );
-
-        if (choice === "2") {
-          window.open('https://core.app/tools/testnet-faucet/', '_blank');
-        } else if (choice === "3") {
-          window.open('https://faucet.chainstack.com/avalanche-fuji-faucet', '_blank');
-        } else if (choice !== null) {
-          window.open('https://fuji-faucet.pk910.de/', '_blank');
-        }
+        window.open('https://fuji-faucet.pk910.de/', '_blank');
       });
     }
 
@@ -189,13 +227,18 @@ export class AuthSystem {
             const testPayload = `SpicyCrust Gasless Relayer Test:\nPlayer: ${activeWallet}\nScore: 77777\nTimestamp: ${Date.now()}`;
             const signature = await window.PrivySignMessageTrigger(testPayload);
             Sound.playInsertCoin();
-            alert(`✅ FIRMA DIGITAL OFF-CHAIN GENERADA EXITOSAMENTE:\n\nPayload:\n${testPayload}\n\nFirma criptográfica (EIP-712):\n${signature.substring(0, 30)}...${signature.substring(signature.length - 20)}\n\nEsta firma es gratuita (0$ Gas) y es la que el jugador le entregaría al Backend Relayer.`);
+            showCyberToast(
+              'Firma Gasless Creada', 
+              `Firma EIP-712 ($0 Gas):\n${signature.substring(0, 24)}...${signature.substring(signature.length - 12)}\n\nLista para enviar al Backend Relayer.`, 
+              '⚡', 
+              6000
+            );
           } else {
-            alert('El SDK de Privy no está listo para firmar.');
+            showCyberToast('Error de Firma', 'El SDK de Privy no está listo para firmar.', '⚠️');
           }
         } catch (err) {
           console.error('[RelayerTest] Error signing payload:', err);
-          alert('No se completó la firma: ' + (err.message || err));
+          showCyberToast('Firma Cancelada', (err.message || err), '❌');
         }
       });
     }
@@ -212,14 +255,19 @@ export class AuthSystem {
           if (typeof window.PrivySendTransactionTrigger === 'function') {
             const txHash = await window.PrivySendTransactionTrigger(activeWallet, '0x38D7EA4C68000');
             Sound.playInsertCoin();
-            alert(`🎉 ¡TRANSACCIÓN ON-CHAIN EMITIDA EXITOSAMENTE A AVALANCHE FUJI!\n\nTx Hash:\n${txHash}\n\nSe abrirá el explorador Snowtrace en vivo.`);
+            showCyberToast(
+              'Transacción Enviada', 
+              `Tx Hash en Avalanche Fuji:\n${txHash.substring(0, 20)}...\n\nAbriendo explorador Snowtrace...`, 
+              '🚀', 
+              6000
+            );
             window.open(`https://testnet.snowtrace.io/tx/${txHash}`, '_blank');
           } else {
-            alert('El SDK de Privy no está listo para emitir transacciones.');
+            showCyberToast('Error de Transacción', 'El SDK de Privy no está listo para emitir transacciones.', '⚠️');
           }
         } catch (err) {
           console.error('[TxTest] Error sending transaction:', err);
-          alert('Error en transacción: ' + (err.message || err) + '\n\nRequiere saldo AVAX de prueba (usa el botón de Faucet arriba).');
+          showCyberToast('Transacción Fallida', (err.message || err) + '\n\nRequiere saldo AVAX de prueba.', '❌', 6000);
         }
       });
     }
@@ -284,16 +332,9 @@ export class AuthSystem {
       return;
     }
 
-    const email = prompt(
-      window.localStorage.getItem('lang') === 'en'
-        ? 'Enter your Email for local test session:'
-        : 'Ingresa tu Correo para sesión de prueba local:'
-    );
-
-    if (email) {
-      const derivedAddress = await this.deriveEvmAddress(email.toLowerCase().trim() + '_avalanche_fuji_spicycrust');
-      this.loginSuccess(derivedAddress);
-    }
+    // Fallback local en desarrollo si Privy está desactivado
+    const derivedAddress = await this.deriveEvmAddress('test_player_avalanche_fuji_spicycrust');
+    this.loginSuccess(derivedAddress);
   }
 
   static async deriveEvmAddress(seedText) {
@@ -319,10 +360,12 @@ export class AuthSystem {
     if (notifyUser) {
       const lang = window.localStorage.getItem('lang');
       const shortAddr = `${address.substring(0, 6)}...${address.substring(38)}`;
-      alert(
+      showCyberToast(
+        lang === 'en' ? 'Wallet Connected' : 'Billetera Conectada',
         lang === 'en' 
           ? `Connected to Avalanche Fuji: ${shortAddr}` 
-          : `Billetera Avalanche Fuji conectada: ${shortAddr}`
+          : `Billetera Avalanche Fuji conectada: ${shortAddr}`,
+        '🟢'
       );
     }
   }
@@ -338,7 +381,11 @@ export class AuthSystem {
 
     this.updateHeaderUI();
     const lang = window.localStorage.getItem('lang');
-    alert(lang === 'en' ? 'Avalanche Wallet disconnected.' : 'Billetera Avalanche desconectada.');
+    showCyberToast(
+      lang === 'en' ? 'Session Closed' : 'Sesión Cerrada',
+      lang === 'en' ? 'Avalanche Wallet disconnected.' : 'Billetera Avalanche desconectada.',
+      '🚪'
+    );
   }
 
   static updateHeaderUI() {
