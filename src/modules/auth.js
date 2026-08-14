@@ -128,6 +128,7 @@ export function broadcastWalletSync(address) {
 export class AuthSystem {
   static init() {
     window.AuthSystemUpdateUI = () => this.updateHeaderUI();
+    window.AuthSystemLoginSuccess = (address, notify) => this.loginSuccess(address, notify);
     this.triggerBtn = document.getElementById('trophy-btn');
     
     // Elementos del Dropdown de Perfil
@@ -367,6 +368,8 @@ export class AuthSystem {
           : `Billetera Avalanche Fuji conectada: ${shortAddr}`,
         '🟢'
       );
+      // Abrir automáticamente el dropdown de la wallet para que el usuario la vea de inmediato
+      this.openDropdown(address);
     }
   }
 

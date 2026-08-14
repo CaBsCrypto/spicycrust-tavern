@@ -85,10 +85,14 @@ function PrivyController() {
                              user.wallets?.find(w => w.address?.startsWith('0x'))?.address;
 
       if (activeEvmWallet) {
-        setWalletCookie(activeEvmWallet);
-        broadcastWalletSync(activeEvmWallet);
-        if (typeof window.AuthSystemUpdateUI === 'function') {
-          window.AuthSystemUpdateUI();
+        if (typeof window.AuthSystemLoginSuccess === 'function') {
+          window.AuthSystemLoginSuccess(activeEvmWallet, true);
+        } else {
+          setWalletCookie(activeEvmWallet);
+          broadcastWalletSync(activeEvmWallet);
+          if (typeof window.AuthSystemUpdateUI === 'function') {
+            window.AuthSystemUpdateUI();
+          }
         }
       }
     } else if (ready && !authenticated) {
