@@ -103,7 +103,7 @@ function PrivyController() {
   return null;
 }
 
-// Proveedor oficial de Privy con tema oscuro y color de acento Avalanche (#E84142)
+// Proveedor oficial de Privy con estilo ultralimpio (Fondo claro, Google / Email primario)
 export function PrivyAuthBridge() {
   return (
     <PrivyProvider
@@ -111,12 +111,12 @@ export function PrivyAuthBridge() {
       config={{
         defaultChain: avalancheFuji,
         supportedChains: [avalancheFuji, avalanche],
-        loginMethods: ['email', 'wallet', 'google', 'twitter', 'discord', 'passkey'],
+        loginMethods: ['google', 'email', 'wallet'],
         appearance: {
-          theme: 'dark',
+          theme: 'light',
           accentColor: '#E84142',
           logo: '/favicon.svg',
-          showWalletLoginFirst: true
+          showWalletLoginFirst: false
         },
         embeddedWallets: {
           ethereum: {
