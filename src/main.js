@@ -100,13 +100,13 @@ function setupDashboardInteractions() {
       
       const gameType = btn.getAttribute('data-game');
       
-      // Redirecciones a juegos — URL resuelta por entorno con transmisión de billetera EVM
+      // Redirecciones a juegos — URL limpia a la landing del juego con transmisión de billetera EVM
       const baseUrl = GAME_URLS[gameType];
       if (baseUrl) {
         const activeWallet = getWalletCookie();
         const fullUrl = activeWallet 
-          ? `${baseUrl}?embed=1&mode=game&address=${encodeURIComponent(activeWallet)}`
-          : `${baseUrl}?mode=game`;
+          ? `${baseUrl}?address=${encodeURIComponent(activeWallet)}`
+          : baseUrl;
         window.location.href = fullUrl;
       }
     });
