@@ -49,9 +49,9 @@ export function initCabinet3D() {
     // Escena independiente
     const scene = new THREE.Scene();
 
-    // Cámara con FOV y posición optimizada para vista frontal
+    // Cámara con FOV y posición optimizada y calibrada para encajar 100% sin cortes
     const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 10);
-    camera.position.set(0, 1.45, 3.1);
+    camera.position.set(0, 1.45, 3.65);
     camera.lookAt(0, 0.2, 0);
 
     // Iluminación cálida e interna
@@ -68,6 +68,7 @@ export function initCabinet3D() {
 
     const boxGroup = new THREE.Group();
     boxGroup.rotation.y = defaultRotY;
+    boxGroup.scale.set(0.92, 0.92, 0.92);
     scene.add(boxGroup);
 
     // Materiales de caoba y oro
@@ -165,8 +166,6 @@ export function initCabinet3D() {
       pizzaGroup.add(pepMesh);
     });
 
-
-
     // Partículas de Vapor de Elixires
     const particleCount = 20;
     const particleGeom = new THREE.BufferGeometry();
@@ -204,7 +203,7 @@ export function initCabinet3D() {
     const particles = new THREE.Points(particleGeom, particleMaterial);
     boxGroup.add(particles);
 
-    // Estados e interactividad
+    // Estados e interactividad calibrada con márgenes de seguridad para no recortar la caja
     let targetRotX = 1.15; // inclinación de frente
     let targetRotY = defaultRotY;
     let targetLidAngle = 0.0;
@@ -215,10 +214,10 @@ export function initCabinet3D() {
       const x = (e.clientX - rect.left) / rect.width * 2 - 1; 
       const y = -((e.clientY - rect.top) / rect.height * 2 - 1); 
       
-      targetRotY = defaultRotY + x * 0.4;
-      targetRotX = 1.15 - y * 0.3;
-      targetLidAngle = -1.45;
-      targetLightIntensity = 7.0;
+      targetRotY = defaultRotY + x * 0.25;
+      targetRotX = 1.12 - y * 0.18;
+      targetLidAngle = -1.35;
+      targetLightIntensity = 6.0;
 
       Games.hoverStates[gameKey] = true;
     });
