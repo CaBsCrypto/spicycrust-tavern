@@ -42,9 +42,10 @@
   "modalRulesSec3Title": "// COMPACT DECK AT 60 FPS",
   "modalRulesSec3Text": "This system runs on an optimized engine free of heavy runtime dependencies, rendering cards and chests at a stable 60 FPS.",
   "footerCopyright": "© 2026 SPICYCRUST. ALL CHESTS READY FOR ACTION!",
-  "footerStatOpened": "<span class=\"block text-[9px] uppercase tracking-widest text-mafia-gold/50 font-sans\">Chests Opened</span><span class=\"block text-sm font-black text-mafia-amber font-mono mt-0.5\">1,420</span>",
-  "footerStatOnline": "<span class=\"block text-[9px] uppercase tracking-widest text-mafia-gold/50 font-sans\">Players Online</span><span class=\"block text-sm font-black text-mafia-green font-mono mt-0.5\">450</span>",
-  "footerStatElixir": "<span class=\"block text-[9px] uppercase tracking-widest text-mafia-gold/50 font-sans\">Elixir Flow</span><span class=\"block text-sm font-black text-blue-400 font-mono mt-0.5\">100%</span>",
-  "footerStatPizzas": "<span class=\"block text-[9px] uppercase tracking-widest text-mafia-gold/50 font-sans\">Pizzas Cooked</span><span class=\"block text-sm font-black text-mafia-amber font-mono mt-0.5\">15K</span>",
-  "footerContract": "VERIFIED CONTRACT"
+  "footerStatOpened": "<span class=\"block text-[9px] uppercase tracking-widest text-mafia-gold/50 font-sans\">🏆 Top Score</span><span class=\"block text-sm font-black text-mafia-amber font-mono mt-0.5\">99,450</span>",
+  "footerStatOnline": "<span class=\"block text-[9px] uppercase tracking-widest text-mafia-gold/50 font-sans\">⚔️ Matches</span><span class=\"block text-sm font-black text-mafia-green font-mono mt-0.5\">+15,000</span>",
+  "footerStatElixir": "<span class=\"block text-[9px] uppercase tracking-widest text-mafia-gold/50 font-sans\">👥 Players</span><span class=\"block text-sm font-black text-blue-400 font-mono mt-0.5\">+3,400</span>",
+  "footerStatPizzas": "<span class=\"block text-[9px] uppercase tracking-widest text-mafia-gold/50 font-sans\">🍕 Slices</span><span class=\"block text-sm font-black text-mafia-amber font-mono mt-0.5\">+85K</span>",
+  "footerContract": "SPICYCRUST ARCADE",
+  "footerStatus": "SYSTEM ONLINE 🟢"
 }

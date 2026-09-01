@@ -42,9 +42,10 @@
   "modalRulesSec3Title": "// BARAJA COMPACTA A 60 FPS",
   "modalRulesSec3Text": "Este sistema corre sobre un motor optimizado libre de dependencias pesadas en tiempo de ejecución, procesando el renderizado de cartas y cajas a 60 FPS estables.",
   "footerCopyright": "© 2026 SPICYCRUST. ¡TODOS LOS COFRES LISTOS PARA LA ACCIÓN!",
-  "footerStatOpened": "<span class=\"block text-[9px] uppercase tracking-widest text-mafia-gold/50 font-sans\">Cofres Abiertos</span><span class=\"block text-sm font-black text-mafia-amber font-mono mt-0.5\">1,420</span>",
-  "footerStatOnline": "<span class=\"block text-[9px] uppercase tracking-widest text-mafia-gold/50 font-sans\">En Línea</span><span class=\"block text-sm font-black text-mafia-green font-mono mt-0.5\">450</span>",
-  "footerStatElixir": "<span class=\"block text-[9px] uppercase tracking-widest text-mafia-gold/50 font-sans\">Flujo de Elixir</span><span class=\"block text-sm font-black text-blue-400 font-mono mt-0.5\">100%</span>",
-  "footerStatPizzas": "<span class=\"block text-[9px] uppercase tracking-widest text-mafia-gold/50 font-sans\">Pizzas Preparadas</span><span class=\"block text-sm font-black text-mafia-amber font-mono mt-0.5\">15K</span>",
-  "footerContract": "CONTRATO VERIFICADO"
+  "footerStatOpened": "<span class=\"block text-[9px] uppercase tracking-widest text-mafia-gold/50 font-sans\">🏆 Top Score</span><span class=\"block text-sm font-black text-mafia-amber font-mono mt-0.5\">99,450</span>",
+  "footerStatOnline": "<span class=\"block text-[9px] uppercase tracking-widest text-mafia-gold/50 font-sans\">⚔️ Partidas</span><span class=\"block text-sm font-black text-mafia-green font-mono mt-0.5\">+15,000</span>",
+  "footerStatElixir": "<span class=\"block text-[9px] uppercase tracking-widest text-mafia-gold/50 font-sans\">👥 Jugadores</span><span class=\"block text-sm font-black text-blue-400 font-mono mt-0.5\">+3,400</span>",
+  "footerStatPizzas": "<span class=\"block text-[9px] uppercase tracking-widest text-mafia-gold/50 font-sans\">🍕 Rebanadas</span><span class=\"block text-sm font-black text-mafia-amber font-mono mt-0.5\">+85K</span>",
+  "footerContract": "SPICYCRUST ARCADE",
+  "footerStatus": "SISTEMA ONLINE 🟢"
 }
