@@ -45,8 +45,8 @@ h1, h2, h3, h4, h5, h6, nav, button, .font-cinzel, .font-typewriter, .neon-sign-
 
 body {
   background: 
-    linear-gradient(rgba(15, 11, 9, 0.82), rgba(38, 20, 10, 0.94)), 
-    url('/speakeasy_bg.png') no-repeat center center fixed !important;
+    radial-gradient(ellipse at center, rgba(15, 11, 9, 0.72) 0%, rgba(26, 8, 0, 0.92) 100%), 
+    url('/speakeasy_tavern_bg.jpg') no-repeat center center fixed !important;
   background-size: cover !important;
 }
 
