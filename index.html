@@ -170,64 +170,6 @@
               <button id="lang-toggle-btn" class="border-2 border-mafia-gold/40 hover:border-mafia-gold bg-mafia-mahogany hover:bg-mafia-mahogany/80 text-mafia-gold font-lilita text-xs px-3 py-1.5 rounded-lg shadow-md cursor-pointer transition-all uppercase">
                 EN
               </button>
-              
-              <!-- Botón HUD de Ranking / Wallet y Dropdown -->
-              <div class="relative">
-                <button id="trophy-btn" class="flex items-center gap-2 border-2 border-mafia-gold/40 hover:border-mafia-gold bg-mafia-mahogany active:scale-95 px-4 py-2 rounded-xl font-lilita text-sm text-mafia-gold shadow-md cursor-pointer transition-all">
-                  <span data-t="trophies">🏆 CONECTAR WALLET</span>
-                </button>
-
-                <!-- DROPDOWN DE PERFIL DE WALLET & ONCHAIN TOOLING -->
-                <div id="profile-dropdown" class="absolute right-0 top-full mt-3 w-84 bg-[#16110f]/95 border-2 border-mafia-gold/50 rounded-2xl p-4 shadow-[0_15px_40px_rgba(0,0,0,0.9)] backdrop-blur-xl hidden opacity-0 transition-all duration-300 z-50 transform scale-95 origin-top-right">
-                  <div class="text-[10px] font-typewriter text-mafia-gold/70 uppercase tracking-widest mb-1.5 flex items-center justify-between">
-                    <span>Billetera EVM Conectada</span>
-                    <span class="text-[9px] text-mafia-green font-bold">🟢 ONLINE</span>
-                  </div>
-                  
-                  <div class="flex items-center justify-between gap-2 mb-3 bg-[#1a0f0a] border border-[#5d3215] rounded-xl p-2.5 font-mono text-xs text-mafia-amber font-bold shadow-inner">
-                    <span id="dropdown-address" class="truncate">0x0000...0000</span>
-                    <button id="dropdown-copy-btn" class="text-[10px] bg-mafia-gold/20 hover:bg-mafia-gold/40 text-mafia-gold font-lilita px-2.5 py-1 rounded-lg cursor-pointer transition-all shrink-0 border border-mafia-gold/30">
-                      📋 COPIAR
-                    </button>
-                  </div>
-
-                  <div class="grid grid-cols-2 gap-2 text-[10px] font-typewriter mb-3">
-                    <div class="bg-[#1a0f0a] border border-[#5d3215] rounded-lg p-2 text-center">
-                      <span class="text-mafia-gold/50 block text-[8px]">RED</span>
-                      <span class="text-mafia-green font-bold">Avalanche Fuji</span>
-                    </div>
-                    <div class="bg-[#1a0f0a] border border-[#5d3215] rounded-lg p-2 text-center">
-                      <span class="text-mafia-gold/50 block text-[8px]">SALDO DE PRUEBA</span>
-                      <span id="dropdown-balance" class="text-mafia-amber font-mono font-bold">... AVAX</span>
-                    </div>
-                  </div>
-
-                  <!-- ACCIONES DE PRUEBA ON-CHAIN / RELAYER -->
-                  <div class="space-y-2 mb-3 pt-1 border-t border-mafia-gold/20">
-                    <button id="dropdown-faucet-btn" class="w-full flex items-center justify-center gap-2 p-2 bg-mafia-gold/10 hover:bg-mafia-gold/25 border border-mafia-gold/30 text-mafia-gold font-lilita text-[11px] rounded-xl transition-all cursor-pointer">
-                      <span>🚰</span>
-                      <span>PEDIR AVAX DE PRUEBA (FAUCET)</span>
-                    </button>
-
-                    <button id="dropdown-sign-btn" class="w-full flex items-center justify-center gap-2 p-2 bg-blue-950/40 hover:bg-blue-900/60 border border-blue-500/30 text-blue-300 font-lilita text-[11px] rounded-xl transition-all cursor-pointer">
-                      <span>⚡</span>
-                      <span>1. PROBAR FIRMA GASLESS (OFF-CHAIN)</span>
-                    </button>
-
-                    <button id="dropdown-tx-btn" class="w-full flex items-center justify-center gap-2 p-2 bg-emerald-950/40 hover:bg-emerald-900/60 border border-emerald-500/30 text-emerald-300 font-lilita text-[11px] rounded-xl transition-all cursor-pointer">
-                      <span>🚀</span>
-                      <span>2. EMITIR TRANSACCIÓN A SNOWTRACE (ON-CHAIN)</span>
-                    </button>
-                  </div>
-
-                  <div class="border-t border-mafia-gold/20 pt-2">
-                    <button id="dropdown-logout-btn" class="w-full flex items-center justify-center gap-2 p-2 bg-red-950/40 hover:bg-red-900/70 border border-red-500/40 text-red-300 font-lilita text-xs rounded-xl transition-all cursor-pointer shadow-sm">
-                      <span>🚪</span>
-                      <span>DESCONECTAR BILLETERA</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
             </div>
 
         </div>
