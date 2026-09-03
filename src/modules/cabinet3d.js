@@ -49,10 +49,10 @@ export function initCabinet3D() {
     // Escena independiente
     const scene = new THREE.Scene();
 
-    // Cámara con FOV y posición optimizada para vista en primer plano grande y detallada
+    // Cámara con FOV y posición optimizada (reducido 10% para evitar cualquier recorte)
     const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 10);
-    camera.position.set(0, 1.25, 2.50);
-    camera.lookAt(0, 0.12, 0);
+    camera.position.set(0, 1.32, 2.85);
+    camera.lookAt(0, 0.15, 0);
 
     // Iluminación cálida e interna
     const ambientLight = new THREE.AmbientLight(0xffffff, 1.1);
@@ -68,7 +68,7 @@ export function initCabinet3D() {
 
     const boxGroup = new THREE.Group();
     boxGroup.rotation.y = defaultRotY;
-    boxGroup.scale.set(1.08, 1.08, 1.08);
+    boxGroup.scale.set(1.0, 1.0, 1.0);
     scene.add(boxGroup);
 
     // Materiales de caoba y oro
@@ -214,9 +214,9 @@ export function initCabinet3D() {
       const x = (e.clientX - rect.left) / rect.width * 2 - 1; 
       const y = -((e.clientY - rect.top) / rect.height * 2 - 1); 
       
-      targetRotY = defaultRotY + x * 0.18;
-      targetRotX = 1.14 - y * 0.12;
-      targetLidAngle = -1.25;
+      targetRotY = defaultRotY + x * 0.15;
+      targetRotX = 1.14 - y * 0.10;
+      targetLidAngle = -1.30;
       targetLightIntensity = 6.0;
 
       Games.hoverStates[gameKey] = true;
@@ -257,10 +257,10 @@ export function initCabinet3D() {
     observer.observe(container);
   }
 
-  // Cargar las 3 cajas con un ángulo sutil inicial (ladeado hacia el centro)
-  addCabinet('cabinet-3d-1', 'game-canvas-3', 'game3', 0.25);
+  // Cargar las 3 cajas con un ángulo sutil inicial seguro (evita recortes en esquinas)
+  addCabinet('cabinet-3d-1', 'game-canvas-3', 'game3', 0.14);
   addCabinet('cabinet-3d-2', 'game-canvas-1', 'game1', 0.0);
-  addCabinet('cabinet-3d-3', 'game-canvas-4', 'game4', -0.25);
+  addCabinet('cabinet-3d-3', 'game-canvas-4', 'game4', -0.14);
 
   // Ajustar tamaño del canvas compartido
   function resizeSharedCanvas() {
