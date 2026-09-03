@@ -49,10 +49,10 @@ export function initCabinet3D() {
     // Escena independiente
     const scene = new THREE.Scene();
 
-    // Cámara con FOV y posición optimizada y calibrada para encajar 100% sin cortes
+    // Cámara con FOV y posición optimizada y calibrada para llenar el espacio sin cortes
     const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 10);
-    camera.position.set(0, 1.45, 3.65);
-    camera.lookAt(0, 0.2, 0);
+    camera.position.set(0, 1.40, 3.28);
+    camera.lookAt(0, 0.16, 0);
 
     // Iluminación cálida e interna
     const ambientLight = new THREE.AmbientLight(0xffffff, 1.1);
@@ -68,7 +68,7 @@ export function initCabinet3D() {
 
     const boxGroup = new THREE.Group();
     boxGroup.rotation.y = defaultRotY;
-    boxGroup.scale.set(0.92, 0.92, 0.92);
+    boxGroup.scale.set(1.0, 1.0, 1.0);
     scene.add(boxGroup);
 
     // Materiales de caoba y oro
