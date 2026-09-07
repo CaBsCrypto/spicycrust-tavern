@@ -9,6 +9,7 @@ import { initCabinet3D } from './modules/cabinet3d.js';
 import { initTranslations } from './modules/translation.js';
 import { AuthSystem, getWalletCookie } from './modules/auth.js';
 import { GAME_URLS, GAME_META } from './config/games.js';
+import { syncFooterLiveStats } from './modules/leaderboardApi.js';
 
 // Inicialización general al cargar el DOM
 document.addEventListener('DOMContentLoaded', () => {
@@ -31,6 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initCabinet3D();
     initModals();
     initLeads();
+    syncFooterLiveStats();
     setupDashboardInteractions();
   };
 

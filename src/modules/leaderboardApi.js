@@ -1,4 +1,4 @@
-﻿/**
+/**
  * SpicyCrust — Cliente de API para el Leaderboard (API v2)
  * Se conecta a https://api.spicycrust.com/api/v1/leaderboard
  */
@@ -93,4 +93,70 @@ export async function fetchLeaderboard({ game = 'rhythm-slice', season = 'season
     seasonName: season,
     data: fallbackList
   };
+}
+
+/**
+ * Consulta las estadísticas globales de la API v2 y actualiza los indicadores del pie de página
+ */
+export async function fetchGlobalStats() {
+  const url = `${API_BASE_URL}/api/v1/stats`;
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 4000);
+
+    const res = await fetch(url, {
+      method: 'GET',
+      headers: { 'Accept': 'application/json' },
+      signal: controller.signal
+    });
+    clearTimeout(timeoutId);
+
+    if (res.ok) {
+      const json = await res.json();
+      if (json && json.success && json.data) {
+        return {
+          success: true,
+          isLive: true,
+          data: json.data
+        };
+      }
+    }
+  } catch (err) {
+    console.warn('[LeaderboardApi] Fallback activado para stats:', err?.message ?? err);
+  }
+
+  return {
+    success: true,
+    isLive: false,
+    data: {
+      total_players: 3400,
+      total_scores: 15000,
+      highest_score: 99450,
+      scores_today: 350
+    }
+  };
+}
+
+/**
+ * Sincroniza dinámicamente las tarjetas numéricas del footer
+ */
+export async function syncFooterLiveStats() {
+  const result = await fetchGlobalStats();
+  if (!result || !result.data) return;
+
+  const { total_players, total_scores, highest_score } = result.data;
+
+  const statOpened = document.querySelector('[data-t="footerStatOpened"]');
+  const statOnline = document.querySelector('[data-t="footerStatOnline"]');
+  const statElixir = document.querySelector('[data-t="footerStatElixir"]');
+
+  if (statOpened && highest_score) {
+    statOpened.innerHTML = `🏆 TOP SCORE: <span class="text-mafia-gold font-bold">${Number(highest_score).toLocaleString()}</span>`;
+  }
+  if (statOnline && total_scores) {
+    statOnline.innerHTML = `⚔️ PARTIDAS: <span class="text-mafia-gold font-bold">+${Number(total_scores).toLocaleString()}</span>`;
+  }
+  if (statElixir && total_players) {
+    statElixir.innerHTML = `👥 JUGADORES: <span class="text-mafia-gold font-bold">+${Number(total_players).toLocaleString()}</span>`;
+  }
 }
