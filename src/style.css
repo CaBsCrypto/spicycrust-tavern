@@ -126,6 +126,32 @@ body {
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
 }
 
+/* Discover Pizza Hero Button */
+.discover-pizza-btn {
+  background: linear-gradient(180deg, #ff9b26 0%, #d85f00 50%, #9e3600 100%);
+  border: 2px solid #ffd866;
+  border-bottom: 6px solid #4a1500;
+  border-radius: 16px;
+  font-family: var(--font-lilita);
+  color: #ffffff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8), 0 0 10px rgba(255, 216, 102, 0.5);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7), 0 0 30px rgba(255, 155, 38, 0.45), inset 0 2px 0 rgba(255, 255, 255, 0.35);
+  transition: transform 0.12s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.15s ease, border-bottom-width 0.1s;
+  letter-spacing: 1.5px;
+}
+
+.discover-pizza-btn:hover {
+  background: linear-gradient(180deg, #ffab40 0%, #e66a00 50%, #b33e00 100%);
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.85), 0 0 50px rgba(255, 180, 50, 0.75), inset 0 2px 0 rgba(255, 255, 255, 0.6);
+  transform: translateY(-2px) scale(1.04);
+}
+
+.discover-pizza-btn:active {
+  transform: translateY(4px) scale(0.98);
+  border-bottom-width: 2px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6), 0 0 15px rgba(255, 155, 38, 0.4);
+}
+
 /* Custom text and neon glow shortcuts */
 .glow-gold {
   text-shadow: 0 3px 0 #8c6000, 0 0 10px rgba(255, 216, 102, 0.4);

@@ -46,16 +46,20 @@ export function initUnboxing3D(onCompleteCallback) {
   const crateGroup = new THREE.Group();
   scene.add(crateGroup);
 
-  // Ajuste responsivo de escala
+  // Ajuste responsivo de escala y encuadre para dar espacio al botón inferior
   const adjustScaleForResponsive = () => {
     const aspect = window.innerWidth / window.innerHeight;
     if (aspect < 1.0) {
-      const scaleVal = Math.max(0.55, aspect * 0.95);
+      // Móvil vertical: Cesta más compacta y centrada arriba
+      const scaleVal = Math.min(0.68, Math.max(0.55, aspect * 0.9));
       crateGroup.scale.set(scaleVal, scaleVal, scaleVal);
-      camera.position.z = 18;
+      crateGroup.position.set(0, 0.8, 0);
+      camera.position.set(0, 4.2, 17.5);
     } else {
-      crateGroup.scale.set(1, 1, 1);
-      camera.position.z = 15;
+      // Escritorio panorámico: Escala 0.82 y posición elevada
+      crateGroup.scale.set(0.82, 0.82, 0.82);
+      crateGroup.position.set(0, 0.55, 0);
+      camera.position.set(0, 4.0, 16.0);
     }
   };
   adjustScaleForResponsive();
@@ -125,103 +129,236 @@ export function initUnboxing3D(onCompleteCallback) {
 
   const woodTexture = createWoodTexture();
 
-  // Material de Madera Noble de la Pizzería Real (Con veteado y relieve tridimensional)
+  // Materiales temáticos de la Pizzería Real
   const woodMaterial = new THREE.MeshStandardMaterial({
     map: woodTexture,
     bumpMap: woodTexture,
-    bumpScale: 0.04,
-    roughness: 0.85,
+    bumpScale: 0.05,
+    roughness: 0.8,
     metalness: 0.1,
   });
 
-  // Material de Oro Real brillante
   const goldMaterial = new THREE.MeshStandardMaterial({
     color: 0xffd866,
-    emissive: 0xd89f00,
-    emissiveIntensity: 0.5,
-    metalness: 0.9,
-    roughness: 0.1
+    emissive: 0xb8860b,
+    emissiveIntensity: 0.35,
+    metalness: 0.92,
+    roughness: 0.18
   });
 
-  const flatGoldMaterial = new THREE.MeshBasicMaterial({ color: 0xffd866 });
-  const flatElixirMaterial = new THREE.MeshBasicMaterial({ color: 0xf61b7f });
+  const darkIronMaterial = new THREE.MeshStandardMaterial({
+    color: 0x221a15,
+    metalness: 0.7,
+    roughness: 0.5
+  });
 
-  // --- BASE DE LA CAJA (Madera noble y cantos de oro) ---
-  const baseGeom = new THREE.BoxGeometry(7, 0.8, 7);
+  const crustMaterial = new THREE.MeshStandardMaterial({
+    color: 0xc87d2a,
+    roughness: 0.9,
+    metalness: 0.0
+  });
+
+  const cheeseMaterial = new THREE.MeshStandardMaterial({
+    color: 0xffb703,
+    emissive: 0x995c00,
+    emissiveIntensity: 0.2,
+    roughness: 0.45,
+    metalness: 0.05
+  });
+
+  const pepperoniMaterial = new THREE.MeshStandardMaterial({
+    color: 0x9b111e,
+    emissive: 0x4a0005,
+    emissiveIntensity: 0.25,
+    roughness: 0.25,
+    metalness: 0.2
+  });
+
+  const basilMaterial = new THREE.MeshStandardMaterial({
+    color: 0x2d862d,
+    roughness: 0.6,
+    metalness: 0.0
+  });
+
+  const emberGlowMaterial = new THREE.MeshStandardMaterial({
+    color: 0xff7b00,
+    emissive: 0xff5500,
+    emissiveIntensity: 1.8,
+    roughness: 0.2
+  });
+
+  // --- BASE DE LA CAJA (Cofre Real de Madera y Borde Metálico) ---
+  const baseGeom = new THREE.BoxGeometry(6.6, 0.9, 6.6);
   const baseMesh = new THREE.Mesh(baseGeom, woodMaterial);
   baseMesh.castShadow = true;
   baseMesh.receiveShadow = true;
-  baseMesh.position.y = -0.4;
+  baseMesh.position.y = -0.45;
   crateGroup.add(baseMesh);
 
-  // Cantos de oro en las esquinas frontales de la base
-  const trimGeom = new THREE.BoxGeometry(7.05, 0.08, 0.08);
-  const trimFront = new THREE.Mesh(trimGeom, goldMaterial);
-  trimFront.position.set(0, -0.1, 3.51);
+  // Cantos y ribetes de oro en la base
+  const trimGeomH = new THREE.BoxGeometry(6.65, 0.08, 0.08);
+  const trimFront = new THREE.Mesh(trimGeomH, goldMaterial);
+  trimFront.position.set(0, -0.05, 3.31);
   crateGroup.add(trimFront);
 
-  const trimBack = new THREE.Mesh(trimGeom, goldMaterial);
-  trimBack.position.set(0, -0.1, -3.51);
+  const trimBack = new THREE.Mesh(trimGeomH, goldMaterial);
+  trimBack.position.set(0, -0.05, -3.31);
   crateGroup.add(trimBack);
+
+  // --- PIZZA 3D INTERIOR (Revelada al abrir la caja) ---
+  const pizzaGroup = new THREE.Group();
+  pizzaGroup.position.set(0, -0.15, 0);
+  crateGroup.add(pizzaGroup);
+
+  // Masa y corteza de la pizza
+  const pizzaDoughGeom = new THREE.CylinderGeometry(2.45, 2.5, 0.18, 32);
+  const pizzaDough = new THREE.Mesh(pizzaDoughGeom, crustMaterial);
+  pizzaGroup.add(pizzaDough);
+
+  const pizzaCrustRingGeom = new THREE.TorusGeometry(2.35, 0.14, 10, 32);
+  const pizzaCrustRing = new THREE.Mesh(pizzaCrustRingGeom, crustMaterial);
+  pizzaCrustRing.rotation.x = Math.PI / 2;
+  pizzaCrustRing.position.y = 0.08;
+  pizzaGroup.add(pizzaCrustRing);
+
+  // Capa de queso fundido brillante
+  const pizzaCheeseGeom = new THREE.CylinderGeometry(2.32, 2.32, 0.06, 32);
+  const pizzaCheese = new THREE.Mesh(pizzaCheeseGeom, cheeseMaterial);
+  pizzaCheese.position.y = 0.1;
+  pizzaGroup.add(pizzaCheese);
+
+  // Rodajas de Pepperoni en la pizza interior
+  const pepGeom = new THREE.CylinderGeometry(0.35, 0.35, 0.04, 16);
+  for (let i = 0; i < 7; i++) {
+    const angle = (i / 7) * Math.PI * 2;
+    const rad = 1.4;
+    const pep = new THREE.Mesh(pepGeom, pepperoniMaterial);
+    pep.position.set(Math.cos(angle) * rad, 0.13, Math.sin(angle) * rad);
+    pizzaGroup.add(pep);
+  }
+  // Pepperoni central
+  const centerPep = new THREE.Mesh(pepGeom, pepperoniMaterial);
+  centerPep.position.set(0, 0.13, 0);
+  pizzaGroup.add(centerPep);
 
   // --- TAPA DE LA CAJA REAL ---
   const lidPivot = new THREE.Group();
-  lidPivot.position.set(0, 0, -3.5);
+  lidPivot.position.set(0, 0, -3.3);
   crateGroup.add(lidPivot);
 
-  const lidGeom = new THREE.BoxGeometry(7, 0.2, 7);
+  const lidGeom = new THREE.BoxGeometry(6.6, 0.22, 6.6);
   const lidMesh = new THREE.Mesh(lidGeom, woodMaterial);
   lidMesh.castShadow = true;
-  lidMesh.position.set(0, 0.1, 3.5);
+  lidMesh.position.set(0, 0.11, 3.3);
   lidPivot.add(lidMesh);
 
-  // Escudo central: Rebanada de Pizza Real en Oro y Corona
-  const shieldGeom = new THREE.CylinderGeometry(1.4, 1.4, 0.08, 3); // Escudo triangular
-  const shieldMesh = new THREE.Mesh(shieldGeom, goldMaterial);
-  shieldMesh.rotation.y = Math.PI;
-  shieldMesh.position.set(0, 0.24, 3.5);
-  lidPivot.add(shieldMesh);
-
-  // Corona real en miniatura encima de la rebanada
-  const crownGeom = new THREE.CylinderGeometry(0.5, 0.35, 0.3, 8);
-  const crownMesh = new THREE.Mesh(crownGeom, goldMaterial);
-  crownMesh.position.set(0, 0.4, 3.5);
-  lidPivot.add(crownMesh);
-
-  // Marcos de oro en los bordes de la tapa
-  const goldBorderL = new THREE.BoxGeometry(0.1, 0.04, 6.8);
-  const goldBorderR = new THREE.BoxGeometry(0.1, 0.04, 6.8);
+  // Ribetes dorados en los bordes de la tapa
+  const lidBorderGeomX = new THREE.BoxGeometry(6.64, 0.06, 0.08);
+  const lidBorderGeomZ = new THREE.BoxGeometry(0.08, 0.06, 6.64);
   
-  const borderLeft = new THREE.Mesh(goldBorderL, goldMaterial);
-  borderLeft.position.set(-3.45, 0.22, 3.5);
-  lidPivot.add(borderLeft);
+  const lidFrontBorder = new THREE.Mesh(lidBorderGeomX, goldMaterial);
+  lidFrontBorder.position.set(0, 0.22, 6.6);
+  lidPivot.add(lidFrontBorder);
 
-  const borderRight = new THREE.Mesh(goldBorderR, goldMaterial);
-  borderRight.position.set(3.45, 0.22, 3.5);
-  lidPivot.add(borderRight);
+  const lidLeftBorder = new THREE.Mesh(lidBorderGeomZ, goldMaterial);
+  lidLeftBorder.position.set(-3.3, 0.22, 3.3);
+  lidPivot.add(lidLeftBorder);
 
-  // Nodos LED dorados en las esquinas de la tapa (Remaches Reales)
-  const rivetGeom = new THREE.CylinderGeometry(0.15, 0.15, 0.08, 8);
-  const rivets = [];
-  const rivetCoords = [
-    [-3.2, 0.21, 0.3],
-    [3.2, 0.21, 0.3],
-    [-3.2, 0.21, 6.7],
-    [3.2, 0.21, 6.7]
+  const lidRightBorder = new THREE.Mesh(lidBorderGeomZ, goldMaterial);
+  lidRightBorder.position.set(3.3, 0.22, 3.3);
+  lidPivot.add(lidRightBorder);
+
+  // --- ESCUDO / MEDALLÓN DE PIZZA REAL EN LA TAPA ---
+  const emblemGroup = new THREE.Group();
+  emblemGroup.position.set(0, 0.24, 3.3);
+  lidPivot.add(emblemGroup);
+
+  // Base circular del medallón en oro
+  const medallionBaseGeom = new THREE.CylinderGeometry(2.0, 2.05, 0.06, 32);
+  const medallionBase = new THREE.Mesh(medallionBaseGeom, goldMaterial);
+  emblemGroup.add(medallionBase);
+
+  // Aro interior oscuro de hierro/madera noble
+  const medallionInnerGeom = new THREE.CylinderGeometry(1.85, 1.85, 0.08, 32);
+  const medallionInner = new THREE.Mesh(medallionInnerGeom, darkIronMaterial);
+  emblemGroup.add(medallionInner);
+
+  // Rebanada de Pizza 3D estilizada en el centro del medallón
+  const sliceCheeseGeom = new THREE.CylinderGeometry(1.4, 1.4, 0.09, 3); // Cuña triangular
+  const sliceCheeseMesh = new THREE.Mesh(sliceCheeseGeom, cheeseMaterial);
+  sliceCheeseMesh.rotation.y = Math.PI;
+  sliceCheeseMesh.position.set(0, 0.08, 0.15);
+  emblemGroup.add(sliceCheeseMesh);
+
+  // Borde de masa crujiente de la rebanada
+  const sliceCrustGeom = new THREE.BoxGeometry(1.8, 0.14, 0.32);
+  const sliceCrustMesh = new THREE.Mesh(sliceCrustGeom, crustMaterial);
+  sliceCrustMesh.position.set(0, 0.12, -0.6);
+  emblemGroup.add(sliceCrustMesh);
+
+  // Pepperonis en la rebanada del escudo
+  const emblemPepGeom = new THREE.CylinderGeometry(0.24, 0.24, 0.04, 16);
+  const emblemPep1 = new THREE.Mesh(emblemPepGeom, pepperoniMaterial);
+  emblemPep1.position.set(-0.35, 0.14, -0.2);
+  emblemGroup.add(emblemPep1);
+
+  const emblemPep2 = new THREE.Mesh(emblemPepGeom, pepperoniMaterial);
+  emblemPep2.position.set(0.35, 0.14, -0.2);
+  emblemGroup.add(emblemPep2);
+
+  const emblemPep3 = new THREE.Mesh(emblemPepGeom, pepperoniMaterial);
+  emblemPep3.position.set(0, 0.14, 0.35);
+  emblemGroup.add(emblemPep3);
+
+  // Hojas de albahaca fresca
+  const basilGeom = new THREE.BoxGeometry(0.18, 0.03, 0.28);
+  const basil1 = new THREE.Mesh(basilGeom, basilMaterial);
+  basil1.rotation.y = 0.5;
+  basil1.position.set(0.15, 0.14, 0.05);
+  emblemGroup.add(basil1);
+
+  // Corona Real en Oro macizo coronando la rebanada
+  const crownGeom = new THREE.CylinderGeometry(0.55, 0.42, 0.3, 5);
+  const crownMesh = new THREE.Mesh(crownGeom, goldMaterial);
+  crownMesh.position.set(0, 0.25, -0.65);
+  emblemGroup.add(crownMesh);
+
+  // Joya de rubí en la corona
+  const jewelGeom = new THREE.SphereGeometry(0.1, 8, 8);
+  const jewelMesh = new THREE.Mesh(jewelGeom, pepperoniMaterial);
+  jewelMesh.position.set(0, 0.38, -0.65);
+  emblemGroup.add(jewelMesh);
+
+  // --- HERRAJES Y REMACHES EN LAS ESQUINAS ---
+  const bracketGeom = new THREE.BoxGeometry(0.7, 0.05, 0.7);
+  const cornerPositions = [
+    [-3.0, 0.24, 0.3],
+    [3.0, 0.24, 0.3],
+    [-3.0, 0.24, 6.3],
+    [3.0, 0.24, 6.3]
   ];
 
-  rivetCoords.forEach(coord => {
-    const rivet = new THREE.Mesh(rivetGeom, goldMaterial);
-    rivet.position.set(coord[0], coord[1], coord[2]);
+  cornerPositions.forEach(pos => {
+    const bracket = new THREE.Mesh(bracketGeom, goldMaterial);
+    bracket.position.set(pos[0], pos[1], pos[2]);
+    lidPivot.add(bracket);
+
+    const rivetGeom = new THREE.CylinderGeometry(0.08, 0.08, 0.06, 8);
+    const rivet = new THREE.Mesh(rivetGeom, darkIronMaterial);
+    rivet.position.set(pos[0], pos[1] + 0.04, pos[2]);
     lidPivot.add(rivet);
-    rivets.push(rivet);
   });
 
-  // Cerradura dorada en el frente
-  const lockGeom = new THREE.BoxGeometry(0.6, 0.2, 0.15);
+  // Cerradura dorada y picaporte en el frente
+  const lockGeom = new THREE.BoxGeometry(0.8, 0.28, 0.18);
   const lockIndicator = new THREE.Mesh(lockGeom, goldMaterial);
-  lockIndicator.position.set(0, 0.05, 7.05);
+  lockIndicator.position.set(0, 0.05, 6.68);
   lidPivot.add(lockIndicator);
+
+  const keyholeGeom = new THREE.BoxGeometry(0.12, 0.16, 0.04);
+  const keyhole = new THREE.Mesh(keyholeGeom, darkIronMaterial);
+  keyhole.position.set(0, 0.05, 6.78);
+  lidPivot.add(keyhole);
 
   // 4. Sistema de Vapor/Criogénico (Humo Mágico Elixir Rosa)
   const steamParticles = [];
@@ -333,16 +470,16 @@ export function initUnboxing3D(onCompleteCallback) {
   // 6. Interactividad y Arrastre Táctil
   let mouseX = 0;
   let mouseY = 0;
-  let targetRotX = 0.3;
-  let targetRotY = -0.4;
+  let targetRotX = 0.35;
+  let targetRotY = -0.3;
 
   window.addEventListener('mousemove', (e) => {
     mouseX = (e.clientX / window.innerWidth) * 2 - 1;
     mouseY = -(e.clientY / window.innerHeight) * 2 - 1;
     
     if (!unboxingStarted && !isDragging) {
-      targetRotY = mouseX * 0.4 - 0.4;
-      targetRotX = -mouseY * 0.3 + 0.3;
+      targetRotY = mouseX * 0.35 - 0.3;
+      targetRotX = -mouseY * 0.25 + 0.35;
     }
   });
 
