@@ -2,15 +2,8 @@ import { Sound } from './sound.js';
 
 export function initModals() {
   const leaderboardBtn = document.getElementById('leaderboard-btn');
-  const docsBtn = document.getElementById('docs-btn');
-  
   const leaderboardModal = document.getElementById('leaderboard-modal');
-  const docsModal = document.getElementById('docs-modal');
-  
   const leaderboardClose = document.getElementById('leaderboard-close');
-  const docsClose = document.getElementById('docs-close');
-
-  const trophyBtn = document.getElementById('trophy-btn');
 
   // --- LEADERBOARD MODAL ---
   if (leaderboardBtn && leaderboardModal && leaderboardClose) {
@@ -31,32 +24,11 @@ export function initModals() {
     });
   }
 
-  // --- DOCS / WIKI MODAL ---
-  if (docsBtn && docsModal && docsClose) {
-    docsBtn.addEventListener('mouseenter', () => Sound.playHoverBlip());
-    
-    docsBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      Sound.playToggleSound();
-      openModal(docsModal);
-    });
-
-    docsClose.addEventListener('mouseenter', () => Sound.playHoverBlip());
-    docsClose.addEventListener('click', () => {
-      Sound.playToggleSound();
-      closeModal(docsModal);
-    });
-  }
-
   // Cerrar modales al hacer clic fuera del panel de contenido
   window.addEventListener('click', (e) => {
     if (e.target === leaderboardModal) {
       Sound.playToggleSound();
       closeModal(leaderboardModal);
-    }
-    if (e.target === docsModal) {
-      Sound.playToggleSound();
-      closeModal(docsModal);
     }
   });
 

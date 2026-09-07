@@ -159,9 +159,6 @@
             <a href="#leaderboard" class="font-cinzel font-bold text-xs tracking-wider text-mafia-gold/70 hover:text-mafia-gold transition-all duration-200" id="leaderboard-btn" data-t="navLeaderboard">
               CLASIFICACIÓN
             </a>
-            <a href="#docs" class="font-cinzel font-bold text-xs tracking-wider text-mafia-gold/70 hover:text-mafia-gold transition-all duration-200" id="docs-btn" data-t="navRules">
-              REGLAS
-            </a>
           </nav>
 
             <!-- Widget de Estado en la Derecha -->
@@ -178,17 +175,8 @@
       <!-- Glowing Wood Divider -->
       <div class="copper-laser-line"></div>
 
-      <!-- HERO & TÍTULO -->
-      <main class="max-w-full px-6 md:px-16 py-8 flex-grow flex flex-col justify-center">
-        
-        <header class="text-center max-w-4xl mx-auto mb-12 select-none">
-          <h2 class="font-cinzel font-black text-4xl md:text-6xl text-provolone-cheese mb-3 uppercase premium-title" data-t="heroTitle">
-            ¡TABERNA <span class="text-mafia-gold">SPICYCRUST</span>!
-          </h2>
-          <div class="text-xs md:text-sm text-mafia-gold/80 tracking-wider" data-t="heroSubtitle">
-            ¡Rebana ingredientes con ritmo, usa tu elixir y abre cofres legendarios!
-          </div>
-        </header>
+      <!-- MAIN CONTENT -->
+      <main class="max-w-full px-6 md:px-16 py-6 flex-grow flex flex-col justify-center">
 
         <!-- ================= GRID CENTRAL DE JUEGOS ================= -->
         <section class="mb-20 w-full" aria-labelledby="grid-title">
@@ -337,56 +325,7 @@
     </div>
 
 
-    <!-- MODAL 2: DOCS -->
-    <div id="docs-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300 p-4" aria-modal="true" role="dialog">
-      <div class="modal-panel max-w-2xl w-full cyber-glass p-6 md:p-8 transform scale-95 opacity-0 transition-all duration-300">
-        
-        <!-- Cabecera del modal -->
-        <div class="flex items-center justify-between border-b border-mafia-gold/20 pb-4 mb-6">
-          <h3 class="font-cinzel font-black text-lg text-provolone-cheese uppercase flex items-center gap-2" data-t="modalRulesTitle">
-            🖳 DIRECTIVAS REALES // WIKI DE LA TABERNA
-          </h3>
-          <button id="docs-close" class="text-mafia-gold/60 hover:text-mafia-red cursor-pointer focus:outline-none" aria-label="Cerrar modal de Documentación">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
 
-        <!-- Contenido Técnico Estilizado -->
-        <div class="space-y-6 overflow-y-auto max-h-[60vh] pr-2 text-xs md:text-sm font-light text-provolone-cheese/80 leading-relaxed font-typewriter">
-          
-          <div>
-            <h4 class="text-mafia-green font-cinzel font-black tracking-wider text-xs mb-2 uppercase" data-t="modalRulesSec1Title">// DEFENSA DE ELIXIR ZK</h4>
-            <p data-t="modalRulesSec1Text">La red real de SpicyCrust utiliza Pruebas de Conocimiento Cero (Zero Knowledge Proofs) para verificar y encriptar los reportes de trofeos de los jugadores de manera totalmente segura y descentralizada.</p>
-          </div>
-
-          <div>
-            <h4 class="text-mafia-amber font-cinzel font-black tracking-wider text-xs mb-2 uppercase" data-t="modalRulesSec2Title">// TABERNA DESARROLLADORES</h4>
-            <p class="mb-2" data-t="modalRulesSec2Text">Puedes compilar y agregar tus propias cajas de pizza al ecosistema usando las herramientas CLI reales.</p>
-            <div class="bg-[#1a0f0a] p-3 border border-[#5d3215] rounded text-[10px] text-mafia-amber overflow-x-auto whitespace-pre">
-# Instalar el compilador oficial del reino
-pnpm i -g @spicycrust/tavern-compiler
-
-# Iniciar un nuevo proyecto de cofre de pizza
-spicycrust init my-royal-chest --template tavern
-
-# Validar y subir tus trofeos a la blockchain
-spicycrust verify --contract 0xSP1CYCRU5T777777</div>
-          </div>
-
-          <div>
-            <h4 class="text-mafia-red font-cinzel font-black tracking-wider text-xs mb-2 uppercase" data-t="modalRulesSec3Title">// BARAJA COMPACTA A 60 FPS</h4>
-            <p data-t="modalRulesSec3Text">Este sistema corre sobre un motor optimizado libre de dependencias pesadas en tiempo de ejecución, procesando el renderizado de cartas y cajas a 60 FPS estables.</p>
-          </div>
-
-        </div>
-
-        <p class="text-[9px] text-mafia-gold/40 font-typewriter text-center mt-6">
-          // SPICYCRUST ROYAL DIRECTIVES // BUILD 1.9.0 // COMPILER: ONLINE
-        </p>
-      </div>
-    </div>
 
     <!-- El Dropdown de Perfil e Interacción se renderiza directamente debajo del botón del Header -->
 
