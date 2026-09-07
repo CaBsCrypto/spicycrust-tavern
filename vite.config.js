@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite'
 import tailwindcss from '@tailwindcss/vite'
+import { resolve } from 'path'
 
 export default defineConfig({
   plugins: [
@@ -8,6 +9,12 @@ export default defineConfig({
   server: {
     port: 5173, // SpicyCrust hub siempre en 5173
   },
-  // Las variables VITE_URL_* en .env se leen automáticamente en dev
-  // En producción (npm run build) Vite usa .env.production
+  build: {
+    rollupOptions: {
+      input: {
+        main: resolve(__dirname, 'index.html'),
+        admin: resolve(__dirname, 'admin.html'),
+      },
+    },
+  },
 })

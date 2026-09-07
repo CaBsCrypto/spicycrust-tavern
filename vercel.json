@@ -1,1 +1,1 @@
-{"redirects":[{"source":"/admin","destination":"https://admin.spicycrust.com","permanent":false},{"source":"/admin/:path*","destination":"https://admin.spicycrust.com/:path*","permanent":false}]}
+{"rewrites":[{"source":"/admin","destination":"/admin.html"}]}
