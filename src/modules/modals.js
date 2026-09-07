@@ -1,17 +1,53 @@
 import { Sound } from './sound.js';
+import { fetchLeaderboard } from './leaderboardApi.js';
 
 export function initModals() {
   const leaderboardBtn = document.getElementById('leaderboard-btn');
   const leaderboardModal = document.getElementById('leaderboard-modal');
   const leaderboardClose = document.getElementById('leaderboard-close');
+  const searchInput = document.getElementById('leaderboard-search');
 
-  // --- LEADERBOARD MODAL ---
+  let currentGame = 'rhythm-slice';
+  let searchQuery = '';
+
+  // Tab listeners
+  const tabs = document.querySelectorAll('.lead-tab');
+  tabs.forEach(tab => {
+    tab.addEventListener('mouseenter', () => Sound.playHoverBlip());
+    tab.addEventListener('click', (e) => {
+      e.preventDefault();
+      Sound.playToggleSound();
+      tabs.forEach(t => {
+        t.classList.remove('active-tab', 'border-mafia-gold', 'text-mafia-gold', 'bg-mafia-mahogany/90');
+        t.classList.add('border-mafia-gold/20', 'text-provolone-cheese/60', 'bg-[#1a0f0a]');
+      });
+      
+      tab.classList.add('active-tab', 'border-mafia-gold', 'text-mafia-gold', 'bg-mafia-mahogany/90');
+      tab.classList.remove('border-mafia-gold/20', 'text-provolone-cheese/60', 'bg-[#1a0f0a]');
+      
+      currentGame = tab.getAttribute('data-game') || 'rhythm-slice';
+      loadLeaderboard();
+    });
+  });
+
+  if (searchInput) {
+    let debounceTimer;
+    searchInput.addEventListener('input', (e) => {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        searchQuery = e.target.value.trim();
+        loadLeaderboard();
+      }, 300);
+    });
+  }
+
+  // --- LEADERBOARD MODAL OPEN / CLOSE ---
   if (leaderboardBtn && leaderboardModal && leaderboardClose) {
     const handleOpenLeaderboard = (e) => {
       e.preventDefault();
       Sound.playToggleSound();
       openModal(leaderboardModal);
-      populateLeaderboard();
+      loadLeaderboard();
     };
 
     leaderboardBtn.addEventListener('mouseenter', () => Sound.playHoverBlip());
@@ -59,80 +95,66 @@ export function initModals() {
     }, 300);
   }
 
-  // Rellenar dinámicamente la tabla de Leaderboard con soporte persistente
-  const defaultHighscores = [
-    { name: 'ROYAL_KING', game: 'Rhythm Slice', score: 184300, verified: true },
-    { name: 'ELIXIR_KNIGHT', game: 'Spicy Challenge', score: 162900, verified: true },
-    { name: 'PIZZA_PRINCESS', game: 'Slash Slice', score: 145000, verified: false },
-    { name: 'GOBLIN_SLICE', game: 'Rhythm Slice', score: 121400, verified: true },
-    { name: 'CROWN_CHEF', game: 'Slash Slice', score: 98150, verified: false }
-  ];
-
-  function populateLeaderboard() {
+  async function loadLeaderboard() {
     const tableBody = document.getElementById('leaderboard-tbody');
+    const statusText = document.getElementById('leaderboard-api-status');
     if (!tableBody) return;
 
-    let scores = JSON.parse(localStorage.getItem('clandestine_highscores'));
-    if (!scores) {
-      scores = defaultHighscores;
-      localStorage.setItem('clandestine_highscores', JSON.stringify(scores));
+    tableBody.innerHTML = `
+      <tr>
+        <td colspan="4" class="px-4 py-8 text-center text-mafia-gold/60 font-typewriter text-xs">
+          <div class="flex items-center justify-center gap-2">
+            <span class="animate-spin inline-block w-4 h-4 border-2 border-mafia-gold border-t-transparent rounded-full"></span>
+            Cargando clasificación...
+          </div>
+        </td>
+      </tr>
+    `;
+
+    const result = await fetchLeaderboard({ game: currentGame, search: searchQuery });
+
+    if (statusText) {
+      statusText.innerHTML = result.isLive
+        ? `// CONECTADO CON SPICYCRUST API V2 🟢 // TEMPORADA ACTIVA: ${String(result.seasonName).toUpperCase()}`
+        : `// SPICYCRUST CLASIFICACIÓN // MODO PREVIEW / API SYNC 🟡`;
     }
 
-    scores.sort((a, b) => b.score - a.score);
+    if (!result.data || result.data.length === 0) {
+      tableBody.innerHTML = `
+        <tr>
+          <td colspan="4" class="px-4 py-8 text-center text-mafia-gold/50 font-typewriter text-xs">
+            No se encontraron jugadores registrados para este juego.
+          </td>
+        </tr>
+      `;
+      return;
+    }
 
-    tableBody.innerHTML = scores.map((player, idx) => `
-      <tr class="border-b border-mafia-gold/10 hover:bg-[#3d1d07]/20 transition-colors">
-        <td class="px-4 py-3 font-arcade text-xs text-center ${
-          idx === 0 ? 'text-mafia-amber' : idx === 1 ? 'text-mafia-gold' : 'text-mafia-gold/50'
-        }">${idx + 1}</td>
-        <td class="px-4 py-3 font-semibold text-provolone-cheese flex items-center gap-2">
-          ${player.name}
-          ${player.verified ? `
+    tableBody.innerHTML = result.data.map((player, idx) => {
+      const rank = player.rank ?? (idx + 1);
+      const score = Number(player.score || 0).toLocaleString();
+      const rankClass = rank === 1 ? 'text-mafia-amber font-bold text-sm' : rank === 2 ? 'text-mafia-gold font-bold' : rank === 3 ? 'text-amber-200 font-bold' : 'text-mafia-gold/50';
+      const medal = rank === 1 ? '🥇 ' : rank === 2 ? '🥈 ' : rank === 3 ? '🥉 ' : '';
+
+      return `
+        <tr class="border-b border-mafia-gold/10 hover:bg-[#3d1d07]/30 transition-colors">
+          <td class="px-4 py-3 font-arcade text-xs text-center ${rankClass}">
+            ${medal}${rank}
+          </td>
+          <td class="px-4 py-3 font-semibold text-provolone-cheese flex items-center gap-2">
+            ${player.nickname || player.name || 'JUGADOR'}
             <span class="text-[9px] bg-mafia-green/20 text-provolone-cheese px-1.5 py-0.5 rounded border border-mafia-green/40 flex items-center font-typewriter">
-              [ZK_VERIFIED]
+              [VERIFICADO]
             </span>
-          ` : ''}
-        </td>
-        <td class="px-4 py-3 text-xs text-provolone-cheese/70 font-typewriter">${player.game}</td>
-        <td class="px-4 py-3 text-right font-arcade text-xs text-mafia-amber glow-amber">${player.score.toLocaleString()}</td>
-      </tr>
-    `).join('');
-  }
-
-  // Capturar registro del formulario
-  const recordForm = document.getElementById('record-form');
-  if (recordForm) {
-    recordForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      
-      const nameInput = document.getElementById('record-name');
-      const gameInput = document.getElementById('record-game');
-      const scoreInput = document.getElementById('record-score');
-      
-      if (!nameInput || !gameInput || !scoreInput) return;
-      
-      const name = nameInput.value.toUpperCase().trim();
-      const game = gameInput.value;
-      const score = parseInt(scoreInput.value) || 0;
-      
-      if (!name || score <= 0) return;
-      
-      Sound.playInsertCoin();
-      
-      let currentScores = JSON.parse(localStorage.getItem('clandestine_highscores')) || defaultHighscores;
-      currentScores.push({ name, game, score, verified: true });
-      
-      currentScores.sort((a, b) => b.score - a.score);
-      if (currentScores.length > 8) {
-        currentScores = currentScores.slice(0, 8);
-      }
-      
-      localStorage.setItem('clandestine_highscores', JSON.stringify(currentScores));
-      
-      nameInput.value = '';
-      scoreInput.value = '';
-      
-      populateLeaderboard();
-    });
+          </td>
+          <td class="px-4 py-3 text-right font-arcade text-xs text-mafia-amber glow-amber">
+            ${score}
+          </td>
+          <td class="px-4 py-3 text-right text-[10px] text-provolone-cheese/50 font-typewriter hidden sm:table-cell">
+            ${player.created_at ? player.created_at.split('T')[0] : 'HOY'}
+          </td>
+        </tr>
+      `;
+    }).join('');
   }
 }
