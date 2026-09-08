@@ -5,58 +5,73 @@ export function initUnboxing3D(onCompleteCallback) {
   const container = document.getElementById('unboxing-canvas-container');
   if (!container) return;
 
-  // 1. Configuración Básica de la Escena 3D
+  // 1. Configuración de la Escena 3D
   const scene = new THREE.Scene();
   
-  // Cámara de perspectiva
+  // Cámara con perspectiva cinemática
   const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
-  camera.position.set(0, 4, 15);
-  camera.lookAt(0, 0, 0);
+  camera.position.set(0, 4.0, 16.0);
+  camera.lookAt(0, 0.5, 0);
 
-  // Renderizador WebGL
-  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
+  // Renderizador WebGL de alta precisión
+  const renderer = new THREE.WebGLRenderer({
+    antialias: true,
+    alpha: true,
+    powerPreference: "high-performance"
+  });
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.15;
   container.appendChild(renderer.domElement);
 
-  // 2. Iluminación Royal Tavern (Cálida antorcha, haz dorado y elixir rosa)
-  const ambientLight = new THREE.AmbientLight(0x3d1d07, 2.5); // Luz ambiental madera cálida
+  // 2. Iluminación PBR de Taberna Real
+  const ambientLight = new THREE.AmbientLight(0x2a1408, 2.8);
   scene.add(ambientLight);
 
-  // Luz direccional de cofre dorado (Haz dorado brillante)
-  const dirLight = new THREE.DirectionalLight(0xffd866, 4.5); 
-  dirLight.position.set(5, 10, 5);
+  // Antorcha dorada cenital
+  const dirLight = new THREE.DirectionalLight(0xffea9f, 4.5); 
+  dirLight.position.set(6, 12, 8);
   dirLight.castShadow = true;
   dirLight.shadow.mapSize.width = 1024;
   dirLight.shadow.mapSize.height = 1024;
+  dirLight.shadow.bias = -0.001;
   scene.add(dirLight);
 
-  // Luz de acento rosa Elixir
-  const elixirLight = new THREE.PointLight(0xf61b7f, 9, 20); 
-  elixirLight.position.set(-5, 3, 5);
+  // Luz de acento rosa Elixir de taberna
+  const elixirLight = new THREE.PointLight(0xf61b7f, 6, 25); 
+  elixirLight.position.set(-6, 4, 7);
   scene.add(elixirLight);
 
-  // Luz interna de la caja (Fuego dorado del horno real)
-  const coreLight = new THREE.PointLight(0xff9b26, 20, 15);
+  // Luz interna del horno (Brillo incandescente)
+  const coreLight = new THREE.PointLight(0xff7700, 8, 15);
   coreLight.position.set(0, 0, 0);
   scene.add(coreLight);
 
+  // Luz de haz celestial que se activa al abrir el cofre
+  const beamLight = new THREE.SpotLight(0xffdf78, 0, 30, Math.PI / 5, 0.4, 1.2);
+  beamLight.position.set(0, 8, 0);
+  beamLight.target.position.set(0, 0, 0);
+  scene.add(beamLight);
+  scene.add(beamLight.target);
+
+  // Grupo principal del cofre
   const crateGroup = new THREE.Group();
   scene.add(crateGroup);
 
-  // Ajuste responsivo de escala y encuadre para dar espacio al botón inferior
+  // Ajuste responsivo de escala y posición
   const adjustScaleForResponsive = () => {
     const aspect = window.innerWidth / window.innerHeight;
     if (aspect < 1.0) {
-      // Móvil vertical: Cesta más compacta y centrada arriba
+      // Móvil vertical
       const scaleVal = Math.min(0.68, Math.max(0.55, aspect * 0.9));
       crateGroup.scale.set(scaleVal, scaleVal, scaleVal);
       crateGroup.position.set(0, 0.8, 0);
       camera.position.set(0, 4.2, 17.5);
     } else {
-      // Escritorio panorámico: Escala 0.82 y posición elevada
+      // Pantallas anchas / Escritorio
       crateGroup.scale.set(0.82, 0.82, 0.82);
       crateGroup.position.set(0, 0.55, 0);
       camera.position.set(0, 4.0, 16.0);
@@ -64,273 +79,273 @@ export function initUnboxing3D(onCompleteCallback) {
   };
   adjustScaleForResponsive();
 
-  // Generar textura procedimental de grano de madera rústica
-  function createWoodTexture() {
+  // 3. Generación de Texturas Procedurales en Alta Resolución
+  function createPolishedWoodTexture() {
     const canvas = document.createElement('canvas');
-    canvas.width = 512;
-    canvas.height = 512;
+    canvas.width = 1024;
+    canvas.height = 1024;
     const ctx = canvas.getContext('2d');
     
-    // Color base caoba/marrón cálido medieval
-    ctx.fillStyle = '#5d3215';
-    ctx.fillRect(0, 0, 512, 512);
+    // Degradado base de caoba noble oscura
+    const grad = ctx.createLinearGradient(0, 0, 1024, 1024);
+    grad.addColorStop(0, '#4a1e0b');
+    grad.addColorStop(0.5, '#351406');
+    grad.addColorStop(1, '#230a02');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, 1024, 1024);
     
-    // Veteado oscuro de madera
-    ctx.fillStyle = '#41200b';
-    for (let i = 0; i < 40; i++) {
-      const y = Math.random() * 512;
-      const h = 8 + Math.random() * 24;
-      ctx.fillRect(0, y, 512, h);
+    // Capas de veteado de madera fina
+    ctx.fillStyle = 'rgba(28, 8, 2, 0.45)';
+    for (let i = 0; i < 60; i++) {
+      const y = Math.random() * 1024;
+      const h = 6 + Math.random() * 28;
+      ctx.fillRect(0, y, 1024, h);
     }
     
-    // Líneas de grano fino curvas
-    ctx.strokeStyle = '#291203';
-    ctx.lineWidth = 1.5;
-    for (let i = 0; i < 60; i++) {
+    // Fibras curvas orgánicas
+    ctx.strokeStyle = 'rgba(18, 5, 1, 0.6)';
+    ctx.lineWidth = 1.8;
+    for (let i = 0; i < 90; i++) {
       ctx.beginPath();
-      const y = Math.random() * 512;
+      const y = Math.random() * 1024;
       ctx.moveTo(0, y);
-      for (let x = 0; x <= 512; x += 20) {
-        const dy = Math.sin(x * 0.03 + y) * 5;
+      for (let x = 0; x <= 1024; x += 30) {
+        const dy = Math.sin(x * 0.02 + y) * 8 + Math.cos(x * 0.01) * 3;
         ctx.lineTo(x, y + dy);
       }
       ctx.stroke();
     }
     
-    // Nudos de madera (círculos concéntricos estirados)
-    ctx.strokeStyle = 'rgba(41, 18, 3, 0.4)';
-    for (let i = 0; i < 3; i++) {
-      const kx = 100 + Math.random() * 300;
-      const ky = 100 + Math.random() * 300;
-      for (let r = 5; r < 40; r += 8) {
+    // Sutiles nudos de madera
+    for (let i = 0; i < 4; i++) {
+      const kx = 150 + Math.random() * 700;
+      const ky = 150 + Math.random() * 700;
+      for (let r = 8; r < 55; r += 10) {
+        ctx.strokeStyle = `rgba(20, 6, 2, ${0.4 - (r / 150)})`;
         ctx.beginPath();
-        ctx.ellipse(kx, ky, r * 2.5, r, Math.PI / 12, 0, Math.PI * 2);
+        ctx.ellipse(kx, ky, r * 2.8, r, Math.PI / 16, 0, Math.PI * 2);
         ctx.stroke();
       }
     }
     
-    // Ruido orgánico de fibra
-    const imgData = ctx.getImageData(0, 0, 512, 512);
-    const data = imgData.data;
-    for (let i = 0; i < data.length; i += 4) {
-      const noise = (Math.random() - 0.5) * 16;
-      data[i] = Math.max(0, Math.min(255, data[i] + noise));
-      data[i+1] = Math.max(0, Math.min(255, data[i+1] + noise));
-      data[i+2] = Math.max(0, Math.min(255, data[i+2] + noise));
-    }
-    ctx.putImageData(imgData, 0, 0);
+    // Viñeteado en bordes para dar sensación de volumen biselado
+    const edgeGrad = ctx.createRadialGradient(512, 512, 350, 512, 512, 600);
+    edgeGrad.addColorStop(0, 'rgba(0,0,0,0)');
+    edgeGrad.addColorStop(1, 'rgba(0,0,0,0.5)');
+    ctx.fillStyle = edgeGrad;
+    ctx.fillRect(0, 0, 1024, 1024);
     
     const texture = new THREE.CanvasTexture(canvas);
     texture.wrapS = THREE.RepeatWrapping;
     texture.wrapT = THREE.RepeatWrapping;
-    texture.repeat.set(1, 1);
     return texture;
   }
 
-  const woodTexture = createWoodTexture();
+  const woodTexture = createPolishedWoodTexture();
 
-  // Materiales temáticos de la Pizzería Real
+  // 4. Materiales PBR Estilo Clash Fantasy
   const woodMaterial = new THREE.MeshStandardMaterial({
     map: woodTexture,
     bumpMap: woodTexture,
-    bumpScale: 0.05,
-    roughness: 0.8,
-    metalness: 0.1,
-  });
-
-  const goldMaterial = new THREE.MeshStandardMaterial({
-    color: 0xffd866,
-    emissive: 0xb8860b,
-    emissiveIntensity: 0.35,
-    metalness: 0.92,
-    roughness: 0.18
-  });
-
-  const darkIronMaterial = new THREE.MeshStandardMaterial({
-    color: 0x221a15,
-    metalness: 0.7,
-    roughness: 0.5
-  });
-
-  const crustMaterial = new THREE.MeshStandardMaterial({
-    color: 0xc87d2a,
-    roughness: 0.9,
-    metalness: 0.0
-  });
-
-  const cheeseMaterial = new THREE.MeshStandardMaterial({
-    color: 0xffb703,
-    emissive: 0x995c00,
-    emissiveIntensity: 0.2,
+    bumpScale: 0.035,
     roughness: 0.45,
     metalness: 0.05
   });
 
-  const pepperoniMaterial = new THREE.MeshStandardMaterial({
-    color: 0x9b111e,
-    emissive: 0x4a0005,
-    emissiveIntensity: 0.25,
-    roughness: 0.25,
-    metalness: 0.2
+  const royalGoldMaterial = new THREE.MeshStandardMaterial({
+    color: 0xffdf78,
+    emissive: 0x996515,
+    emissiveIntensity: 0.35,
+    metalness: 0.95,
+    roughness: 0.18
+  });
+
+  const antiqueIronMaterial = new THREE.MeshStandardMaterial({
+    color: 0x241b16,
+    metalness: 0.85,
+    roughness: 0.45
+  });
+
+  const crustMaterial = new THREE.MeshStandardMaterial({
+    color: 0xd9822b,
+    roughness: 0.85,
+    metalness: 0.02
+  });
+
+  const meltedCheeseMaterial = new THREE.MeshStandardMaterial({
+    color: 0xffb703,
+    emissive: 0xcc7a00,
+    emissiveIntensity: 0.3,
+    roughness: 0.35,
+    metalness: 0.05
+  });
+
+  const pepperoniRubyMaterial = new THREE.MeshStandardMaterial({
+    color: 0x9e0b1c,
+    emissive: 0x5e0009,
+    emissiveIntensity: 0.35,
+    roughness: 0.22,
+    metalness: 0.25
   });
 
   const basilMaterial = new THREE.MeshStandardMaterial({
     color: 0x2d862d,
-    roughness: 0.6,
+    roughness: 0.5,
     metalness: 0.0
   });
 
-  const emberGlowMaterial = new THREE.MeshStandardMaterial({
-    color: 0xff7b00,
+  const rubyGemMaterial = new THREE.MeshStandardMaterial({
+    color: 0xff1744,
+    emissive: 0xd50000,
+    emissiveIntensity: 0.8,
+    roughness: 0.1,
+    metalness: 0.9
+  });
+
+  const emberSlitMaterial = new THREE.MeshStandardMaterial({
+    color: 0xff7700,
     emissive: 0xff5500,
-    emissiveIntensity: 1.8,
+    emissiveIntensity: 2.2,
     roughness: 0.2
   });
 
-  // --- BASE DE LA CAJA (Cofre Real de Madera y Borde Metálico) ---
-  const baseGeom = new THREE.BoxGeometry(6.6, 0.9, 6.6);
+  // --- 5. ESTRUCTURA 3D DEL COFRE ---
+
+  // A. Base del Cofre
+  const baseGeom = new THREE.BoxGeometry(6.6, 0.95, 6.6);
   const baseMesh = new THREE.Mesh(baseGeom, woodMaterial);
   baseMesh.castShadow = true;
   baseMesh.receiveShadow = true;
-  baseMesh.position.y = -0.45;
+  baseMesh.position.y = -0.48;
   crateGroup.add(baseMesh);
 
-  // Cantos y ribetes de oro en la base
-  const trimGeomH = new THREE.BoxGeometry(6.65, 0.08, 0.08);
-  const trimFront = new THREE.Mesh(trimGeomH, goldMaterial);
-  trimFront.position.set(0, -0.05, 3.31);
+  // Ranuras de brasas incandescentes en la base
+  const slitGeom = new THREE.BoxGeometry(6.4, 0.04, 0.04);
+  const slitFront = new THREE.Mesh(slitGeom, emberSlitMaterial);
+  slitFront.position.set(0, -0.05, 3.31);
+  crateGroup.add(slitFront);
+
+  // Cantos y molduras de oro en la base
+  const trimGeom = new THREE.BoxGeometry(6.66, 0.1, 0.1);
+  const trimFront = new THREE.Mesh(trimGeom, royalGoldMaterial);
+  trimFront.position.set(0, -0.05, 3.32);
   crateGroup.add(trimFront);
 
-  const trimBack = new THREE.Mesh(trimGeomH, goldMaterial);
-  trimBack.position.set(0, -0.05, -3.31);
+  const trimBack = new THREE.Mesh(trimGeom, royalGoldMaterial);
+  trimBack.position.set(0, -0.05, -3.32);
   crateGroup.add(trimBack);
 
-  // --- PIZZA 3D INTERIOR (Revelada al abrir la caja) ---
-  const pizzaGroup = new THREE.Group();
-  pizzaGroup.position.set(0, -0.15, 0);
-  crateGroup.add(pizzaGroup);
-
-  // Masa y corteza de la pizza
-  const pizzaDoughGeom = new THREE.CylinderGeometry(2.45, 2.5, 0.18, 32);
-  const pizzaDough = new THREE.Mesh(pizzaDoughGeom, crustMaterial);
-  pizzaGroup.add(pizzaDough);
-
-  const pizzaCrustRingGeom = new THREE.TorusGeometry(2.35, 0.14, 10, 32);
-  const pizzaCrustRing = new THREE.Mesh(pizzaCrustRingGeom, crustMaterial);
-  pizzaCrustRing.rotation.x = Math.PI / 2;
-  pizzaCrustRing.position.y = 0.08;
-  pizzaGroup.add(pizzaCrustRing);
-
-  // Capa de queso fundido brillante
-  const pizzaCheeseGeom = new THREE.CylinderGeometry(2.32, 2.32, 0.06, 32);
-  const pizzaCheese = new THREE.Mesh(pizzaCheeseGeom, cheeseMaterial);
-  pizzaCheese.position.y = 0.1;
-  pizzaGroup.add(pizzaCheese);
-
-  // Rodajas de Pepperoni en la pizza interior
-  const pepGeom = new THREE.CylinderGeometry(0.35, 0.35, 0.04, 16);
-  for (let i = 0; i < 7; i++) {
-    const angle = (i / 7) * Math.PI * 2;
-    const rad = 1.4;
-    const pep = new THREE.Mesh(pepGeom, pepperoniMaterial);
-    pep.position.set(Math.cos(angle) * rad, 0.13, Math.sin(angle) * rad);
-    pizzaGroup.add(pep);
-  }
-  // Pepperoni central
-  const centerPep = new THREE.Mesh(pepGeom, pepperoniMaterial);
-  centerPep.position.set(0, 0.13, 0);
-  pizzaGroup.add(centerPep);
-
-  // --- TAPA DE LA CAJA REAL ---
+  // B. Tapa del Cofre con Pivote Posterior
   const lidPivot = new THREE.Group();
   lidPivot.position.set(0, 0, -3.3);
   crateGroup.add(lidPivot);
 
-  const lidGeom = new THREE.BoxGeometry(6.6, 0.22, 6.6);
+  const lidGeom = new THREE.BoxGeometry(6.6, 0.24, 6.6);
   const lidMesh = new THREE.Mesh(lidGeom, woodMaterial);
   lidMesh.castShadow = true;
-  lidMesh.position.set(0, 0.11, 3.3);
+  lidMesh.position.set(0, 0.12, 3.3);
   lidPivot.add(lidMesh);
 
-  // Ribetes dorados en los bordes de la tapa
-  const lidBorderGeomX = new THREE.BoxGeometry(6.64, 0.06, 0.08);
-  const lidBorderGeomZ = new THREE.BoxGeometry(0.08, 0.06, 6.64);
+  // Marcos biselados de oro en los bordes de la tapa
+  const lidBorderX = new THREE.BoxGeometry(6.64, 0.06, 0.08);
+  const lidBorderZ = new THREE.BoxGeometry(0.08, 0.06, 6.64);
   
-  const lidFrontBorder = new THREE.Mesh(lidBorderGeomX, goldMaterial);
-  lidFrontBorder.position.set(0, 0.22, 6.6);
-  lidPivot.add(lidFrontBorder);
+  const borderFront = new THREE.Mesh(lidBorderX, royalGoldMaterial);
+  borderFront.position.set(0, 0.23, 6.6);
+  lidPivot.add(borderFront);
 
-  const lidLeftBorder = new THREE.Mesh(lidBorderGeomZ, goldMaterial);
-  lidLeftBorder.position.set(-3.3, 0.22, 3.3);
-  lidPivot.add(lidLeftBorder);
+  const borderLeft = new THREE.Mesh(lidBorderZ, royalGoldMaterial);
+  borderLeft.position.set(-3.3, 0.23, 3.3);
+  lidPivot.add(borderLeft);
 
-  const lidRightBorder = new THREE.Mesh(lidBorderGeomZ, goldMaterial);
-  lidRightBorder.position.set(3.3, 0.22, 3.3);
-  lidPivot.add(lidRightBorder);
+  const borderRight = new THREE.Mesh(lidBorderZ, royalGoldMaterial);
+  borderRight.position.set(3.3, 0.23, 3.3);
+  lidPivot.add(borderRight);
 
-  // --- ESCUDO / MEDALLÓN DE PIZZA REAL EN LA TAPA ---
+  // --- 6. ESCUDO DE ARMAS REAL DE PIZZA (MEDALLÓN CENTRAL) ---
   const emblemGroup = new THREE.Group();
-  emblemGroup.position.set(0, 0.24, 3.3);
+  emblemGroup.position.set(0, 0.25, 3.3);
   lidPivot.add(emblemGroup);
 
-  // Base circular del medallón en oro
-  const medallionBaseGeom = new THREE.CylinderGeometry(2.0, 2.05, 0.06, 32);
-  const medallionBase = new THREE.Mesh(medallionBaseGeom, goldMaterial);
+  // Base circular de oro bruñido con bisel
+  const medallionBaseGeom = new THREE.CylinderGeometry(2.1, 2.15, 0.08, 36);
+  const medallionBase = new THREE.Mesh(medallionBaseGeom, royalGoldMaterial);
   emblemGroup.add(medallionBase);
 
-  // Aro interior oscuro de hierro/madera noble
-  const medallionInnerGeom = new THREE.CylinderGeometry(1.85, 1.85, 0.08, 32);
-  const medallionInner = new THREE.Mesh(medallionInnerGeom, darkIronMaterial);
+  // Corona de laureles / tachones de oro alrededor del medallón
+  const laurelCount = 18;
+  const laurelGeom = new THREE.SphereGeometry(0.08, 8, 8);
+  for (let i = 0; i < laurelCount; i++) {
+    const angle = (i / laurelCount) * Math.PI * 2;
+    const laurel = new THREE.Mesh(laurelGeom, royalGoldMaterial);
+    laurel.position.set(Math.cos(angle) * 1.95, 0.05, Math.sin(angle) * 1.95);
+    emblemGroup.add(laurel);
+  }
+
+  // Núcleo de hierro oscuro grabado
+  const medallionInnerGeom = new THREE.CylinderGeometry(1.78, 1.78, 0.1, 36);
+  const medallionInner = new THREE.Mesh(medallionInnerGeom, antiqueIronMaterial);
   emblemGroup.add(medallionInner);
 
-  // Rebanada de Pizza 3D estilizada en el centro del medallón
-  const sliceCheeseGeom = new THREE.CylinderGeometry(1.4, 1.4, 0.09, 3); // Cuña triangular
-  const sliceCheeseMesh = new THREE.Mesh(sliceCheeseGeom, cheeseMaterial);
-  sliceCheeseMesh.rotation.y = Math.PI;
-  sliceCheeseMesh.position.set(0, 0.08, 0.15);
-  emblemGroup.add(sliceCheeseMesh);
+  // Rebanada de Pizza 3D con curvatura y volumen
+  const sliceGroup = new THREE.Group();
+  sliceGroup.position.set(0, 0.06, 0.1);
+  emblemGroup.add(sliceGroup);
 
-  // Borde de masa crujiente de la rebanada
-  const sliceCrustGeom = new THREE.BoxGeometry(1.8, 0.14, 0.32);
-  const sliceCrustMesh = new THREE.Mesh(sliceCrustGeom, crustMaterial);
-  sliceCrustMesh.position.set(0, 0.12, -0.6);
-  emblemGroup.add(sliceCrustMesh);
+  // Masa y queso fundido triangular
+  const sliceGeom = new THREE.CylinderGeometry(1.35, 1.35, 0.11, 3);
+  const sliceMesh = new THREE.Mesh(sliceGeom, meltedCheeseMaterial);
+  sliceMesh.rotation.y = Math.PI;
+  sliceGroup.add(sliceMesh);
 
-  // Pepperonis en la rebanada del escudo
-  const emblemPepGeom = new THREE.CylinderGeometry(0.24, 0.24, 0.04, 16);
-  const emblemPep1 = new THREE.Mesh(emblemPepGeom, pepperoniMaterial);
-  emblemPep1.position.set(-0.35, 0.14, -0.2);
-  emblemGroup.add(emblemPep1);
+  // Masa crujiente arqueada en la base superior
+  const crustGeom = new THREE.BoxGeometry(1.75, 0.16, 0.32);
+  const crustMesh = new THREE.Mesh(crustGeom, crustMaterial);
+  crustMesh.position.set(0, 0.04, -0.58);
+  sliceGroup.add(crustMesh);
 
-  const emblemPep2 = new THREE.Mesh(emblemPepGeom, pepperoniMaterial);
-  emblemPep2.position.set(0.35, 0.14, -0.2);
-  emblemGroup.add(emblemPep2);
+  // Rodajas de pepperoni rubí con brillo
+  const pepGeom = new THREE.CylinderGeometry(0.22, 0.22, 0.05, 16);
+  
+  const pep1 = new THREE.Mesh(pepGeom, pepperoniRubyMaterial);
+  pep1.position.set(-0.32, 0.07, -0.22);
+  sliceGroup.add(pep1);
 
-  const emblemPep3 = new THREE.Mesh(emblemPepGeom, pepperoniMaterial);
-  emblemPep3.position.set(0, 0.14, 0.35);
-  emblemGroup.add(emblemPep3);
+  const pep2 = new THREE.Mesh(pepGeom, pepperoniRubyMaterial);
+  pep2.position.set(0.32, 0.07, -0.22);
+  sliceGroup.add(pep2);
+
+  const pep3 = new THREE.Mesh(pepGeom, pepperoniRubyMaterial);
+  pep3.position.set(0, 0.07, 0.32);
+  sliceGroup.add(pep3);
 
   // Hojas de albahaca fresca
-  const basilGeom = new THREE.BoxGeometry(0.18, 0.03, 0.28);
+  const basilGeom = new THREE.BoxGeometry(0.16, 0.03, 0.25);
   const basil1 = new THREE.Mesh(basilGeom, basilMaterial);
-  basil1.rotation.y = 0.5;
-  basil1.position.set(0.15, 0.14, 0.05);
-  emblemGroup.add(basil1);
+  basil1.rotation.y = 0.6;
+  basil1.position.set(0.12, 0.07, 0.05);
+  sliceGroup.add(basil1);
 
-  // Corona Real en Oro macizo coronando la rebanada
-  const crownGeom = new THREE.CylinderGeometry(0.55, 0.42, 0.3, 5);
-  const crownMesh = new THREE.Mesh(crownGeom, goldMaterial);
-  crownMesh.position.set(0, 0.25, -0.65);
-  emblemGroup.add(crownMesh);
+  // Corona Imperial de 5 puntas sobre la rebanada
+  const crownGroup = new THREE.Group();
+  crownGroup.position.set(0, 0.18, -0.65);
+  sliceGroup.add(crownGroup);
 
-  // Joya de rubí en la corona
-  const jewelGeom = new THREE.SphereGeometry(0.1, 8, 8);
-  const jewelMesh = new THREE.Mesh(jewelGeom, pepperoniMaterial);
-  jewelMesh.position.set(0, 0.38, -0.65);
-  emblemGroup.add(jewelMesh);
+  const crownBaseGeom = new THREE.CylinderGeometry(0.55, 0.42, 0.25, 5);
+  const crownMesh = new THREE.Mesh(crownBaseGeom, royalGoldMaterial);
+  crownGroup.add(crownMesh);
 
-  // --- HERRAJES Y REMACHES EN LAS ESQUINAS ---
-  const bracketGeom = new THREE.BoxGeometry(0.7, 0.05, 0.7);
+  // 5 Gemas de Rubí en las puntas de la corona
+  const gemGeom = new THREE.SphereGeometry(0.08, 8, 8);
+  for (let i = 0; i < 5; i++) {
+    const angle = (i / 5) * Math.PI * 2;
+    const gem = new THREE.Mesh(gemGeom, rubyGemMaterial);
+    gem.position.set(Math.cos(angle) * 0.48, 0.14, Math.sin(angle) * 0.48);
+    crownGroup.add(gem);
+  }
+
+  // --- 7. HERRAJES DE ESQUINA Y CERROJO ---
+  const bracketGeom = new THREE.BoxGeometry(0.75, 0.06, 0.75);
   const cornerPositions = [
     [-3.0, 0.24, 0.3],
     [3.0, 0.24, 0.3],
@@ -339,36 +354,122 @@ export function initUnboxing3D(onCompleteCallback) {
   ];
 
   cornerPositions.forEach(pos => {
-    const bracket = new THREE.Mesh(bracketGeom, goldMaterial);
+    const bracket = new THREE.Mesh(bracketGeom, royalGoldMaterial);
     bracket.position.set(pos[0], pos[1], pos[2]);
     lidPivot.add(bracket);
 
-    const rivetGeom = new THREE.CylinderGeometry(0.08, 0.08, 0.06, 8);
-    const rivet = new THREE.Mesh(rivetGeom, darkIronMaterial);
+    const rivetGeom = new THREE.CylinderGeometry(0.07, 0.07, 0.06, 8);
+    const rivet = new THREE.Mesh(rivetGeom, antiqueIronMaterial);
     rivet.position.set(pos[0], pos[1] + 0.04, pos[2]);
     lidPivot.add(rivet);
   });
 
-  // Cerradura dorada y picaporte en el frente
-  const lockGeom = new THREE.BoxGeometry(0.8, 0.28, 0.18);
-  const lockIndicator = new THREE.Mesh(lockGeom, goldMaterial);
-  lockIndicator.position.set(0, 0.05, 6.68);
-  lidPivot.add(lockIndicator);
+  // Cerrojo frontal con picaporte y bocallave
+  const lockPivot = new THREE.Group();
+  lockPivot.position.set(0, 0.05, 6.68);
+  lidPivot.add(lockPivot);
+
+  const lockGeom = new THREE.BoxGeometry(0.85, 0.3, 0.18);
+  const lockMesh = new THREE.Mesh(lockGeom, royalGoldMaterial);
+  lockPivot.add(lockMesh);
 
   const keyholeGeom = new THREE.BoxGeometry(0.12, 0.16, 0.04);
-  const keyhole = new THREE.Mesh(keyholeGeom, darkIronMaterial);
-  keyhole.position.set(0, 0.05, 6.78);
-  lidPivot.add(keyhole);
+  const keyhole = new THREE.Mesh(keyholeGeom, antiqueIronMaterial);
+  keyhole.position.set(0, 0, 0.1);
+  lockPivot.add(keyhole);
 
-  // 4. Sistema de Vapor/Criogénico (Humo Mágico Elixir Rosa)
+  // --- 8. PIZZA LEGENDARIA FLOTANTE INTERIOR ---
+  const floatingPizza = new THREE.Group();
+  floatingPizza.position.set(0, -0.15, 0);
+  crateGroup.add(floatingPizza);
+
+  // Masa y corteza redonda de la pizza
+  const pizzaDoughGeom = new THREE.CylinderGeometry(2.5, 2.55, 0.18, 36);
+  const pizzaDough = new THREE.Mesh(pizzaDoughGeom, crustMaterial);
+  floatingPizza.add(pizzaDough);
+
+  const pizzaCrustRingGeom = new THREE.TorusGeometry(2.4, 0.15, 12, 36);
+  const pizzaCrustRing = new THREE.Mesh(pizzaCrustRingGeom, crustMaterial);
+  pizzaCrustRing.rotation.x = Math.PI / 2;
+  pizzaCrustRing.position.y = 0.09;
+  floatingPizza.add(pizzaCrustRing);
+
+  // Capa de queso fundido brillante
+  const pizzaCheeseGeom = new THREE.CylinderGeometry(2.36, 2.36, 0.07, 36);
+  const pizzaCheese = new THREE.Mesh(pizzaCheeseGeom, meltedCheeseMaterial);
+  pizzaCheese.position.y = 0.1;
+  floatingPizza.add(pizzaCheese);
+
+  // Rodajas de Pepperoni en círculo
+  const innerPepGeom = new THREE.CylinderGeometry(0.36, 0.36, 0.04, 16);
+  for (let i = 0; i < 8; i++) {
+    const angle = (i / 8) * Math.PI * 2;
+    const pep = new THREE.Mesh(innerPepGeom, pepperoniRubyMaterial);
+    pep.position.set(Math.cos(angle) * 1.45, 0.14, Math.sin(angle) * 1.45);
+    floatingPizza.add(pep);
+  }
+  const centerPep = new THREE.Mesh(innerPepGeom, pepperoniRubyMaterial);
+  centerPep.position.set(0, 0.14, 0);
+  floatingPizza.add(centerPep);
+
+  // --- 9. SISTEMA DE PARTÍCULAS: BRASAS DORADAS Y VAPOR ---
+  
+  // A. Brasas flotantes doradas orgánicas
+  const emberCount = 55;
+  const emberGeo = new THREE.BufferGeometry();
+  const emberPositions = new Float32Array(emberCount * 3);
+  const emberVelocities = [];
+
+  for (let i = 0; i < emberCount; i++) {
+    emberPositions[i * 3] = (Math.random() - 0.5) * 14;
+    emberPositions[i * 3 + 1] = (Math.random() - 0.5) * 10;
+    emberPositions[i * 3 + 2] = (Math.random() - 0.5) * 10;
+
+    emberVelocities.push({
+      vx: (Math.random() - 0.5) * 0.008,
+      vy: 0.015 + Math.random() * 0.02,
+      vz: (Math.random() - 0.5) * 0.008,
+      phase: Math.random() * Math.PI * 2
+    });
+  }
+
+  emberGeo.setAttribute('position', new THREE.BufferAttribute(emberPositions, 3));
+
+  function createSparkTexture() {
+    const canvas = document.createElement('canvas');
+    canvas.width = 32;
+    canvas.height = 32;
+    const ctx = canvas.getContext('2d');
+    const grad = ctx.createRadialGradient(16, 16, 0, 16, 16, 16);
+    grad.addColorStop(0, 'rgba(255, 235, 140, 1)');
+    grad.addColorStop(0.3, 'rgba(255, 160, 40, 0.8)');
+    grad.addColorStop(0.8, 'rgba(246, 27, 127, 0.2)');
+    grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, 32, 32);
+    return new THREE.CanvasTexture(canvas);
+  }
+
+  const emberMat = new THREE.PointsMaterial({
+    size: 0.45,
+    map: createSparkTexture(),
+    transparent: true,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false
+  });
+
+  const emberPoints = new THREE.Points(emberGeo, emberMat);
+  scene.add(emberPoints);
+
+  // B. Vapor cálido caliente
   const steamParticles = [];
-  const steamCount = 35;
+  const steamCount = 30;
   const steamGroup = new THREE.Group();
   scene.add(steamGroup);
 
   const steamGeo = new THREE.SphereGeometry(0.2, 5, 5);
   const steamMat = new THREE.MeshBasicMaterial({
-    color: 0xf61b7f, // Elixir Pink
+    color: 0xffd866,
     transparent: true,
     opacity: 0
   });
@@ -382,79 +483,55 @@ export function initUnboxing3D(onCompleteCallback) {
 
   function resetSteamParticle(p) {
     const angle = Math.random() * Math.PI * 2;
-    const radius = 3.2 + Math.random() * 0.4;
-    p.position.set(Math.cos(angle) * radius, 0, Math.sin(angle) * radius);
-    
+    const radius = 3.0 + Math.random() * 0.5;
+    p.position.set(Math.cos(angle) * radius, -0.2, Math.sin(angle) * radius);
     p.userData = {
-      speedY: 0.02 + Math.random() * 0.03,
+      speedY: 0.015 + Math.random() * 0.025,
       speedX: (Math.random() - 0.5) * 0.01,
       speedZ: (Math.random() - 0.5) * 0.01,
-      growth: 1.01 + Math.random() * 0.01,
-      maxLife: 80 + Math.random() * 80,
+      growth: 1.015,
+      maxLife: 70 + Math.random() * 60,
       life: 0
     };
     p.scale.set(1, 1, 1);
     p.material.opacity = 0;
   }
 
-  // 5. Sistema de Partículas Explosivas (Gold & Elixir Spark Blast)
+  // C. Explosión de chispas de cerrojo
   let explosionParticles = null;
-  const sparkCount = 150;
+  const blastCount = 120;
   let explosionActive = false;
-  let explosionProgress = 0;
 
-  function createNeonExplosion() {
+  function triggerLockBlast() {
     const geom = new THREE.BufferGeometry();
-    const positions = new Float32Array(sparkCount * 3);
-    const velocities = [];
-    const colors = new Float32Array(sparkCount * 3);
-    
-    const palette = [
-      new THREE.Color(0xffd866), // Oro Real
-      new THREE.Color(0xf61b7f), // Elixir Pink
-      new THREE.Color(0xff9b26), // Fuego Naranja
-      new THREE.Color(0xffffff)  // Destello Blanco
-    ];
+    const posArray = new Float32Array(blastCount * 3);
+    const velArray = [];
+    const colorArray = new Float32Array(blastCount * 3);
 
-    for (let i = 0; i < sparkCount; i++) {
-      positions[i * 3] = 0;
-      positions[i * 3 + 1] = 0.3;
-      positions[i * 3 + 2] = 0;
+    for (let i = 0; i < blastCount; i++) {
+      posArray[i * 3] = 0;
+      posArray[i * 3 + 1] = 0.1;
+      posArray[i * 3 + 2] = 3.4;
 
-      const theta = Math.random() * Math.PI * 2;
-      const phi = Math.acos((Math.random() * 2) - 1);
-      const speed = 0.15 + Math.random() * 0.25;
-
-      velocities.push({
-        x: Math.sin(phi) * Math.cos(theta) * speed,
-        y: Math.abs(Math.sin(phi) * Math.sin(theta)) * speed + 0.1,
-        z: Math.cos(phi) * speed
+      const angle = Math.random() * Math.PI * 2;
+      const speed = 0.15 + Math.random() * 0.35;
+      velArray.push({
+        x: Math.cos(angle) * speed,
+        y: Math.sin(angle) * speed + 0.15,
+        z: 0.2 + Math.random() * 0.3
       });
 
-      const col = palette[Math.floor(Math.random() * palette.length)];
-      colors[i * 3] = col.r;
-      colors[i * 3 + 1] = col.g;
-      colors[i * 3 + 2] = col.b;
+      colorArray[i * 3] = 1.0;
+      colorArray[i * 3 + 1] = 0.8 + Math.random() * 0.2;
+      colorArray[i * 3 + 2] = 0.2;
     }
 
-    geom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    geom.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-
-    const canvas = document.createElement('canvas');
-    canvas.width = 16;
-    canvas.height = 16;
-    const ctx = canvas.getContext('2d');
-    const grad = ctx.createRadialGradient(8, 8, 0, 8, 8, 8);
-    grad.addColorStop(0, 'rgba(255,255,255,1)');
-    grad.addColorStop(1, 'rgba(255,255,255,0)');
-    ctx.fillStyle = grad;
-    ctx.fillRect(0, 0, 16, 16);
-    
-    const pTexture = new THREE.CanvasTexture(canvas);
+    geom.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+    geom.setAttribute('color', new THREE.BufferAttribute(colorArray, 3));
 
     const mat = new THREE.PointsMaterial({
-      size: 0.5,
-      map: pTexture,
+      size: 0.6,
+      map: createSparkTexture(),
       transparent: true,
       blending: THREE.AdditiveBlending,
       vertexColors: true,
@@ -462,12 +539,12 @@ export function initUnboxing3D(onCompleteCallback) {
     });
 
     explosionParticles = new THREE.Points(geom, mat);
+    explosionParticles.userData = { velocities: velArray };
     scene.add(explosionParticles);
-    explosionParticles.userData = { velocities };
     explosionActive = true;
   }
 
-  // 6. Interactividad y Arrastre Táctil
+  // --- 10. INTERACTIVIDAD Y SEGUIMIENTO DEL MOUSE ---
   let mouseX = 0;
   let mouseY = 0;
   let targetRotX = 0.35;
@@ -484,32 +561,28 @@ export function initUnboxing3D(onCompleteCallback) {
   });
 
   let isDragging = false;
-  let previousTouchX = 0;
-  let previousTouchY = 0;
+  let prevTouchX = 0;
+  let prevTouchY = 0;
 
   window.addEventListener('touchstart', (e) => {
     if (e.touches.length === 1 && !unboxingStarted) {
       isDragging = true;
-      previousTouchX = e.touches[0].clientX;
-      previousTouchY = e.touches[0].clientY;
+      prevTouchX = e.touches[0].clientX;
+      prevTouchY = e.touches[0].clientY;
     }
   }, { passive: true });
 
   window.addEventListener('touchmove', (e) => {
     if (isDragging && e.touches.length === 1 && !unboxingStarted) {
-      const touchX = e.touches[0].clientX;
-      const touchY = e.touches[0].clientY;
-      
-      const deltaX = touchX - previousTouchX;
-      const deltaY = touchY - previousTouchY;
+      const deltaX = e.touches[0].clientX - prevTouchX;
+      const deltaY = e.touches[0].clientY - prevTouchY;
       
       targetRotY += deltaX * 0.007;
       targetRotX += deltaY * 0.007;
+      targetRotX = Math.max(-0.2, Math.min(1.1, targetRotX));
       
-      targetRotX = Math.max(-0.2, Math.min(1.2, targetRotX));
-      
-      previousTouchX = touchX;
-      previousTouchY = touchY;
+      prevTouchX = e.touches[0].clientX;
+      prevTouchY = e.touches[0].clientY;
     }
   }, { passive: true });
 
@@ -517,22 +590,23 @@ export function initUnboxing3D(onCompleteCallback) {
     isDragging = false;
   });
 
-  // 7. Lógica de Transición (Clic en botón de unboxing)
+  // --- 11. SECUENCIA CINEMÁTICA DE APERTURA (CLASH UNBOXING) ---
   const openButton = document.getElementById('open-box-btn');
   let unboxingStarted = false;
+  let animTime = 0;
   let lidAngle = 0;
   let cameraShake = 0;
-  let fadeProgress = 0;
+  let pizzaAscendProgress = 0;
 
   if (openButton) {
-    openButton.addEventListener('mouseenter', () => {
-      Sound.playHoverBlip();
-    });
+    openButton.addEventListener('mouseenter', () => Sound.playHoverBlip());
 
     openButton.addEventListener('click', () => {
       if (unboxingStarted) return;
       unboxingStarted = true;
-      
+
+      // Desvanecer botón y textos
+      openButton.style.transition = 'all 0.3s ease';
       openButton.style.transform = 'scale(0) rotate(15deg)';
       openButton.style.opacity = '0';
       
@@ -542,20 +616,21 @@ export function initUnboxing3D(onCompleteCallback) {
         unboxingText.style.transform = 'translateY(-20px)';
       }
 
+      // Reproducir sonido de apertura
       Sound.playUnboxingSound();
-      cameraShake = 0.8;
       
-      setTimeout(() => {
-        createNeonExplosion();
-      }, 100);
-      
+      // Fase 1: Salto de cerrojo y temblor
+      triggerLockBlast();
+      lockPivot.position.z += 0.8;
+      lockPivot.rotation.x = 0.5;
+
       setTimeout(() => {
         Sound.toggleMusic(true);
-      }, 800);
+      }, 700);
     });
   }
 
-  // 8. Bucle de Animación
+  // --- 12. BUCLE DE RENDERIZADO Y ANIMACIÓN ---
   let active = true;
   let lastTime = performance.now();
 
@@ -567,101 +642,100 @@ export function initUnboxing3D(onCompleteCallback) {
     const delta = (now - lastTime) / 1000;
     lastTime = now;
 
-    // --- A. Rotación con suavizado ---
+    // A. Rotación suave con inercia
     crateGroup.rotation.y += (targetRotY - crateGroup.rotation.y) * 0.08;
     crateGroup.rotation.x += (targetRotX - crateGroup.rotation.x) * 0.08;
 
-    // --- B. Simulación de Vapor ---
+    // B. Animación de brasas doradas flotantes
+    const pos = emberGeo.attributes.position.array;
+    for (let i = 0; i < emberCount; i++) {
+      const v = emberVelocities[i];
+      pos[i * 3 + 1] += v.vy;
+      pos[i * 3] += v.vx + Math.sin(now * 0.002 + v.phase) * 0.005;
+      
+      // Reiniciar si sube demasiado
+      if (pos[i * 3 + 1] > 8) {
+        pos[i * 3 + 1] = -6;
+        pos[i * 3] = (Math.random() - 0.5) * 14;
+        pos[i * 3 + 2] = (Math.random() - 0.5) * 10;
+      }
+    }
+    emberGeo.attributes.position.needsUpdate = true;
+
+    // C. Animación de vapor
     steamParticles.forEach(p => {
       p.position.y += p.userData.speedY;
       p.position.x += p.userData.speedX;
-      p.position.z += p.userData.speedZ;
       p.scale.multiplyScalar(p.userData.growth);
       p.userData.life += 1;
 
-      const agePercent = p.userData.life / p.userData.maxLife;
-      if (agePercent < 0.2) {
-        p.material.opacity = (agePercent / 0.2) * 0.35;
-      } else {
-        p.material.opacity = (1 - agePercent) * 0.35;
-      }
-
-      // Parpadeo de colores del vapor criogénico helado en tonos oro y elixir
-      if (Math.random() > 0.85) {
-        const rand = Math.random();
-        if (rand < 0.4) {
-          p.material.color.setHex(0xffd866); // Brillo oro
-        } else if (rand < 0.8) {
-          p.material.color.setHex(0xf61b7f); // Brillo elixir
-        } else {
-          p.material.color.setHex(0xffffff); // Blanco puro
-        }
-      }
+      const age = p.userData.life / p.userData.maxLife;
+      p.material.opacity = age < 0.2 ? (age / 0.2) * 0.25 : (1 - age) * 0.25;
 
       if (p.userData.life >= p.userData.maxLife) {
         resetSteamParticle(p);
       }
     });
 
-    // --- C. Animación de apertura ---
+    // D. Chispas de la explosión del cerrojo
+    if (explosionActive && explosionParticles) {
+      const pArr = explosionParticles.geometry.attributes.position.array;
+      const vArr = explosionParticles.userData.velocities;
+      for (let i = 0; i < blastCount; i++) {
+        pArr[i * 3] += vArr[i].x;
+        pArr[i * 3 + 1] += vArr[i].y;
+        pArr[i * 3 + 2] += vArr[i].z;
+        vArr[i].y -= 0.008;
+      }
+      explosionParticles.geometry.attributes.position.needsUpdate = true;
+      explosionParticles.material.size *= 0.98;
+    }
+
+    // E. Secuencia de Unboxing Activa
     if (unboxingStarted) {
-      if (lidAngle < Math.PI * 0.75) {
-        lidAngle += (Math.PI * 0.75 - lidAngle) * 0.08 + 0.005;
-        lidPivot.rotation.x = -lidAngle;
-      }
+      animTime += delta;
 
-      crateGroup.rotation.y += 0.04;
-      crateGroup.rotation.z += 0.01;
+      // Fase 1: Temblor de anticipación (0 - 0.35s)
+      if (animTime < 0.35) {
+        cameraShake = 0.5;
+        coreLight.intensity = 15 + Math.sin(animTime * 40) * 10;
+      }
       
-      if (crateGroup.scale.x > 0.05) {
-        crateGroup.scale.multiplyScalar(0.965);
-      }
-
-      coreLight.intensity += 0.5;
-
-      steamGroup.position.y += 0.05;
-      steamGroup.scale.multiplyScalar(0.97);
-
-      // --- D. Animación de la Explosión ---
-      if (explosionActive && explosionParticles) {
-        const positions = explosionParticles.geometry.attributes.position.array;
-        const velocities = explosionParticles.userData.velocities;
-        
-        for (let i = 0; i < sparkCount; i++) {
-          positions[i * 3] += velocities[i].x;
-          positions[i * 3 + 1] += velocities[i].y;
-          positions[i * 3 + 2] += velocities[i].z;
-          
-          velocities[i].y -= 0.004;
-          velocities[i].x *= 0.98;
-          velocities[i].y *= 0.98;
-          velocities[i].z *= 0.98;
+      // Fase 2: Apertura de la Tapa y Haz de Luz (0.35s+)
+      if (animTime >= 0.35) {
+        if (lidAngle < Math.PI * 0.7) {
+          lidAngle += (Math.PI * 0.7 - lidAngle) * 0.12 + 0.005;
+          lidPivot.rotation.x = -lidAngle;
         }
-        explosionParticles.geometry.attributes.position.needsUpdate = true;
-        explosionParticles.material.size *= 0.975;
+
+        beamLight.intensity = Math.min(12, beamLight.intensity + 0.6);
+        coreLight.intensity = Math.min(30, coreLight.intensity + 1.2);
         
-        explosionProgress += delta;
-        if (explosionProgress > 1.8) {
-          scene.remove(explosionParticles);
-          explosionParticles = null;
-          explosionActive = false;
+        // Fase 3: Pizza Flotante que asciende
+        if (pizzaAscendProgress < 1.0) {
+          pizzaAscendProgress += delta * 0.9;
+          const easeY = Math.sin(pizzaAscendProgress * Math.PI / 2);
+          floatingPizza.position.y = -0.15 + easeY * 2.2;
+          floatingPizza.rotation.y += 0.05;
+          floatingPizza.rotation.x = easeY * 0.3;
+          floatingPizza.scale.setScalar(1.0 + easeY * 0.25);
+        } else {
+          floatingPizza.rotation.y += 0.03;
         }
       }
 
-      // --- E. Temblor de cámara ---
+      // Temblor de cámara
       if (cameraShake > 0.01) {
         camera.position.x = (Math.random() - 0.5) * cameraShake;
-        camera.position.y = 4 + (Math.random() - 0.5) * cameraShake;
-        cameraShake *= 0.92;
+        camera.position.y = 4.0 + (Math.random() - 0.5) * cameraShake;
+        cameraShake *= 0.9;
       } else {
         camera.position.x = 0;
-        camera.position.y = 4;
+        camera.position.y = 4.0;
       }
 
-      // --- F. Fundido a negro y Dashboard ---
-      fadeProgress += delta;
-      
-      if (fadeProgress > 0.9) {
+      // Fase 4: Fundido y Transición al Dashboard (1.8s+)
+      if (animTime > 1.8) {
         const overlay = document.getElementById('unboxing-overlay');
         if (overlay && !overlay.classList.contains('fade-out-triggered')) {
           overlay.classList.add('fade-out-triggered');
@@ -681,12 +755,10 @@ export function initUnboxing3D(onCompleteCallback) {
             overlay.style.display = 'none';
             if (onCompleteCallback) onCompleteCallback();
             
-            // Forzar la pérdida de contexto para liberar recursos en móviles
+            // Liberar memoria WebGL
             const gl = renderer.getContext();
             const extension = gl ? gl.getExtension('WEBGL_lose_context') : null;
-            if (extension) {
-              extension.loseContext();
-            }
+            if (extension) extension.loseContext();
             renderer.dispose();
             container.innerHTML = '';
           }, 1250);
