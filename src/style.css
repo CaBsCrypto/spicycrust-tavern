@@ -338,4 +338,12 @@ nav a:hover {
   text-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
 }
 
+/* ── Cabinet 3D: Golden Glow Hover Effect ── */
+.cabinet-glow {
+  filter: drop-shadow(0 0 18px rgba(255, 216, 102, 0.55))
+          drop-shadow(0 0 36px rgba(255, 140, 20, 0.30));
+  transition: filter 0.35s ease;
+}
+
+
 

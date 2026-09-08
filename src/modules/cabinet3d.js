@@ -220,6 +220,7 @@ export function initCabinet3D() {
       targetLightIntensity = 6.0;
 
       Games.hoverStates[gameKey] = true;
+      container.classList.add('cabinet-glow');
     });
 
     container.addEventListener('mouseleave', () => {
@@ -229,6 +230,7 @@ export function initCabinet3D() {
       targetLightIntensity = 1.5;
 
       Games.hoverStates[gameKey] = false;
+      container.classList.remove('cabinet-glow');
     });
 
     cabinets.push({
