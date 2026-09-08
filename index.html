@@ -88,6 +88,20 @@
             "@type": "Organization",
             "name": "SpicyCrust Labs"
           }
+        },
+        {
+          "@type": "VideoGame",
+          "name": "Smash The Crust",
+          "genre": "Arcade Action / Whack-a-Mole",
+          "playMode": "SinglePlayer",
+          "applicationCategory": "Game",
+          "gamePlatform": "Web Browser",
+          "url": "https://smashthecrust.spicycrust.com",
+          "description": "¡Pánico en la Pizzería! Defiende tu cocina y masa madre de la banda de topos ladrones.",
+          "author": {
+            "@type": "Organization",
+            "name": "SpicyCrust Labs"
+          }
         }
       ]
     }
@@ -100,8 +114,9 @@
 
     <!-- Preload de Capturas Reales de los Monitores Arcade (Carga instantánea) -->
     <link rel="preload" href="/rhythmslice_preview.png" as="image" />
-    <link rel="preload" href="/spicychallenge_preview.png" as="image" />
     <link rel="preload" href="/slashslice_preview.png" as="image" />
+    <link rel="preload" href="/slicehunter_preview.png" as="image" />
+    <link rel="preload" href="/smashthecrust_preview.png" as="image" />
     <script type="module" src="/src/main.js"></script>
     <link rel="stylesheet" href="/src/style.css" />
   </head>
@@ -239,11 +254,11 @@
               <div id="cabinet-3d-4" class="w-full aspect-[1.12] relative play-btn cursor-pointer" data-game="smash"></div>
               <!-- Información Flotante Sin Contenedores -->
               <div class="text-center mt-2 pointer-events-none select-none">
-                <h4 class="font-cinzel font-black text-[#ffd866] text-xl sm:text-2xl md:text-xl tracking-wider uppercase">SMASH THE CRUST</h4>
-                <div class="text-[#e63946] font-lilita text-sm sm:text-base md:text-sm mt-0.5">ÉPICO // 💧 ELIXIR: 3</div>
+                <h4 class="font-cinzel font-black text-[#ffd866] text-xl sm:text-2xl md:text-xl tracking-wider uppercase" data-t="game5Title">SMASH THE CRUST</h4>
+                <div class="text-[#e63946] font-lilita text-sm sm:text-base md:text-sm mt-0.5" data-t="game5Subtitle">ÉPICO // 💧 ELIXIR: 3</div>
                 <div class="flex justify-center gap-4 text-[#ffd866]/70 font-lilita text-xs sm:text-sm mt-1">
-                  <span>🍕 PÁNICO: MAX</span>
-                  <span>👑 SCORE: 77K</span>
+                  <span data-t="game5Stat1">🍕 PÁNICO: MAX</span>
+                  <span data-t="game5Stat2">👑 SCORE: 77K</span>
                 </div>
               </div>
             </div>

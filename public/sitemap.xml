@@ -31,4 +31,20 @@
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
+
+  <!-- Micro-Frontend 4: Slice Hunter (Delivery & Boss Hunt Arcade) -->
+  <url>
+    <loc>https://slicehunter.spicycrust.com/</loc>
+    <lastmod>2026-06-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Micro-Frontend 5: Smash The Crust (Kitchen Defense Panic Arcade) -->
+  <url>
+    <loc>https://smashthecrust.spicycrust.com/</loc>
+    <lastmod>2026-06-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
 </urlset>
