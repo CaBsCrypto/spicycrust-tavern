@@ -190,15 +190,15 @@
           </div>
 
           <!-- GRID PRINCIPAL DE JUEGOS CON ARMARIOS DE PIZZA 3D INTERACTIVOS (THREE.JS) -->
-          <div class="flex md:grid md:grid-cols-3 max-w-7xl mx-auto overflow-x-auto md:overflow-x-visible snap-x snap-mandatory gap-6 md:gap-8 pt-6 w-full no-scrollbar">
+          <div class="flex md:grid md:grid-cols-4 max-w-7xl mx-auto overflow-x-auto md:overflow-x-visible snap-x snap-mandatory gap-6 md:gap-6 pt-6 w-full no-scrollbar">
 
             <!-- CAJA 1: RHYTHM SLICE -->
             <div class="flex flex-col items-center max-w-[490px] mx-auto w-[92vw] sm:w-[86vw] md:w-full shrink-0 snap-center px-1 md:px-2">
               <div id="cabinet-3d-1" class="w-full aspect-[1.12] relative play-btn cursor-pointer" data-game="slasher"></div>
               <!-- Información Flotante Sin Contenedores -->
               <div class="text-center mt-2 pointer-events-none select-none">
-                <h4 class="font-cinzel font-black text-[#ffd866] text-xl sm:text-2xl md:text-2xl tracking-wider uppercase" data-t="game3Title">RHYTHM SLICE</h4>
-                <div class="text-[#f61b7f] font-lilita text-sm sm:text-base md:text-base mt-0.5" data-t="game3Subtitle">LEGENDARIO // 💧 ELIXIR: 4</div>
+                <h4 class="font-cinzel font-black text-[#ffd866] text-xl sm:text-2xl md:text-xl tracking-wider uppercase" data-t="game3Title">RHYTHM SLICE</h4>
+                <div class="text-[#f61b7f] font-lilita text-sm sm:text-base md:text-sm mt-0.5" data-t="game3Subtitle">LEGENDARIO // 💧 ELIXIR: 4</div>
                 <div class="flex justify-center gap-4 text-[#ffd866]/70 font-lilita text-xs sm:text-sm mt-1">
                   <span data-t="game3Stat1">⚔️ RITMO: 99K</span>
                   <span data-t="game3Stat2">👑 CRUST: 450</span>
@@ -211,8 +211,8 @@
               <div id="cabinet-3d-2" class="w-full aspect-[1.12] relative play-btn cursor-pointer" data-game="invaders"></div>
               <!-- Información Flotante Sin Contenedores -->
               <div class="text-center mt-2 pointer-events-none select-none">
-                <h4 class="font-cinzel font-black text-[#ffd866] text-xl sm:text-2xl md:text-2xl tracking-wider uppercase" data-t="game1Title">SLASH SLICE</h4>
-                <div class="text-[#d85f00] font-lilita text-sm sm:text-base md:text-base mt-0.5" data-t="game1Subtitle">ESPECIAL // 💧 ELIXIR: 3</div>
+                <h4 class="font-cinzel font-black text-[#ffd866] text-xl sm:text-2xl md:text-xl tracking-wider uppercase" data-t="game1Title">SLASH SLICE</h4>
+                <div class="text-[#d85f00] font-lilita text-sm sm:text-base md:text-sm mt-0.5" data-t="game1Subtitle">ESPECIAL // 💧 ELIXIR: 3</div>
                 <div class="flex justify-center gap-4 text-[#ffd866]/70 font-lilita text-xs sm:text-sm mt-1">
                   <span data-t="game1Stat1">⚡ VELOCIDAD: FAST</span>
                   <span data-t="game1Stat2">👑 SCORE: 99K</span>
@@ -225,11 +225,25 @@
               <div id="cabinet-3d-3" class="w-full aspect-[1.12] relative play-btn cursor-pointer" data-game="hunter"></div>
               <!-- Información Flotante Sin Contenedores -->
               <div class="text-center mt-2 pointer-events-none select-none">
-                <h4 class="font-cinzel font-black text-[#ffd866] text-xl sm:text-2xl md:text-2xl tracking-wider uppercase" data-t="game4Title">SLICE HUNTER</h4>
-                <div class="text-[#00cc66] font-lilita text-sm sm:text-base md:text-base mt-0.5" data-t="game4Subtitle">MÍTICO // 💧 ELIXIR: 2</div>
+                <h4 class="font-cinzel font-black text-[#ffd866] text-xl sm:text-2xl md:text-xl tracking-wider uppercase" data-t="game4Title">SLICE HUNTER</h4>
+                <div class="text-[#00cc66] font-lilita text-sm sm:text-base md:text-sm mt-0.5" data-t="game4Subtitle">MÍTICO // 💧 ELIXIR: 2</div>
                 <div class="flex justify-center gap-4 text-[#ffd866]/70 font-lilita text-xs sm:text-sm mt-1">
                   <span data-t="game4Stat1">🎯 CAZA: 100%</span>
                   <span data-t="game4Stat2">👑 SCORE: 88K</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- CAJA 4: SMASH THE CRUST -->
+            <div class="flex flex-col items-center max-w-[490px] mx-auto w-[92vw] sm:w-[86vw] md:w-full shrink-0 snap-center px-1 md:px-2">
+              <div id="cabinet-3d-4" class="w-full aspect-[1.12] relative play-btn cursor-pointer" data-game="smash"></div>
+              <!-- Información Flotante Sin Contenedores -->
+              <div class="text-center mt-2 pointer-events-none select-none">
+                <h4 class="font-cinzel font-black text-[#ffd866] text-xl sm:text-2xl md:text-xl tracking-wider uppercase">SMASH THE CRUST</h4>
+                <div class="text-[#e63946] font-lilita text-sm sm:text-base md:text-sm mt-0.5">ÉPICO // 💧 ELIXIR: 3</div>
+                <div class="flex justify-center gap-4 text-[#ffd866]/70 font-lilita text-xs sm:text-sm mt-1">
+                  <span>🍕 PÁNICO: MAX</span>
+                  <span>👑 SCORE: 77K</span>
                 </div>
               </div>
             </div>
@@ -339,6 +353,7 @@
       <canvas id="game-canvas-2"></canvas>
       <canvas id="game-canvas-3"></canvas>
       <canvas id="game-canvas-4"></canvas>
+      <canvas id="game-canvas-5"></canvas>
     </div>
 
     <!-- Scripts -->

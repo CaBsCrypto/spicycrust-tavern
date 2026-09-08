@@ -2,7 +2,7 @@ import { Sound } from './sound.js';
 
 class GameSimulators {
   constructor() {
-    this.loops = { game1: null, game2: null, game3: null, game4: null };
+    this.loops = { game1: null, game2: null, game3: null, game4: null, game5: null };
     this.active = false;
 
     // Estado de hover para cambiar el contenido del canvas dinámicamente
@@ -10,7 +10,8 @@ class GameSimulators {
       game1: false,
       game2: false,
       game3: false,
-      game4: false
+      game4: false,
+      game5: false
     };
 
     // Flags para indicar que el canvas ha dibujado un nuevo frame (Optimización de GPU)
@@ -18,7 +19,8 @@ class GameSimulators {
       game1: true,
       game2: true,
       game3: true,
-      game4: true
+      game4: true,
+      game5: true
     };
 
     // Metadatos de cada juego para dibujar en el canvas
@@ -26,7 +28,8 @@ class GameSimulators {
       game1: { title: 'SLASH SLICE', rarity: 'ESPECIAL', color: '#d85f00', elixir: '3' },
       game2: { title: 'SPICY CHALLENGE', rarity: 'ÉPICO', color: '#d800a6', elixir: '5' },
       game3: { title: 'RHYTHM SLICE', rarity: 'LEGENDARIO', color: '#8a2be2', elixir: '4' },
-      game4: { title: 'SLICE HUNTER', rarity: 'MÍTICO', color: '#00cc66', elixir: '2' }
+      game4: { title: 'SLICE HUNTER', rarity: 'MÍTICO', color: '#00cc66', elixir: '2' },
+      game5: { title: 'SMASH THE CRUST', rarity: 'ÉPICO', color: '#e63946', elixir: '3' }
     };
 
     // Instanciar e iniciar descarga inmediata de las imágenes en segundo plano al importar el módulo
@@ -34,13 +37,15 @@ class GameSimulators {
       game1: new Image(),
       game2: new Image(),
       game3: new Image(),
-      game4: new Image()
+      game4: new Image(),
+      game5: new Image()
     };
     
     this.images.game1.src = '/slashslice_preview.png';
     this.images.game2.src = '/spicychallenge_preview.png';
     this.images.game3.src = '/rhythmslice_preview.png';
     this.images.game4.src = '/slicehunter_preview.png';
+    this.images.game5.src = '/smashthecrust_preview.png';
   }
 
   // Inicializa todos los monitores a la vez
@@ -52,6 +57,7 @@ class GameSimulators {
     this.initDoughDash();
     this.initPizzaSlasher();
     this.initSliceHunter();
+    this.initSmashTheCrust();
   }
 
   stop() {
@@ -60,6 +66,7 @@ class GameSimulators {
     cancelAnimationFrame(this.loops.game2);
     cancelAnimationFrame(this.loops.game3);
     cancelAnimationFrame(this.loops.game4);
+    cancelAnimationFrame(this.loops.game5);
   }
 
   // Helper para renderizar un preview de juego premium en un canvas
@@ -134,6 +141,12 @@ class GameSimulators {
   initSliceHunter() {
     this.renderPremiumPreview('game-canvas-4', this.images.game4, 'game4');
   }
+
+  // SMASH THE CRUST (Card 5 -> game-canvas-5)
+  initSmashTheCrust() {
+    this.renderPremiumPreview('game-canvas-5', this.images.game5, 'game5');
+  }
 }
 
 export const Games = new GameSimulators();
+

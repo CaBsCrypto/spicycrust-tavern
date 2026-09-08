@@ -17,6 +17,9 @@ export const GAME_URLS = {
 
   /** Slice Hunter — caza de ingredientes y jefes de pizza */
   hunter: import.meta.env.VITE_URL_SLICE_HUNTER ?? 'https://slicehunter.spicycrust.com',
+
+  /** Smash The Crust — defiende la pizzería de los topos ladrones */
+  smash: import.meta.env.VITE_URL_SMASH_THE_CRUST ?? 'https://smashthecrust.spicycrust.com',
 }
 
 /** Metadatos de cada juego para notificaciones y UI */
@@ -41,4 +44,10 @@ export const GAME_META = {
     opTitle: 'OPERACIÓN: SLICE HUNTER // BOUNTY HUNT',
     opMsg: 'Rastreando ingredientes raros en el bosque de la taberna. Cuchillas duales preparadas. ¡Caza la porción legendaria!',
   },
+  smash: {
+    name: 'SMASH THE CRUST',
+    opTitle: 'OPERACIÓN: SMASH THE CRUST // KITCHEN DEFENSE',
+    opMsg: '¡Pánico en la Pizzería! Bandada de topos ladrones detectada. Rodillo de chef cargado. ¡Defiende la masa madre!',
+  },
 }
+
