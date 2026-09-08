@@ -268,81 +268,73 @@ export function initUnboxing3D(onCompleteCallback) {
   lidPivot.add(emblemGroup);
 
   // Base circular de oro bruñido con bisel
-  const medallionBaseGeom = new THREE.CylinderGeometry(2.1, 2.15, 0.08, 36);
+  const medallionBaseGeom = new THREE.CylinderGeometry(2.15, 2.2, 0.08, 36);
   const medallionBase = new THREE.Mesh(medallionBaseGeom, royalGoldMaterial);
   emblemGroup.add(medallionBase);
 
-  // Corona de laureles / tachones de oro alrededor del medallón
+  // Corona de tachones de oro alrededor del medallón
   const laurelCount = 18;
   const laurelGeom = new THREE.SphereGeometry(0.08, 8, 8);
   for (let i = 0; i < laurelCount; i++) {
     const angle = (i / laurelCount) * Math.PI * 2;
     const laurel = new THREE.Mesh(laurelGeom, royalGoldMaterial);
-    laurel.position.set(Math.cos(angle) * 1.95, 0.05, Math.sin(angle) * 1.95);
+    laurel.position.set(Math.cos(angle) * 2.0, 0.05, Math.sin(angle) * 2.0);
     emblemGroup.add(laurel);
   }
 
   // Núcleo de hierro oscuro grabado
-  const medallionInnerGeom = new THREE.CylinderGeometry(1.78, 1.78, 0.1, 36);
+  const medallionInnerGeom = new THREE.CylinderGeometry(1.85, 1.85, 0.1, 36);
   const medallionInner = new THREE.Mesh(medallionInnerGeom, antiqueIronMaterial);
   emblemGroup.add(medallionInner);
 
-  // Rebanada de Pizza 3D con curvatura y volumen
+  // --- REBANADA DE PIZZA HEROICA Y 100% DESPEJADA ---
   const sliceGroup = new THREE.Group();
-  sliceGroup.position.set(0, 0.06, 0.1);
+  sliceGroup.position.set(0, 0.08, 0.05);
   emblemGroup.add(sliceGroup);
 
-  // Masa y queso fundido triangular
-  const sliceGeom = new THREE.CylinderGeometry(1.35, 1.35, 0.11, 3);
+  // Cuerpo de Queso Mozzarella fundido brillante
+  const sliceGeom = new THREE.CylinderGeometry(1.55, 1.55, 0.12, 3);
   const sliceMesh = new THREE.Mesh(sliceGeom, meltedCheeseMaterial);
   sliceMesh.rotation.y = Math.PI;
   sliceGroup.add(sliceMesh);
 
-  // Masa crujiente arqueada en la base superior
-  const crustGeom = new THREE.BoxGeometry(1.75, 0.16, 0.32);
+  // Borde superior de masa crujiente dorada (Horneada a la perfección)
+  const crustGeom = new THREE.BoxGeometry(2.0, 0.18, 0.28);
   const crustMesh = new THREE.Mesh(crustGeom, crustMaterial);
-  crustMesh.position.set(0, 0.04, -0.58);
+  crustMesh.position.set(0, 0.05, -0.68);
   sliceGroup.add(crustMesh);
 
-  // Rodajas de pepperoni rubí con brillo
-  const pepGeom = new THREE.CylinderGeometry(0.22, 0.22, 0.05, 16);
+  // Rodajas de pepperoni rubí brillante bien distribuidas
+  const pepGeom = new THREE.CylinderGeometry(0.24, 0.24, 0.05, 16);
   
   const pep1 = new THREE.Mesh(pepGeom, pepperoniRubyMaterial);
-  pep1.position.set(-0.32, 0.07, -0.22);
+  pep1.position.set(-0.4, 0.08, -0.28);
   sliceGroup.add(pep1);
 
   const pep2 = new THREE.Mesh(pepGeom, pepperoniRubyMaterial);
-  pep2.position.set(0.32, 0.07, -0.22);
+  pep2.position.set(0.4, 0.08, -0.28);
   sliceGroup.add(pep2);
 
   const pep3 = new THREE.Mesh(pepGeom, pepperoniRubyMaterial);
-  pep3.position.set(0, 0.07, 0.32);
+  pep3.position.set(0.0, 0.08, 0.1);
   sliceGroup.add(pep3);
 
-  // Hojas de albahaca fresca
-  const basilGeom = new THREE.BoxGeometry(0.16, 0.03, 0.25);
+  const pep4 = new THREE.Mesh(pepGeom, pepperoniRubyMaterial);
+  pep4.position.set(0.0, 0.08, 0.48);
+  sliceGroup.add(pep4);
+
+  // Hojas de albahaca fresca aromática
+  const basilGeom = new THREE.BoxGeometry(0.18, 0.03, 0.26);
+  
   const basil1 = new THREE.Mesh(basilGeom, basilMaterial);
-  basil1.rotation.y = 0.6;
-  basil1.position.set(0.12, 0.07, 0.05);
+  basil1.rotation.y = 0.5;
+  basil1.position.set(-0.18, 0.08, 0.3);
   sliceGroup.add(basil1);
 
-  // Corona Imperial de 5 puntas sobre la rebanada
-  const crownGroup = new THREE.Group();
-  crownGroup.position.set(0, 0.18, -0.65);
-  sliceGroup.add(crownGroup);
-
-  const crownBaseGeom = new THREE.CylinderGeometry(0.55, 0.42, 0.25, 5);
-  const crownMesh = new THREE.Mesh(crownBaseGeom, royalGoldMaterial);
-  crownGroup.add(crownMesh);
-
-  // 5 Gemas de Rubí en las puntas de la corona
-  const gemGeom = new THREE.SphereGeometry(0.08, 8, 8);
-  for (let i = 0; i < 5; i++) {
-    const angle = (i / 5) * Math.PI * 2;
-    const gem = new THREE.Mesh(gemGeom, rubyGemMaterial);
-    gem.position.set(Math.cos(angle) * 0.48, 0.14, Math.sin(angle) * 0.48);
-    crownGroup.add(gem);
-  }
+  const basil2 = new THREE.Mesh(basilGeom, basilMaterial);
+  basil2.rotation.y = -0.4;
+  basil2.position.set(0.22, 0.08, -0.05);
+  sliceGroup.add(basil2);
 
   // --- 7. HERRAJES DE ESQUINA Y CERROJO ---
   const bracketGeom = new THREE.BoxGeometry(0.75, 0.06, 0.75);
@@ -461,43 +453,7 @@ export function initUnboxing3D(onCompleteCallback) {
   const emberPoints = new THREE.Points(emberGeo, emberMat);
   scene.add(emberPoints);
 
-  // B. Vapor cálido caliente
-  const steamParticles = [];
-  const steamCount = 30;
-  const steamGroup = new THREE.Group();
-  scene.add(steamGroup);
-
-  const steamGeo = new THREE.SphereGeometry(0.2, 5, 5);
-  const steamMat = new THREE.MeshBasicMaterial({
-    color: 0xffd866,
-    transparent: true,
-    opacity: 0
-  });
-
-  for (let i = 0; i < steamCount; i++) {
-    const p = new THREE.Mesh(steamGeo, steamMat.clone());
-    resetSteamParticle(p);
-    steamGroup.add(p);
-    steamParticles.push(p);
-  }
-
-  function resetSteamParticle(p) {
-    const angle = Math.random() * Math.PI * 2;
-    const radius = 3.0 + Math.random() * 0.5;
-    p.position.set(Math.cos(angle) * radius, -0.2, Math.sin(angle) * radius);
-    p.userData = {
-      speedY: 0.015 + Math.random() * 0.025,
-      speedX: (Math.random() - 0.5) * 0.01,
-      speedZ: (Math.random() - 0.5) * 0.01,
-      growth: 1.015,
-      maxLife: 70 + Math.random() * 60,
-      life: 0
-    };
-    p.scale.set(1, 1, 1);
-    p.material.opacity = 0;
-  }
-
-  // C. Explosión de chispas de cerrojo
+  // B. Explosión de chispas de cerrojo
   let explosionParticles = null;
   const blastCount = 120;
   let explosionActive = false;
@@ -662,22 +618,7 @@ export function initUnboxing3D(onCompleteCallback) {
     }
     emberGeo.attributes.position.needsUpdate = true;
 
-    // C. Animación de vapor
-    steamParticles.forEach(p => {
-      p.position.y += p.userData.speedY;
-      p.position.x += p.userData.speedX;
-      p.scale.multiplyScalar(p.userData.growth);
-      p.userData.life += 1;
-
-      const age = p.userData.life / p.userData.maxLife;
-      p.material.opacity = age < 0.2 ? (age / 0.2) * 0.25 : (1 - age) * 0.25;
-
-      if (p.userData.life >= p.userData.maxLife) {
-        resetSteamParticle(p);
-      }
-    });
-
-    // D. Chispas de la explosión del cerrojo
+    // C. Chispas de la explosión del cerrojo
     if (explosionActive && explosionParticles) {
       const pArr = explosionParticles.geometry.attributes.position.array;
       const vArr = explosionParticles.userData.velocities;
