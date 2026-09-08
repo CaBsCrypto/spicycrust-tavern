@@ -262,7 +262,7 @@ export function initUnboxing3D(onCompleteCallback) {
   borderRight.position.set(3.3, 0.23, 3.3);
   lidPivot.add(borderRight);
 
-  // --- 6. MEDALLÓN Y REBANADA DE PIZZA 3D REAL (CURVA Y LIMPIA) ---
+  // --- 6. MEDALLÓN Y REBANADA DE PIZZA 3D REAL (SECTOR CILÍNDRICO SÓLIDO) ---
   const emblemGroup = new THREE.Group();
   emblemGroup.position.set(0, 0.24, 3.3);
   lidPivot.add(emblemGroup);
@@ -273,7 +273,7 @@ export function initUnboxing3D(onCompleteCallback) {
   emblemGroup.add(medallionBase);
 
   // Borde biselado de oro fino
-  const rimGeom = new THREE.TorusGeometry(2.2, 0.04, 12, 64);
+  const rimGeom = new THREE.TorusGeometry(2.2, 0.045, 16, 64);
   const rimMesh = new THREE.Mesh(rimGeom, royalGoldMaterial);
   rimMesh.rotation.x = Math.PI / 2;
   rimMesh.position.y = 0.04;
@@ -284,58 +284,55 @@ export function initUnboxing3D(onCompleteCallback) {
   const medallionInner = new THREE.Mesh(medallionInnerGeom, antiqueIronMaterial);
   emblemGroup.add(medallionInner);
 
-  // B. Rebanada de Pizza Real en 3D (Forma geométrica de cuña curva auténtica)
+  // B. Rebanada de Pizza Real en 3D (Sector circular 100% sólido y perfecto)
   const sliceGroup = new THREE.Group();
-  sliceGroup.position.set(0, 0.06, 0.0);
+  // Centrar la rebanada en el medallón
+  sliceGroup.position.set(0, 0.08, 0.7);
   emblemGroup.add(sliceGroup);
 
-  // Forma 2D de la rebanada (Sector circular con arco en la corteza)
-  const sliceRadius = 1.6;
-  const sliceAngle = Math.PI * 0.38; // 68 grados de porción generosa
-  const halfAngle = sliceAngle / 2;
+  const sliceAngle = Math.PI * 0.36; // 65 grados de porción generosa
+  const sliceRadius = 1.7;
 
-  const pizzaShape = new THREE.Shape();
-  pizzaShape.moveTo(0, 0); // Vértice / punta
-  pizzaShape.lineTo(Math.sin(-halfAngle) * sliceRadius, Math.cos(-halfAngle) * sliceRadius);
-  pizzaShape.absarc(0, 0, sliceRadius, Math.PI / 2 - halfAngle, Math.PI / 2 + halfAngle, false);
-  pizzaShape.lineTo(0, 0);
+  // 1. Masa base de la rebanada (Dough)
+  const doughGeom = new THREE.CylinderGeometry(
+    sliceRadius, sliceRadius * 1.02, 0.12, 36, 1, false,
+    Math.PI / 2 - sliceAngle / 2, sliceAngle
+  );
+  const doughMesh = new THREE.Mesh(doughGeom, crustMaterial);
+  doughMesh.rotation.x = Math.PI / 2;
+  doughMesh.position.z = -sliceRadius * 0.55;
+  sliceGroup.add(doughMesh);
 
-  const extrudeSettings = {
-    steps: 1,
-    depth: 0.11,
-    bevelEnabled: true,
-    bevelThickness: 0.025,
-    bevelSize: 0.025,
-    bevelSegments: 4
-  };
+  // 2. Capa de Queso Mozzarella fundido brillante (ligeramente más pequeña para mostrar salsa/borde)
+  const cheeseGeom = new THREE.CylinderGeometry(
+    sliceRadius * 0.94, sliceRadius * 0.94, 0.06, 36, 1, false,
+    Math.PI / 2 - (sliceAngle * 0.95) / 2, sliceAngle * 0.95
+  );
+  const cheeseMesh = new THREE.Mesh(cheeseGeom, meltedCheeseMaterial);
+  cheeseMesh.rotation.x = Math.PI / 2;
+  cheeseMesh.position.set(0, 0.04, -sliceRadius * 0.55);
+  sliceGroup.add(cheeseMesh);
 
-  const sliceGeom = new THREE.ExtrudeGeometry(pizzaShape, extrudeSettings);
-  sliceGeom.center();
+  // 3. Corteza gruesa horneada y esponjosa en el arco superior (Torus)
+  const crustTorusGeom = new THREE.TorusGeometry(
+    sliceRadius * 0.96, 0.14, 16, 36, sliceAngle
+  );
+  const crustTorusMesh = new THREE.Mesh(crustTorusGeom, crustMaterial);
+  // Alinear el arco del torus con el arco del sector
+  crustTorusMesh.rotation.x = Math.PI / 2;
+  crustTorusMesh.rotation.z = Math.PI / 2 - sliceAngle / 2;
+  crustTorusMesh.position.set(0, 0.06, -sliceRadius * 0.55);
+  sliceGroup.add(crustTorusMesh);
 
-  // Masa y queso fundido de la rebanada
-  const sliceMesh = new THREE.Mesh(sliceGeom, meltedCheeseMaterial);
-  sliceMesh.rotation.x = -Math.PI / 2;
-  sliceMesh.rotation.z = Math.PI; // Punta hacia abajo
-  sliceGroup.add(sliceMesh);
-
-  // Arco de masa crujiente horneada en la corteza superior
-  const crustArcGeom = new THREE.TorusGeometry(sliceRadius * 0.96, 0.12, 12, 36, sliceAngle);
-  crustArcGeom.center();
-  const crustArcMesh = new THREE.Mesh(crustArcGeom, crustMaterial);
-  crustArcMesh.rotation.x = Math.PI / 2;
-  crustArcMesh.rotation.z = -Math.PI / 2;
-  crustArcMesh.position.set(0, 0.06, -0.68);
-  sliceGroup.add(crustArcMesh);
-
-  // Rodajas de Pepperoni Rubí brillante distribuidas orgánicamente
-  const pepGeom = new THREE.CylinderGeometry(0.23, 0.23, 0.04, 16);
+  // 4. Rodajas de Pepperoni Rubí brillante distribuidas armónicamente sobre el queso
+  const pepGeom = new THREE.CylinderGeometry(0.24, 0.24, 0.045, 20);
   
   const pepCoords = [
-    [-0.38, 0.08, -0.26],
-    [0.38, 0.08, -0.26],
-    [-0.15, 0.08, 0.12],
-    [0.22, 0.08, 0.18],
-    [0.0, 0.08, 0.52]
+    [-0.36, 0.08, -1.05],
+    [0.36, 0.08, -1.05],
+    [-0.18, 0.08, -0.65],
+    [0.22, 0.08, -0.55],
+    [0.0, 0.08, -0.2]
   ];
 
   pepCoords.forEach(pos => {
@@ -344,17 +341,17 @@ export function initUnboxing3D(onCompleteCallback) {
     sliceGroup.add(pep);
   });
 
-  // Hojas de albahaca fresca aromática
-  const basilGeom = new THREE.BoxGeometry(0.18, 0.03, 0.25);
+  // 5. Hojas de albahaca fresca aromática
+  const basilGeom = new THREE.BoxGeometry(0.18, 0.03, 0.26);
   
   const basil1 = new THREE.Mesh(basilGeom, basilMaterial);
   basil1.rotation.y = 0.5;
-  basil1.position.set(-0.25, 0.08, 0.35);
+  basil1.position.set(-0.22, 0.08, -0.38);
   sliceGroup.add(basil1);
 
   const basil2 = new THREE.Mesh(basilGeom, basilMaterial);
   basil2.rotation.y = -0.6;
-  basil2.position.set(0.26, 0.08, -0.05);
+  basil2.position.set(0.26, 0.08, -0.85);
   sliceGroup.add(basil2);
 
   // --- 7. HERRAJES DE ESQUINA Y CERROJO ---
