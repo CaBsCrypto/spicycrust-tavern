@@ -347,3 +347,40 @@ nav a:hover {
 
 
 
+
+/* Leaderboard API Status Badges */
+.lb-badge-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(0, 204, 102, 0.15);
+  color: #00cc66;
+  border: 1px solid rgba(0, 204, 102, 0.4);
+  border-radius: 6px;
+  padding: 1px 7px;
+  font-size: 9px;
+  font-family: var(--font-typewriter, monospace);
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  animation: lb-live-pulse 2s ease-in-out infinite;
+}
+
+.lb-badge-demo {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(255, 193, 7, 0.15);
+  color: #ffc107;
+  border: 1px solid rgba(255, 193, 7, 0.4);
+  border-radius: 6px;
+  padding: 1px 7px;
+  font-size: 9px;
+  font-family: var(--font-typewriter, monospace);
+  letter-spacing: 0.08em;
+  font-weight: 700;
+}
+
+@keyframes lb-live-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}

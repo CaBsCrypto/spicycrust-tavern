@@ -1,5 +1,5 @@
 import { Sound } from './sound.js';
-import { fetchLeaderboard } from './leaderboardApi.js';
+import { fetchLeaderboard, invalidateSeasonCache } from './leaderboardApi.js';
 
 export function initModals() {
   const leaderboardBtn = document.getElementById('leaderboard-btn');
@@ -46,6 +46,7 @@ export function initModals() {
     const handleOpenLeaderboard = (e) => {
       e.preventDefault();
       Sound.playToggleSound();
+      invalidateSeasonCache(); // Refrescar temporada activa al abrir
       openModal(leaderboardModal);
       loadLeaderboard();
     };
@@ -114,9 +115,11 @@ export function initModals() {
     const result = await fetchLeaderboard({ game: currentGame, search: searchQuery });
 
     if (statusText) {
-      statusText.innerHTML = result.isLive
-        ? `// CONECTADO CON SPICYCRUST API V2 🟢 // TEMPORADA ACTIVA: ${String(result.seasonName).toUpperCase()}`
-        : `// SPICYCRUST CLASIFICACIÓN // MODO PREVIEW / API SYNC 🟡`;
+      if (result.isLive) {
+        statusText.innerHTML = `<span class="inline-flex items-center gap-1.5"><span class="lb-badge-live">🟢 LIVE</span> SPICYCRUST API // TEMPORADA: <span class="text-mafia-gold">${String(result.seasonName ?? 'SEASON-01').toUpperCase()}</span></span>`;
+      } else {
+        statusText.innerHTML = `<span class="inline-flex items-center gap-1.5"><span class="lb-badge-demo">⚠️ DEMO</span> API NO DISPONIBLE // DATOS DE MUESTRA</span>`;
+      }
     }
 
     if (!result.data || result.data.length === 0) {
