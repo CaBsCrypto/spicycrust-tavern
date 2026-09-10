@@ -3,7 +3,8 @@
  * API Base: https://spicycrust-api.alphadocere.cl/api/v1
  */
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'https://spicycrust-api.alphadocere.cl';
+const RAW_API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'https://spicycrust-api.alphadocere.cl';
+const API_BASE_URL = RAW_API_BASE_URL.replace(/\/+$/, '');
 
 // Cache de la temporada activa (se refresca al abrir el modal)
 let _cachedSeasonSlug = null;
@@ -116,47 +117,355 @@ export async function fetchLeaderboard({ game = 'rhythm-slice', limit = 20, sear
   return { success: true, isLive: false, gameName: game, seasonName, data: fallbackList };
 }
 
+const SLUG_ALIASES = {
+  'slasher': 'rhythm-slice',
+  'pizza-slasher': 'rhythm-slice',
+  'pizzaslasher': 'rhythm-slice',
+  'rhythm': 'rhythm-slice',
+  'rhythm-slice': 'rhythm-slice',
+  'rhythmslice': 'rhythm-slice',
+  'rhythm slice': 'rhythm-slice',
+  'invaders': 'slash-slice',
+  'crust-invaders': 'slash-slice',
+  'crustinvaders': 'slash-slice',
+  'slash': 'slash-slice',
+  'slash-slice': 'slash-slice',
+  'slashslice': 'slash-slice',
+  'slash slice': 'slash-slice',
+  'smash': 'smash-the-crust',
+  'smash-crust': 'smash-the-crust',
+  'smashcrust': 'smash-the-crust',
+  'smash-the-crust': 'smash-the-crust',
+  'smashthecrust': 'smash-the-crust',
+  'smash the crust': 'smash-the-crust',
+  'hunter': 'slice-hunter',
+  'slice-hunter': 'slice-hunter',
+  'slicehunter': 'slice-hunter',
+  'slice hunter': 'slice-hunter',
+  'slicehunt': 'slice-hunter'
+};
+
+function normalizeSlug(rawSlug, rawName) {
+  const cleanSlug = (rawSlug || '').toString().toLowerCase().trim().replace(/_/g, '-');
+  if (SLUG_ALIASES[cleanSlug]) return SLUG_ALIASES[cleanSlug];
+  const cleanName = (rawName || '').toString().toLowerCase().trim().replace(/_/g, '-');
+  if (SLUG_ALIASES[cleanName]) return SLUG_ALIASES[cleanName];
+
+  const s = `${cleanSlug} ${cleanName}`.trim();
+  for (const [key, canonical] of Object.entries(SLUG_ALIASES)) {
+    if (s.includes(key)) return canonical;
+  }
+
+  if (s.includes('rhythm') || s.includes('slasher')) return 'rhythm-slice';
+  if (s.includes('slash') || s.includes('invader')) return 'slash-slice';
+  if (s.includes('smash') || (s.includes('crust') && !s.includes('slash'))) return 'smash-the-crust';
+  if (s.includes('hunter')) return 'slice-hunter';
+
+  return cleanSlug || cleanName || '';
+}
+
 export async function fetchGlobalStats() {
   const url = `${API_BASE_URL}/api/v1/stats`;
+  let timeoutId;
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 4000);
+    timeoutId = setTimeout(() => controller.abort(), 4000);
     const res = await fetch(url, {
       method: 'GET',
       headers: { 'Accept': 'application/json' },
       signal: controller.signal
     });
-    clearTimeout(timeoutId);
     if (res.ok) {
       const json = await res.json();
-      if (json && json.success && json.data) {
-        return { success: true, isLive: true, data: json.data };
+      if (json && json.success !== false) {
+        const rawData = json.data ?? (json.total_players !== undefined || json.totalPlayers !== undefined ? json : null);
+        if (rawData) {
+          const highest_score = rawData.highest_score ?? rawData.highestScore ?? rawData.top_score ?? rawData.topScore ?? rawData.max_score;
+          const total_scores = rawData.total_scores ?? rawData.totalScores ?? rawData.scores_count ?? rawData.score_count ?? rawData.total_matches ?? rawData.matches_count;
+          const total_players = rawData.total_players ?? rawData.totalPlayers ?? rawData.players_count ?? rawData.player_count ?? rawData.total_users ?? rawData.users_count;
+          const scores_today = rawData.scores_today ?? rawData.scoresToday ?? 0;
+
+          if (highest_score !== undefined || total_scores !== undefined || total_players !== undefined) {
+            return {
+              success: true,
+              isLive: true,
+              data: {
+                highest_score: Number.isFinite(Number(highest_score)) ? Number(highest_score) : 188500,
+                total_scores: Number.isFinite(Number(total_scores)) ? Number(total_scores) : 31,
+                total_players: Number.isFinite(Number(total_players)) ? Number(total_players) : 26,
+                scores_today: Number.isFinite(Number(scores_today)) ? Number(scores_today) : 30
+              }
+            };
+          }
+        }
       }
     }
   } catch (err) {
     console.warn('[LeaderboardApi] Fallback activado para stats:', err?.message ?? err);
+  } finally {
+    clearTimeout(timeoutId);
   }
   return {
     success: true,
     isLive: false,
-    data: { total_players: 3400, total_scores: 15000, highest_score: 99450, scores_today: 350 }
+    data: { total_players: 26, total_scores: 31, highest_score: 188500, scores_today: 30 }
   };
 }
 
+export async function fetchGamesList() {
+  const url = `${API_BASE_URL}/api/v1/games`;
+  let timeoutId;
+  try {
+    const controller = new AbortController();
+    timeoutId = setTimeout(() => controller.abort(), 4000);
+    const res = await fetch(url, {
+      method: 'GET',
+      headers: { 'Accept': 'application/json' },
+      signal: controller.signal
+    });
+    if (res.ok) {
+      const json = await res.json();
+      const list = Array.isArray(json?.data) 
+        ? json.data 
+        : (Array.isArray(json?.data?.games) 
+            ? json.data.games 
+            : (Array.isArray(json?.games) ? json.games : (Array.isArray(json) ? json : null)));
+      if (list && list.length > 0) {
+        return { success: true, isLive: true, data: list };
+      }
+    }
+  } catch (err) {
+    console.warn('[LeaderboardApi] Fallback activado para games:', err?.message ?? err);
+  } finally {
+    clearTimeout(timeoutId);
+  }
+  return {
+    success: true,
+    isLive: false,
+    data: [
+      { slug: 'rhythm-slice', name: 'Rhythm Slice', score_count: 8 },
+      { slug: 'slash-slice', name: 'Slash Slice', score_count: 13 },
+      { slug: 'smash-the-crust', name: 'Smash The Crust', score_count: 5 },
+      { slug: 'slice-hunter', name: 'Slice Hunter', score_count: 5 }
+    ]
+  };
+}
+
+// Cache en memoria para sincronización instantánea y soporte multilenguaje
+let _cachedGlobalStats = {
+  success: true,
+  isLive: true,
+  data: { total_players: 26, total_scores: 31, highest_score: 188500, scores_today: 30 }
+};
+
+let _cachedGameCounts = {
+  'rhythm-slice': 8,
+  'slash-slice': 13,
+  'smash-the-crust': 5,
+  'slice-hunter': 5
+};
+
+export function renderLiveStatsUI() {
+  const currentLang = localStorage.getItem('lang') || 'es';
+  const isEn = currentLang === 'en';
+  const locale = isEn ? 'en-US' : 'es-ES';
+
+  const stats = _cachedGlobalStats?.data;
+  const isLive = Boolean(_cachedGlobalStats?.isLive);
+
+  // 1. Banner Hero de Estadísticas Vivas
+  const highestScoreEl = document.getElementById('hero-highest-score');
+  const totalScoresEl = document.getElementById('hero-total-scores');
+  const totalPlayersEl = document.getElementById('hero-total-players');
+  const liveIndicatorEl = document.getElementById('hero-live-indicator');
+
+  if (highestScoreEl) {
+    const num = Number(stats?.highest_score);
+    const safeVal = Number.isFinite(num) ? num : 188500;
+    highestScoreEl.textContent = safeVal.toLocaleString(locale);
+  }
+
+  if (totalScoresEl) {
+    const num = Number(stats?.total_scores);
+    const safeVal = Number.isFinite(num) ? num : 31;
+    const formatted = safeVal.toLocaleString(locale);
+    const unit = isEn ? 'matches' : 'partidas';
+    totalScoresEl.innerHTML = `+${formatted} <span class="text-xs sm:text-sm font-sans font-semibold tracking-normal opacity-85 uppercase">${unit}</span>`;
+  }
+
+  if (totalPlayersEl) {
+    const num = Number(stats?.total_players);
+    const safeVal = Number.isFinite(num) ? num : 26;
+    const formatted = safeVal.toLocaleString(locale);
+    const unit = isEn ? 'chefs' : 'pizzeros';
+    totalPlayersEl.innerHTML = `+${formatted} <span class="text-xs sm:text-sm font-sans font-semibold tracking-normal opacity-85 uppercase">${unit}</span>`;
+  }
+
+  if (liveIndicatorEl) {
+    if (isLive) {
+      liveIndicatorEl.className = 'inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-950/80 border border-emerald-500/50 text-emerald-400 font-mono text-xs font-bold tracking-wider shadow-[0_0_12px_rgba(16,185,129,0.25)] w-fit self-start sm:self-auto';
+      liveIndicatorEl.innerHTML = `
+        <span class="relative flex h-2 w-2">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
+        </span>
+        <span>${isEn ? '🟢 LIVE / LIVE API' : '🟢 EN VIVO / LIVE API'}</span>
+      `;
+    } else {
+      liveIndicatorEl.className = 'inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-950/80 border border-amber-500/50 text-amber-400 font-mono text-xs font-bold tracking-wider w-fit self-start sm:self-auto';
+      liveIndicatorEl.innerHTML = `
+        <span class="relative flex h-2 w-2">
+          <span class="animate-pulse absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-amber-400"></span>
+        </span>
+        <span>${isEn ? '🟡 CACHED API' : '🟡 DATOS EN CACHÉ'}</span>
+      `;
+    }
+  }
+
+  // 2. Cajas 3D: Sincronización de partidas reales (score_count) por juego
+  const gameElements = {
+    'rhythm-slice': document.getElementById('game-stat-rhythm-slice'),
+    'slash-slice': document.getElementById('game-stat-slash-slice'),
+    'smash-the-crust': document.getElementById('game-stat-smash-the-crust'),
+    'slice-hunter': document.getElementById('game-stat-slice-hunter')
+  };
+
+  const defaultCounts = {
+    'rhythm-slice': 8,
+    'slash-slice': 13,
+    'smash-the-crust': 5,
+    'slice-hunter': 5
+  };
+
+  Object.entries(gameElements).forEach(([slug, el]) => {
+    if (!el) return;
+    const val = _cachedGameCounts[slug];
+    const num = Number(val);
+    const safeVal = Number.isFinite(num) ? num : (defaultCounts[slug] ?? 0);
+    const count = safeVal.toLocaleString(locale);
+    el.textContent = isEn ? `👑 MATCHES: ${count}` : `👑 PARTIDAS: ${count}`;
+  });
+
+  // 3. Footer Stats Sync
+  if (stats) {
+    const statOpened = document.getElementById('footer-stat-score') || document.querySelector('[data-t="footerStatOpened"]');
+    const statOnline = document.getElementById('footer-stat-matches') || document.querySelector('[data-t="footerStatOnline"]');
+    const statElixir = document.getElementById('footer-stat-players') || document.querySelector('[data-t="footerStatElixir"]');
+    if (statOpened && stats.highest_score !== undefined && stats.highest_score !== null) {
+      const num = Number(stats.highest_score);
+      const safeVal = Number.isFinite(num) ? num : 188500;
+      statOpened.innerHTML = `<span class="block text-[9px] uppercase tracking-widest text-mafia-gold/50 font-sans">🏆 Top Score</span><span class="block text-sm font-black text-mafia-amber font-mono mt-0.5">${safeVal.toLocaleString(locale)}</span>`;
+    }
+    if (statOnline && stats.total_scores !== undefined && stats.total_scores !== null) {
+      const num = Number(stats.total_scores);
+      const safeVal = Number.isFinite(num) ? num : 31;
+      const label = isEn ? '⚔️ Matches' : '⚔️ Partidas';
+      statOnline.innerHTML = `<span class="block text-[9px] uppercase tracking-widest text-mafia-gold/50 font-sans">${label}</span><span class="block text-sm font-black text-mafia-green font-mono mt-0.5">+${safeVal.toLocaleString(locale)}</span>`;
+    }
+    if (statElixir && stats.total_players !== undefined && stats.total_players !== null) {
+      const num = Number(stats.total_players);
+      const safeVal = Number.isFinite(num) ? num : 26;
+      const label = isEn ? '👥 Players' : '👥 Jugadores';
+      statElixir.innerHTML = `<span class="block text-[9px] uppercase tracking-widest text-mafia-gold/50 font-sans">${label}</span><span class="block text-sm font-black text-blue-400 font-mono mt-0.5">+${safeVal.toLocaleString(locale)}</span>`;
+    }
+  }
+}
+
+let _syncArcadePromise = null;
+
+export async function syncLiveArcadeStats() {
+  if (_syncArcadePromise) return _syncArcadePromise;
+
+  _syncArcadePromise = (async () => {
+    try {
+      const [statsResult, gamesResult] = await Promise.allSettled([
+        fetchGlobalStats(),
+        fetchGamesList()
+      ]);
+
+      const statsLive = statsResult.status === 'fulfilled' && Boolean(statsResult.value?.success && statsResult.value?.isLive);
+      const gamesLive = gamesResult.status === 'fulfilled' && Boolean(gamesResult.value?.success && gamesResult.value?.isLive);
+
+      if (statsResult.status === 'fulfilled' && statsResult.value?.data) {
+        _cachedGlobalStats = {
+          success: true,
+          isLive: statsLive && gamesLive,
+          data: statsResult.value.data
+        };
+      } else {
+        _cachedGlobalStats = {
+          ..._cachedGlobalStats,
+          isLive: false
+        };
+      }
+
+      if (gamesResult.status === 'fulfilled' && gamesResult.value?.data) {
+        const list = gamesResult.value.data;
+        list.forEach(item => {
+          const g = item?.game || item;
+          if (!g) return;
+          const rawCount = g.score_count ?? g.scores_count ?? g.total_scores 
+            ?? g.scoreCount ?? g.scoresCount ?? g.totalScores
+            ?? g.stats?.score_count ?? g.stats?.scores_count ?? g.stats?.total_scores;
+          const rawSlugOrName = g.slug || g.name;
+          if (rawSlugOrName && rawCount !== undefined && rawCount !== null) {
+            const count = Number(rawCount);
+            if (!isNaN(count)) {
+              const canonicalSlug = normalizeSlug(g.slug, g.name);
+              if (_cachedGameCounts[canonicalSlug] !== undefined) {
+                _cachedGameCounts[canonicalSlug] = count;
+              }
+            }
+          }
+        });
+      }
+    } catch (err) {
+      console.warn('[LeaderboardApi] Error sincronizando estadísticas arcade:', err);
+      _cachedGlobalStats = {
+        ..._cachedGlobalStats,
+        isLive: false
+      };
+    } finally {
+      try {
+        renderLiveStatsUI();
+      } catch (e) {
+        console.error('[LeaderboardApi] Error in renderLiveStatsUI:', e);
+      }
+      _syncArcadePromise = null;
+    }
+  })();
+
+  return _syncArcadePromise;
+}
+
 export async function syncFooterLiveStats() {
-  const result = await fetchGlobalStats();
-  if (!result || !result.data) return;
-  const { total_players, total_scores, highest_score } = result.data;
-  const statOpened = document.querySelector('[data-t="footerStatOpened"]');
-  const statOnline = document.querySelector('[data-t="footerStatOnline"]');
-  const statElixir = document.querySelector('[data-t="footerStatElixir"]');
-  if (statOpened && highest_score) {
-    statOpened.innerHTML = `<span class="block text-[9px] uppercase tracking-widest text-mafia-gold/50 font-sans">🏆 Top Score</span><span class="block text-sm font-black text-mafia-amber font-mono mt-0.5">${Number(highest_score).toLocaleString()}</span>`;
-  }
-  if (statOnline && total_scores) {
-    statOnline.innerHTML = `<span class="block text-[9px] uppercase tracking-widest text-mafia-gold/50 font-sans">⚔️ Partidas</span><span class="block text-sm font-black text-mafia-green font-mono mt-0.5">+${Number(total_scores).toLocaleString()}</span>`;
-  }
-  if (statElixir && total_players) {
-    statElixir.innerHTML = `<span class="block text-[9px] uppercase tracking-widest text-mafia-gold/50 font-sans">👥 Jugadores</span><span class="block text-sm font-black text-blue-400 font-mono mt-0.5">+${Number(total_players).toLocaleString()}</span>`;
-  }
+  await syncLiveArcadeStats();
+}
+
+// Actualización periódica en segundo plano (cada 60s) y al volver a la pestaña activa
+let _pollInterval = null;
+export function startLiveStatsPolling(intervalMs = 60000) {
+  if (typeof window === 'undefined') return;
+  if (_pollInterval) clearInterval(_pollInterval);
+  _pollInterval = setInterval(() => {
+    if (document.visibilityState === 'visible') {
+      syncLiveArcadeStats();
+    }
+  }, intervalMs);
+}
+
+if (typeof document !== 'undefined') {
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+      syncLiveArcadeStats();
+    }
+  });
+}
+
+// Escuchar cambios de idioma para refrescar las etiquetas dinámicas
+if (typeof window !== 'undefined') {
+  window.addEventListener('spicycrust:lang-changed', () => {
+    renderLiveStatsUI();
+  });
 }

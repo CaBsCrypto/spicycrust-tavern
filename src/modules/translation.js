@@ -52,6 +52,9 @@ export async function initTranslations() {
     if (window.AuthSystemUpdateUI) {
       window.AuthSystemUpdateUI();
     }
+
+    // Notificar a componentes dinámicos (Live Arcade Stats y cajas 3D)
+    window.dispatchEvent(new CustomEvent('spicycrust:lang-changed', { detail: { lang } }));
   }
 
   // Escuchar click de alternar

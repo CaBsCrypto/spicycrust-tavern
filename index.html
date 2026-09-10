@@ -203,68 +203,158 @@
 
         <!-- ================= GRID CENTRAL DE JUEGOS ================= -->
         <section class="mb-20 w-full" aria-labelledby="grid-title">
-          <div class="flex items-center justify-between border-b border-mafia-gold/20 pb-4 mb-12">
+          <div class="flex items-center justify-between border-b border-mafia-gold/20 pb-4 mb-6">
             <h3 id="grid-title" class="font-cinzel font-extrabold text-lg md:text-2xl text-provolone-cheese uppercase flex items-center gap-2" data-t="gridTitle">
               👑 ELIGE TU JUEGO PIZZA
             </h3>
             <span class="text-xs text-mafia-red bg-mafia-red/10 border border-mafia-red/30 px-3 py-1 rounded-full hidden sm:inline" data-t="elixirMax">💧 ELIXIR MÁXIMO: 10/10</span>
           </div>
 
+          <!-- ================= BANNER HERO DE ESTADÍSTICAS VIVAS ("LIVE ARCADE STATS") ================= -->
+          <div id="live-arcade-banner" class="max-w-7xl mx-auto mb-10 w-full live-arcade-hero rounded-2xl relative overflow-hidden border-2 border-mafia-gold/40 shadow-[0_15px_45px_rgba(0,0,0,0.85),0_0_30px_rgba(233,196,106,0.15)] backdrop-blur-md">
+            <!-- Capa de brillo y humo de taberna -->
+            <div class="absolute inset-0 bg-gradient-to-br from-[#2a160d]/90 via-[#160d08]/95 to-[#24130b]/90 pointer-events-none"></div>
+            <div class="absolute -top-24 -right-24 w-96 h-96 bg-[radial-gradient(ellipse_at_center,_rgba(255,216,102,0.12)_0%,_transparent_70%)] pointer-events-none"></div>
+            <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-[radial-gradient(ellipse_at_center,_rgba(216,95,0,0.12)_0%,_transparent_70%)] pointer-events-none"></div>
+
+            <!-- Cabecera del Banner -->
+            <div class="relative z-10 px-4 sm:px-8 py-3 sm:py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3 border-b border-[#ffd866]/15 bg-black/20">
+              <div class="flex items-center gap-2.5">
+                <span class="text-base sm:text-lg select-none">👑</span>
+                <span class="font-cinzel font-black text-xs sm:text-sm tracking-wider sm:tracking-widest text-[#ffd866] uppercase" data-t="heroBannerTag">
+                  TELEMETRÍA ARCADE // LIVE STATS
+                </span>
+              </div>
+              
+              <!-- Indicador visual pulsante LIVE API -->
+              <div id="hero-live-indicator" class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-950/80 border border-emerald-500/50 text-emerald-400 font-mono text-xs font-bold tracking-wider shadow-[0_0_12px_rgba(16,185,129,0.25)] w-fit self-start sm:self-auto">
+                <span class="relative flex h-2 w-2">
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
+                </span>
+                <span>🟢 EN VIVO / LIVE API</span>
+              </div>
+            </div>
+
+            <!-- Grilla Responsiva de las 3 Métricas Hero -->
+            <div class="relative z-10 p-4 sm:p-6 md:p-8 grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+              
+              <!-- Métrica 1: Récord Supremo -->
+              <div class="hero-stat-card bg-[#140b07]/80 hover:bg-[#1f110a] border border-[#ffd866]/25 hover:border-[#ffd866] rounded-xl p-4 sm:p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_25px_rgba(255,216,102,0.25)] group relative overflow-hidden">
+                <div class="flex items-center justify-between gap-2 mb-2">
+                  <div class="flex items-center gap-2">
+                    <span class="text-xl group-hover:scale-110 transition-transform duration-200 select-none">🏆</span>
+                    <span class="text-[11px] sm:text-xs font-lilita uppercase tracking-wider text-[#ffd866]/90" data-t="heroStat1Label">
+                      RÉCORD SUPREMO
+                    </span>
+                  </div>
+                  <span class="text-[10px] text-[#ffd866]/40 font-mono hidden md:inline">#TOP1</span>
+                </div>
+                <div id="hero-highest-score" class="font-mono font-black text-2xl sm:text-2xl md:text-xl lg:text-3xl xl:text-4xl text-white tracking-tight text-glow-gold group-hover:text-[#ffd866] transition-colors break-words">
+                  188,500
+                </div>
+                <p class="text-[11px] sm:text-xs text-provolone-cheese/70 font-sans mt-2 flex items-center gap-1.5" data-t="heroStat1Sub">
+                  <span>👑</span> Top Score del Reino
+                </p>
+              </div>
+
+              <!-- Métrica 2: Total de Partidas Disputadas -->
+              <div class="hero-stat-card bg-[#140b07]/80 hover:bg-[#1f110a] border border-emerald-500/25 hover:border-emerald-400 rounded-xl p-4 sm:p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_25px_rgba(52,211,153,0.25)] group relative overflow-hidden">
+                <div class="flex items-center justify-between gap-2 mb-2">
+                  <div class="flex items-center gap-2">
+                    <span class="text-xl group-hover:scale-110 transition-transform duration-200 select-none">⚔️</span>
+                    <span class="text-[11px] sm:text-xs font-lilita uppercase tracking-wider text-emerald-400/90" data-t="heroStat2Label">
+                      PARTIDAS DISPUTADAS
+                    </span>
+                  </div>
+                  <span class="text-[10px] text-emerald-500/40 font-mono hidden md:inline">GLOBAL</span>
+                </div>
+                <div id="hero-total-scores" class="font-mono font-black text-2xl sm:text-2xl md:text-xl lg:text-3xl xl:text-4xl text-emerald-400 tracking-tight drop-shadow-[0_0_12px_rgba(52,211,153,0.35)] group-hover:text-emerald-300 transition-colors break-words">
+                  +31 <span class="text-xs sm:text-sm font-sans font-semibold tracking-normal opacity-85 uppercase">partidas</span>
+                </div>
+                <p class="text-[11px] sm:text-xs text-provolone-cheese/70 font-sans mt-2 flex items-center gap-1.5" data-t="heroStat2Sub">
+                  <span>🔥</span> Batallas en todos los arcades
+                </p>
+              </div>
+
+              <!-- Métrica 3: Jugadores Registrados -->
+              <div class="hero-stat-card bg-[#140b07]/80 hover:bg-[#1f110a] border border-amber-500/25 hover:border-amber-400 rounded-xl p-4 sm:p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_25px_rgba(251,191,36,0.25)] group relative overflow-hidden">
+                <div class="flex items-center justify-between gap-2 mb-2">
+                  <div class="flex items-center gap-2">
+                    <span class="text-xl group-hover:scale-110 transition-transform duration-200 select-none">👥</span>
+                    <span class="text-[11px] sm:text-xs font-lilita uppercase tracking-wider text-amber-300/90" data-t="heroStat3Label">
+                      JUGADORES REGISTRADOS
+                    </span>
+                  </div>
+                  <span class="text-[10px] text-amber-500/40 font-mono hidden md:inline">ONLINE</span>
+                </div>
+                <div id="hero-total-players" class="font-mono font-black text-2xl sm:text-2xl md:text-xl lg:text-3xl xl:text-4xl text-amber-300 tracking-tight drop-shadow-[0_0_12px_rgba(252,211,77,0.35)] group-hover:text-amber-200 transition-colors break-words">
+                  +26 <span class="text-xs sm:text-sm font-sans font-semibold tracking-normal opacity-85 uppercase">pizzeros</span>
+                </div>
+                <p class="text-[11px] sm:text-xs text-provolone-cheese/70 font-sans mt-2 flex items-center gap-1.5" data-t="heroStat3Sub">
+                  <span>🍕</span> Pizzeros registrados en el Reino
+                </p>
+              </div>
+
+            </div>
+
+          </div>
+
           <!-- GRID PRINCIPAL DE JUEGOS CON ARMARIOS DE PIZZA 3D INTERACTIVOS (THREE.JS) -->
           <div class="flex md:grid md:grid-cols-4 max-w-7xl mx-auto overflow-x-auto md:overflow-x-visible snap-x snap-mandatory gap-6 md:gap-6 pt-6 w-full no-scrollbar">
 
             <!-- CAJA 1: RHYTHM SLICE -->
-            <div class="flex flex-col items-center max-w-[490px] mx-auto w-[92vw] sm:w-[86vw] md:w-full shrink-0 snap-center px-1 md:px-2">
+            <div class="flex flex-col items-center max-w-[490px] mx-auto w-[92vw] sm:w-[86vw] md:w-full shrink-0 snap-center px-1 md:px-2 group">
               <div id="cabinet-3d-1" class="w-full aspect-[1.12] relative play-btn cursor-pointer" data-game="slasher"></div>
               <!-- Información Flotante Sin Contenedores -->
-              <div class="text-center mt-2 pointer-events-none select-none">
+              <div class="text-center mt-2 select-none">
                 <h4 class="font-cinzel font-black text-[#ffd866] text-xl sm:text-2xl md:text-xl tracking-wider uppercase" data-t="game3Title">RHYTHM SLICE</h4>
                 <div class="text-[#f61b7f] font-lilita text-sm sm:text-base md:text-sm mt-0.5" data-t="game3Subtitle">LEGENDARIO // 💧 ELIXIR: 4</div>
                 <div class="flex justify-center gap-4 text-[#ffd866]/70 font-lilita text-xs sm:text-sm mt-1">
                   <span data-t="game3Stat1">⚔️ RITMO: 99K</span>
-                  <span data-t="game3Stat2">👑 CRUST: 450</span>
+                  <span id="game-stat-rhythm-slice" class="text-[#ffd866] font-bold game-score-count cursor-default pointer-events-auto">👑 PARTIDAS: 8</span>
                 </div>
               </div>
             </div>
 
             <!-- CAJA 2: SLASH SLICE -->
-            <div class="flex flex-col items-center max-w-[490px] mx-auto w-[92vw] sm:w-[86vw] md:w-full shrink-0 snap-center px-1 md:px-2">
+            <div class="flex flex-col items-center max-w-[490px] mx-auto w-[92vw] sm:w-[86vw] md:w-full shrink-0 snap-center px-1 md:px-2 group">
               <div id="cabinet-3d-2" class="w-full aspect-[1.12] relative play-btn cursor-pointer" data-game="invaders"></div>
               <!-- Información Flotante Sin Contenedores -->
-              <div class="text-center mt-2 pointer-events-none select-none">
+              <div class="text-center mt-2 select-none">
                 <h4 class="font-cinzel font-black text-[#ffd866] text-xl sm:text-2xl md:text-xl tracking-wider uppercase" data-t="game1Title">SLASH SLICE</h4>
                 <div class="text-[#d85f00] font-lilita text-sm sm:text-base md:text-sm mt-0.5" data-t="game1Subtitle">ESPECIAL // 💧 ELIXIR: 3</div>
                 <div class="flex justify-center gap-4 text-[#ffd866]/70 font-lilita text-xs sm:text-sm mt-1">
                   <span data-t="game1Stat1">⚡ VELOCIDAD: FAST</span>
-                  <span data-t="game1Stat2">👑 SCORE: 99K</span>
+                  <span id="game-stat-slash-slice" class="text-[#ffd866] font-bold game-score-count cursor-default pointer-events-auto">👑 PARTIDAS: 13</span>
                 </div>
               </div>
             </div>
 
             <!-- CAJA 3: SMASH THE CRUST -->
-            <div class="flex flex-col items-center max-w-[490px] mx-auto w-[92vw] sm:w-[86vw] md:w-full shrink-0 snap-center px-1 md:px-2">
+            <div class="flex flex-col items-center max-w-[490px] mx-auto w-[92vw] sm:w-[86vw] md:w-full shrink-0 snap-center px-1 md:px-2 group">
               <div id="cabinet-3d-3" class="w-full aspect-[1.12] relative play-btn cursor-pointer" data-game="smash"></div>
               <!-- Información Flotante Sin Contenedores -->
-              <div class="text-center mt-2 pointer-events-none select-none">
+              <div class="text-center mt-2 select-none">
                 <h4 class="font-cinzel font-black text-[#ffd866] text-xl sm:text-2xl md:text-xl tracking-wider uppercase" data-t="game5Title">SMASH THE CRUST</h4>
                 <div class="text-[#f61b7f] font-lilita text-sm sm:text-base md:text-sm mt-0.5" data-t="game5Subtitle">ÉPICO // 💧 ELIXIR: 3</div>
                 <div class="flex justify-center gap-4 text-[#ffd866]/70 font-lilita text-xs sm:text-sm mt-1">
                   <span data-t="game5Stat1">🍕 PÁNICO: MAX</span>
-                  <span data-t="game5Stat2">👑 SCORE: 77K</span>
+                  <span id="game-stat-smash-the-crust" class="text-[#ffd866] font-bold game-score-count cursor-default pointer-events-auto">👑 PARTIDAS: 5</span>
                 </div>
               </div>
             </div>
 
             <!-- CAJA 4: SLICE HUNTER -->
-            <div class="flex flex-col items-center max-w-[490px] mx-auto w-[92vw] sm:w-[86vw] md:w-full shrink-0 snap-center px-1 md:px-2">
+            <div class="flex flex-col items-center max-w-[490px] mx-auto w-[92vw] sm:w-[86vw] md:w-full shrink-0 snap-center px-1 md:px-2 group">
               <div id="cabinet-3d-4" class="w-full aspect-[1.12] relative play-btn cursor-pointer" data-game="hunter"></div>
               <!-- Información Flotante Sin Contenedores -->
-              <div class="text-center mt-2 pointer-events-none select-none">
+              <div class="text-center mt-2 select-none">
                 <h4 class="font-cinzel font-black text-[#ffd866] text-xl sm:text-2xl md:text-xl tracking-wider uppercase" data-t="game4Title">SLICE HUNTER</h4>
                 <div class="text-[#00e5ff] font-lilita text-sm sm:text-base md:text-sm mt-0.5" data-t="game4Subtitle">MÍTICO // 💧 ELIXIR: 2</div>
                 <div class="flex justify-center gap-4 text-[#ffd866]/70 font-lilita text-xs sm:text-sm mt-1">
                   <span data-t="game4Stat1">🎯 CAZA: 100%</span>
-                  <span data-t="game4Stat2">👑 SCORE: 88K</span>
+                  <span id="game-stat-slice-hunter" class="text-[#ffd866] font-bold game-score-count cursor-default pointer-events-auto">👑 PARTIDAS: 5</span>
                 </div>
               </div>
             </div>
@@ -297,17 +387,17 @@
 
           <!-- Métricas en Vivo -->
           <div class="flex items-center gap-6 text-center">
-            <div class="border-r border-mafia-gold/20 pr-6" data-t="footerStatOpened">
+            <div id="footer-stat-score" class="border-r border-mafia-gold/20 pr-6">
               <span class="block text-[9px] uppercase tracking-widest text-mafia-gold/50 font-sans">🏆 Top Score</span>
-              <span class="block text-sm font-black text-mafia-amber font-mono mt-0.5">99,450</span>
+              <span class="block text-sm font-black text-mafia-amber font-mono mt-0.5">188,500</span>
             </div>
-            <div class="border-r border-mafia-gold/20 pr-6" data-t="footerStatOnline">
+            <div id="footer-stat-matches" class="border-r border-mafia-gold/20 pr-6">
               <span class="block text-[9px] uppercase tracking-widest text-mafia-gold/50 font-sans">⚔️ Partidas</span>
-              <span class="block text-sm font-black text-mafia-green font-mono mt-0.5">+15,000</span>
+              <span class="block text-sm font-black text-mafia-green font-mono mt-0.5">+31</span>
             </div>
-            <div data-t="footerStatElixir">
+            <div id="footer-stat-players">
               <span class="block text-[9px] uppercase tracking-widest text-mafia-gold/50 font-sans">👥 Jugadores</span>
-              <span class="block text-sm font-black text-blue-400 font-mono mt-0.5">+3,400</span>
+              <span class="block text-sm font-black text-blue-400 font-mono mt-0.5">+26</span>
             </div>
           </div>
 
