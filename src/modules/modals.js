@@ -17,13 +17,8 @@ export function initModals() {
     tab.addEventListener('click', (e) => {
       e.preventDefault();
       Sound.playToggleSound();
-      tabs.forEach(t => {
-        t.classList.remove('active-tab', 'border-mafia-gold', 'text-mafia-gold', 'bg-mafia-mahogany/90');
-        t.classList.add('border-mafia-gold/20', 'text-provolone-cheese/60', 'bg-[#1a0f0a]');
-      });
-      
-      tab.classList.add('active-tab', 'border-mafia-gold', 'text-mafia-gold', 'bg-mafia-mahogany/90');
-      tab.classList.remove('border-mafia-gold/20', 'text-provolone-cheese/60', 'bg-[#1a0f0a]');
+      tabs.forEach(t => t.classList.remove('active-tab'));
+      tab.classList.add('active-tab');
       
       currentGame = tab.getAttribute('data-game') || 'rhythm-slice';
       loadLeaderboard();
@@ -143,41 +138,41 @@ export function initModals() {
       const score = Number(player.score || 0).toLocaleString();
       
       let rankBadge = '';
-      let rowHighlight = 'hover:bg-mafia-mahogany/30';
+      let rowHighlight = 'hover:bg-[#23150d]/80';
       if (rank === 1) {
-        rankBadge = '<span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-gradient-to-b from-yellow-300 to-amber-600 text-black font-black text-xs shadow-md">🥇</span>';
-        rowHighlight = 'bg-yellow-500/10 hover:bg-yellow-500/15 border-yellow-500/30';
+        rankBadge = '<span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-b from-[#ffe066] to-[#b38600] text-black font-black text-sm shadow-[0_0_12px_rgba(255,224,102,0.4)]">🥇</span>';
+        rowHighlight = 'bg-[#ffe066]/10 hover:bg-[#ffe066]/15';
       } else if (rank === 2) {
-        rankBadge = '<span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-gradient-to-b from-slate-200 to-slate-400 text-black font-black text-xs shadow-md">🥈</span>';
-        rowHighlight = 'bg-slate-300/5 hover:bg-slate-300/10 border-slate-400/20';
+        rankBadge = '<span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-b from-[#e2e8f0] to-[#64748b] text-black font-black text-sm shadow-[0_0_12px_rgba(226,232,240,0.3)]">🥈</span>';
+        rowHighlight = 'bg-[#e2e8f0]/5 hover:bg-[#e2e8f0]/10';
       } else if (rank === 3) {
-        rankBadge = '<span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-gradient-to-b from-amber-600 to-amber-800 text-white font-black text-xs shadow-md">🥉</span>';
-        rowHighlight = 'bg-amber-700/5 hover:bg-amber-700/10 border-amber-600/20';
+        rankBadge = '<span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-b from-[#f97316] to-[#7c2d12] text-white font-black text-sm shadow-[0_0_12px_rgba(249,115,22,0.3)]">🥉</span>';
+        rowHighlight = 'bg-[#f97316]/5 hover:bg-[#f97316]/10';
       } else {
-        rankBadge = `<span class="inline-flex items-center justify-center w-6 h-6 rounded-md bg-mafia-dark/80 text-mafia-gold/70 font-mono font-bold text-xs border border-mafia-gold/20">${rank}</span>`;
+        rankBadge = `<span class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-[#1a0f0a] text-[#ffd866] font-mono font-bold text-xs border border-[#ffd866]/30">${rank}</span>`;
       }
 
       const formattedDate = player.created_at ? player.created_at.split(' ')[0] || player.created_at.split('T')[0] : 'HOY';
 
       return `
-        <tr class="transition-all duration-200 ${rowHighlight}">
-          <td class="px-3 sm:px-4 py-3 text-center">
+        <tr class="transition-all duration-200 border-b border-[#ffd866]/10 ${rowHighlight}">
+          <td class="px-3 sm:px-4 py-3.5 text-center w-14 sm:w-16">
             ${rankBadge}
           </td>
-          <td class="px-3 sm:px-4 py-3 font-semibold text-provolone-cheese">
+          <td class="px-3 sm:px-4 py-3.5 font-semibold text-white">
             <div class="flex items-center gap-2 flex-wrap">
-              <span class="font-lilita text-sm sm:text-base text-white tracking-wide">${player.nickname || player.name || 'JUGADOR'}</span>
-              <span class="text-[9px] bg-emerald-950/80 text-emerald-400 px-1.5 py-0.5 rounded border border-emerald-500/30 flex items-center gap-1 font-sans font-medium">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> VERIFICADO
+              <span class="lb-player-name text-sm sm:text-base text-white tracking-normal">${player.nickname || player.name || 'JUGADOR'}</span>
+              <span class="text-[10px] bg-emerald-950 text-emerald-300 px-2 py-0.5 rounded-full border border-emerald-500/40 inline-flex items-center gap-1 font-sans font-semibold tracking-wider">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> VERIFICADO
               </span>
             </div>
           </td>
-          <td class="px-3 sm:px-4 py-3 text-right">
-            <span class="font-mono font-black text-sm sm:text-base text-mafia-amber tracking-tight drop-shadow-sm">
+          <td class="px-3 sm:px-4 py-3.5 text-right">
+            <span class="font-mono font-black text-base sm:text-lg text-[#ffd866] tracking-tight drop-shadow">
               ${score}
             </span>
           </td>
-          <td class="px-3 sm:px-4 py-3 text-right text-[11px] text-provolone-cheese/50 font-mono hidden sm:table-cell">
+          <td class="px-3 sm:px-4 py-3.5 text-right text-xs text-white/60 font-mono hidden sm:table-cell">
             ${formattedDate}
           </td>
         </tr>
