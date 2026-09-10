@@ -1,4 +1,4 @@
-﻿/**
+/**
  * SpicyCrust - Cliente de API para el Leaderboard
  * API Base: https://spicycrust-api.alphadocere.cl/api/v1
  */
@@ -93,13 +93,14 @@ export async function fetchLeaderboard({ game = 'rhythm-slice', limit = 20, sear
     clearTimeout(timeoutId);
     if (res.ok) {
       const json = await res.json();
-      if (json && json.success && Array.isArray(json.data?.leaderboard)) {
+      const rows = json.data?.ranking ?? json.data?.leaderboard;
+      if (json && json.success && Array.isArray(rows)) {
         return {
           success: true,
           isLive: true,
           gameName: json.data?.game?.name ?? game,
           seasonName: json.data?.season?.name ?? seasonName,
-          data: json.data.leaderboard
+          data: rows
         };
       }
     }
