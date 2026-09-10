@@ -260,9 +260,16 @@ let _cachedGlobalStats = {
 
 let _cachedGameCounts = {
   'rhythm-slice': 8,
-  'slash-slice': 13,
+  'slash-slice': 15,
   'smash-the-crust': 5,
   'slice-hunter': 5
+};
+
+let _cachedGameTopScores = {
+  'rhythm-slice': 188500,
+  'slash-slice': 3810,
+  'smash-the-crust': 28987,
+  'slice-hunter': 257
 };
 
 export function renderLiveStatsUI() {
@@ -323,28 +330,53 @@ export function renderLiveStatsUI() {
     }
   }
 
-  // 2. Cajas 3D: Sincronización de partidas reales (score_count) por juego
+  // 2. Cajas 3D: Sincronización de Partidas y Top Score reales por juego
   const gameElements = {
-    'rhythm-slice': document.getElementById('game-stat-rhythm-slice'),
-    'slash-slice': document.getElementById('game-stat-slash-slice'),
-    'smash-the-crust': document.getElementById('game-stat-smash-the-crust'),
-    'slice-hunter': document.getElementById('game-stat-slice-hunter')
+    'rhythm-slice': {
+      stat: document.getElementById('game-stat-rhythm-slice'),
+      top: document.getElementById('game-top-rhythm-slice')
+    },
+    'slash-slice': {
+      stat: document.getElementById('game-stat-slash-slice'),
+      top: document.getElementById('game-top-slash-slice')
+    },
+    'smash-the-crust': {
+      stat: document.getElementById('game-stat-smash-the-crust'),
+      top: document.getElementById('game-top-smash-the-crust')
+    },
+    'slice-hunter': {
+      stat: document.getElementById('game-stat-slice-hunter'),
+      top: document.getElementById('game-top-slice-hunter')
+    }
   };
 
   const defaultCounts = {
     'rhythm-slice': 8,
-    'slash-slice': 13,
+    'slash-slice': 15,
     'smash-the-crust': 5,
     'slice-hunter': 5
   };
 
-  Object.entries(gameElements).forEach(([slug, el]) => {
-    if (!el) return;
-    const val = _cachedGameCounts[slug];
-    const num = Number(val);
-    const safeVal = Number.isFinite(num) ? num : (defaultCounts[slug] ?? 0);
-    const count = safeVal.toLocaleString(locale);
-    el.textContent = isEn ? `👑 MATCHES: ${count}` : `👑 PARTIDAS: ${count}`;
+  const defaultTops = {
+    'rhythm-slice': 188500,
+    'slash-slice': 3810,
+    'smash-the-crust': 28987,
+    'slice-hunter': 257
+  };
+
+  Object.entries(gameElements).forEach(([slug, els]) => {
+    if (els.stat) {
+      const val = _cachedGameCounts[slug];
+      const num = Number(val);
+      const safeVal = Number.isFinite(num) ? num : (defaultCounts[slug] ?? 0);
+      els.stat.textContent = safeVal.toLocaleString(locale);
+    }
+    if (els.top) {
+      const val = _cachedGameTopScores[slug];
+      const num = Number(val);
+      const safeVal = Number.isFinite(num) ? num : (defaultTops[slug] ?? 0);
+      els.top.textContent = safeVal.toLocaleString(locale);
+    }
   });
 
   // 3. Footer Stats Sync
@@ -420,6 +452,31 @@ export async function syncLiveArcadeStats() {
           }
         });
       }
+
+      // 3. Consulta de Top Score real para cada juego desde la API
+      const gameSlugs = ['rhythm-slice', 'slash-slice', 'smash-the-crust', 'slice-hunter'];
+      const topPromises = gameSlugs.map(async (slug) => {
+        try {
+          const { slug: seasonSlug } = await fetchActiveSeason();
+          const res = await fetch(`${API_BASE_URL}/api/v1/leaderboard?game=${slug}&season=${seasonSlug}&limit=1`, {
+            headers: { 'Accept': 'application/json' },
+            signal: AbortSignal.timeout(3000)
+          });
+          if (res.ok) {
+            const json = await res.json();
+            const topScore = json?.data?.ranking?.[0]?.score ?? json?.data?.leaderboard?.[0]?.score;
+            if (topScore !== undefined && topScore !== null) {
+              const num = Number(topScore);
+              if (!isNaN(num)) {
+                _cachedGameTopScores[slug] = num;
+              }
+            }
+          }
+        } catch (e) {
+          // Mantener valor en cache
+        }
+      });
+      await Promise.allSettled(topPromises);
     } catch (err) {
       console.warn('[LeaderboardApi] Error sincronizando estadísticas arcade:', err);
       _cachedGlobalStats = {

@@ -306,13 +306,24 @@
             <!-- CAJA 1: RHYTHM SLICE -->
             <div class="flex flex-col items-center max-w-[490px] mx-auto w-[92vw] sm:w-[86vw] md:w-full shrink-0 snap-center px-1 md:px-2 group">
               <div id="cabinet-3d-1" class="w-full aspect-[1.12] relative play-btn cursor-pointer" data-game="slasher"></div>
-              <!-- Información Flotante Sin Contenedores -->
-              <div class="text-center mt-2 select-none">
-                <h4 class="font-cinzel font-black text-[#ffd866] text-xl sm:text-2xl md:text-xl tracking-wider uppercase" data-t="game3Title">RHYTHM SLICE</h4>
-                <div class="text-[#f61b7f] font-lilita text-sm sm:text-base md:text-sm mt-0.5" data-t="game3Subtitle">LEGENDARIO // 💧 ELIXIR: 4</div>
-                <div class="flex justify-center gap-4 text-[#ffd866]/70 font-lilita text-xs sm:text-sm mt-1">
-                  <span data-t="game3Stat1">⚔️ RITMO: 99K</span>
-                  <span id="game-stat-rhythm-slice" class="text-[#ffd866] font-bold game-score-count cursor-default pointer-events-auto">👑 PARTIDAS: 8</span>
+              <!-- Tarjeta HUD del Arcade -->
+              <div class="text-center mt-3 select-none w-full max-w-[340px]">
+                <h4 class="font-cinzel font-black text-[#ffd866] text-lg sm:text-xl md:text-xl tracking-wider uppercase drop-shadow" data-t="game3Title">RHYTHM SLICE</h4>
+                <div class="text-[#f61b7f] font-lilita text-xs sm:text-sm mt-0.5" data-t="game3Subtitle">LEGENDARIO // 💧 ELIXIR: 4</div>
+                
+                <!-- Píldora Arcade HUD: Top Score & Partidas Reales -->
+                <div class="mt-2.5 mx-auto bg-[#140b07]/90 border border-[#ffd866]/30 rounded-xl px-3 py-1.5 flex items-center justify-around gap-2 shadow-[0_4px_16px_rgba(0,0,0,0.6)] backdrop-blur-sm group-hover:border-[#ffd866]/60 transition-all duration-300">
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-xs select-none">🏆</span>
+                    <span class="text-[10px] text-white/60 uppercase font-sans font-semibold">TOP:</span>
+                    <span id="game-top-rhythm-slice" class="font-mono font-black text-xs sm:text-sm text-[#ffd866]">188,500</span>
+                  </div>
+                  <span class="text-white/20">|</span>
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-xs select-none">👑</span>
+                    <span class="text-[10px] text-white/60 uppercase font-sans font-semibold">PARTIDAS:</span>
+                    <span id="game-stat-rhythm-slice" class="font-mono font-black text-xs sm:text-sm text-emerald-400">8</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -320,13 +331,24 @@
             <!-- CAJA 2: SLASH SLICE -->
             <div class="flex flex-col items-center max-w-[490px] mx-auto w-[92vw] sm:w-[86vw] md:w-full shrink-0 snap-center px-1 md:px-2 group">
               <div id="cabinet-3d-2" class="w-full aspect-[1.12] relative play-btn cursor-pointer" data-game="invaders"></div>
-              <!-- Información Flotante Sin Contenedores -->
-              <div class="text-center mt-2 select-none">
-                <h4 class="font-cinzel font-black text-[#ffd866] text-xl sm:text-2xl md:text-xl tracking-wider uppercase" data-t="game1Title">SLASH SLICE</h4>
-                <div class="text-[#d85f00] font-lilita text-sm sm:text-base md:text-sm mt-0.5" data-t="game1Subtitle">ESPECIAL // 💧 ELIXIR: 3</div>
-                <div class="flex justify-center gap-4 text-[#ffd866]/70 font-lilita text-xs sm:text-sm mt-1">
-                  <span data-t="game1Stat1">⚡ VELOCIDAD: FAST</span>
-                  <span id="game-stat-slash-slice" class="text-[#ffd866] font-bold game-score-count cursor-default pointer-events-auto">👑 PARTIDAS: 13</span>
+              <!-- Tarjeta HUD del Arcade -->
+              <div class="text-center mt-3 select-none w-full max-w-[340px]">
+                <h4 class="font-cinzel font-black text-[#ffd866] text-lg sm:text-xl md:text-xl tracking-wider uppercase drop-shadow" data-t="game1Title">SLASH SLICE</h4>
+                <div class="text-[#d85f00] font-lilita text-xs sm:text-sm mt-0.5" data-t="game1Subtitle">ESPECIAL // 💧 ELIXIR: 3</div>
+                
+                <!-- Píldora Arcade HUD: Top Score & Partidas Reales -->
+                <div class="mt-2.5 mx-auto bg-[#140b07]/90 border border-[#ffd866]/30 rounded-xl px-3 py-1.5 flex items-center justify-around gap-2 shadow-[0_4px_16px_rgba(0,0,0,0.6)] backdrop-blur-sm group-hover:border-[#ffd866]/60 transition-all duration-300">
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-xs select-none">🏆</span>
+                    <span class="text-[10px] text-white/60 uppercase font-sans font-semibold">TOP:</span>
+                    <span id="game-top-slash-slice" class="font-mono font-black text-xs sm:text-sm text-[#ffd866]">3,810</span>
+                  </div>
+                  <span class="text-white/20">|</span>
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-xs select-none">👑</span>
+                    <span class="text-[10px] text-white/60 uppercase font-sans font-semibold">PARTIDAS:</span>
+                    <span id="game-stat-slash-slice" class="font-mono font-black text-xs sm:text-sm text-emerald-400">15</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -334,13 +356,24 @@
             <!-- CAJA 3: SMASH THE CRUST -->
             <div class="flex flex-col items-center max-w-[490px] mx-auto w-[92vw] sm:w-[86vw] md:w-full shrink-0 snap-center px-1 md:px-2 group">
               <div id="cabinet-3d-3" class="w-full aspect-[1.12] relative play-btn cursor-pointer" data-game="smash"></div>
-              <!-- Información Flotante Sin Contenedores -->
-              <div class="text-center mt-2 select-none">
-                <h4 class="font-cinzel font-black text-[#ffd866] text-xl sm:text-2xl md:text-xl tracking-wider uppercase" data-t="game5Title">SMASH THE CRUST</h4>
-                <div class="text-[#f61b7f] font-lilita text-sm sm:text-base md:text-sm mt-0.5" data-t="game5Subtitle">ÉPICO // 💧 ELIXIR: 3</div>
-                <div class="flex justify-center gap-4 text-[#ffd866]/70 font-lilita text-xs sm:text-sm mt-1">
-                  <span data-t="game5Stat1">🍕 PÁNICO: MAX</span>
-                  <span id="game-stat-smash-the-crust" class="text-[#ffd866] font-bold game-score-count cursor-default pointer-events-auto">👑 PARTIDAS: 5</span>
+              <!-- Tarjeta HUD del Arcade -->
+              <div class="text-center mt-3 select-none w-full max-w-[340px]">
+                <h4 class="font-cinzel font-black text-[#ffd866] text-lg sm:text-xl md:text-xl tracking-wider uppercase drop-shadow" data-t="game5Title">SMASH THE CRUST</h4>
+                <div class="text-[#f61b7f] font-lilita text-xs sm:text-sm mt-0.5" data-t="game5Subtitle">ÉPICO // 💧 ELIXIR: 3</div>
+                
+                <!-- Píldora Arcade HUD: Top Score & Partidas Reales -->
+                <div class="mt-2.5 mx-auto bg-[#140b07]/90 border border-[#ffd866]/30 rounded-xl px-3 py-1.5 flex items-center justify-around gap-2 shadow-[0_4px_16px_rgba(0,0,0,0.6)] backdrop-blur-sm group-hover:border-[#ffd866]/60 transition-all duration-300">
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-xs select-none">🏆</span>
+                    <span class="text-[10px] text-white/60 uppercase font-sans font-semibold">TOP:</span>
+                    <span id="game-top-smash-the-crust" class="font-mono font-black text-xs sm:text-sm text-[#ffd866]">28,987</span>
+                  </div>
+                  <span class="text-white/20">|</span>
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-xs select-none">👑</span>
+                    <span class="text-[10px] text-white/60 uppercase font-sans font-semibold">PARTIDAS:</span>
+                    <span id="game-stat-smash-the-crust" class="font-mono font-black text-xs sm:text-sm text-emerald-400">5</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -348,13 +381,24 @@
             <!-- CAJA 4: SLICE HUNTER -->
             <div class="flex flex-col items-center max-w-[490px] mx-auto w-[92vw] sm:w-[86vw] md:w-full shrink-0 snap-center px-1 md:px-2 group">
               <div id="cabinet-3d-4" class="w-full aspect-[1.12] relative play-btn cursor-pointer" data-game="hunter"></div>
-              <!-- Información Flotante Sin Contenedores -->
-              <div class="text-center mt-2 select-none">
-                <h4 class="font-cinzel font-black text-[#ffd866] text-xl sm:text-2xl md:text-xl tracking-wider uppercase" data-t="game4Title">SLICE HUNTER</h4>
-                <div class="text-[#00e5ff] font-lilita text-sm sm:text-base md:text-sm mt-0.5" data-t="game4Subtitle">MÍTICO // 💧 ELIXIR: 2</div>
-                <div class="flex justify-center gap-4 text-[#ffd866]/70 font-lilita text-xs sm:text-sm mt-1">
-                  <span data-t="game4Stat1">🎯 CAZA: 100%</span>
-                  <span id="game-stat-slice-hunter" class="text-[#ffd866] font-bold game-score-count cursor-default pointer-events-auto">👑 PARTIDAS: 5</span>
+              <!-- Tarjeta HUD del Arcade -->
+              <div class="text-center mt-3 select-none w-full max-w-[340px]">
+                <h4 class="font-cinzel font-black text-[#ffd866] text-lg sm:text-xl md:text-xl tracking-wider uppercase drop-shadow" data-t="game4Title">SLICE HUNTER</h4>
+                <div class="text-[#00e5ff] font-lilita text-xs sm:text-sm mt-0.5" data-t="game4Subtitle">MÍTICO // 💧 ELIXIR: 2</div>
+                
+                <!-- Píldora Arcade HUD: Top Score & Partidas Reales -->
+                <div class="mt-2.5 mx-auto bg-[#140b07]/90 border border-[#ffd866]/30 rounded-xl px-3 py-1.5 flex items-center justify-around gap-2 shadow-[0_4px_16px_rgba(0,0,0,0.6)] backdrop-blur-sm group-hover:border-[#ffd866]/60 transition-all duration-300">
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-xs select-none">🏆</span>
+                    <span class="text-[10px] text-white/60 uppercase font-sans font-semibold">TOP:</span>
+                    <span id="game-top-slice-hunter" class="font-mono font-black text-xs sm:text-sm text-[#ffd866]">257</span>
+                  </div>
+                  <span class="text-white/20">|</span>
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-xs select-none">👑</span>
+                    <span class="text-[10px] text-white/60 uppercase font-sans font-semibold">PARTIDAS:</span>
+                    <span id="game-stat-slice-hunter" class="font-mono font-black text-xs sm:text-sm text-emerald-400">5</span>
+                  </div>
                 </div>
               </div>
             </div>
