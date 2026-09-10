@@ -179,7 +179,13 @@
           </nav>
 
             <!-- Widget de Estado en la Derecha -->
-            <div class="flex items-center gap-4 relative">
+            <div class="flex items-center gap-2 sm:gap-4 relative">
+              <!-- Botón Leaderboard móvil visible en pantallas pequeñas -->
+              <button id="leaderboard-btn-mobile" class="md:hidden border-2 border-mafia-gold/40 hover:border-mafia-gold bg-mafia-mahogany hover:bg-mafia-mahogany/80 text-mafia-gold font-lilita text-xs px-2.5 py-1.5 rounded-lg shadow-md cursor-pointer transition-all flex items-center gap-1.5" aria-label="Abrir clasificación">
+                <span>🏆</span>
+                <span class="text-[11px] font-black tracking-wide" data-t="navLeaderboard">RANKING</span>
+              </button>
+
               <!-- Botón para alternar idioma -->
               <button id="lang-toggle-btn" class="border-2 border-mafia-gold/40 hover:border-mafia-gold bg-mafia-mahogany hover:bg-mafia-mahogany/80 text-mafia-gold font-lilita text-xs px-3 py-1.5 rounded-lg shadow-md cursor-pointer transition-all uppercase">
                 EN
@@ -241,7 +247,7 @@
               <!-- Información Flotante Sin Contenedores -->
               <div class="text-center mt-2 pointer-events-none select-none">
                 <h4 class="font-cinzel font-black text-[#ffd866] text-xl sm:text-2xl md:text-xl tracking-wider uppercase" data-t="game5Title">SMASH THE CRUST</h4>
-                <div class="text-[#e63946] font-lilita text-sm sm:text-base md:text-sm mt-0.5" data-t="game5Subtitle">ÉPICO // 💧 ELIXIR: 3</div>
+                <div class="text-[#f61b7f] font-lilita text-sm sm:text-base md:text-sm mt-0.5" data-t="game5Subtitle">ÉPICO // 💧 ELIXIR: 3</div>
                 <div class="flex justify-center gap-4 text-[#ffd866]/70 font-lilita text-xs sm:text-sm mt-1">
                   <span data-t="game5Stat1">🍕 PÁNICO: MAX</span>
                   <span data-t="game5Stat2">👑 SCORE: 77K</span>
@@ -255,7 +261,7 @@
               <!-- Información Flotante Sin Contenedores -->
               <div class="text-center mt-2 pointer-events-none select-none">
                 <h4 class="font-cinzel font-black text-[#ffd866] text-xl sm:text-2xl md:text-xl tracking-wider uppercase" data-t="game4Title">SLICE HUNTER</h4>
-                <div class="text-[#00cc66] font-lilita text-sm sm:text-base md:text-sm mt-0.5" data-t="game4Subtitle">MÍTICO // 💧 ELIXIR: 2</div>
+                <div class="text-[#00e5ff] font-lilita text-sm sm:text-base md:text-sm mt-0.5" data-t="game4Subtitle">MÍTICO // 💧 ELIXIR: 2</div>
                 <div class="flex justify-center gap-4 text-[#ffd866]/70 font-lilita text-xs sm:text-sm mt-1">
                   <span data-t="game4Stat1">🎯 CAZA: 100%</span>
                   <span data-t="game4Stat2">👑 SCORE: 88K</span>
@@ -265,31 +271,46 @@
 
           </div>
         </section>
+
       </main>
 
-      <!-- PIE DE PÁGINA (HUD FOOTER) -->
-      <div class="copper-pipe-h"></div>
-      
       <!-- Glowing Wood Divider -->
       <div class="copper-laser-line"></div>
-      <footer class="bg-mafia-dark/95 py-8 border-t border-mafia-gold/10 relative z-20">
-        <div class="max-w-full px-6 md:px-16 flex flex-col md:flex-row items-center justify-between gap-4 font-typewriter text-[10px] text-mafia-gold/70">
-          <div data-t="footerCopyright">
-            © 2026 SPICYCRUST. ¡TODOS LOS HORNOS LISTOS PARA LA ACCIÓN!
-          </div>
+
+      <!-- FOOTER DE REPUTACIÓN Y LIVE STATS -->
+      <footer class="cyber-glass py-6 px-6 md:px-16 border-t border-mafia-gold/20">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
           
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-xl w-full my-4 md:my-0">
-            <div class="border border-mafia-gold/15 bg-mafia-dark/70 px-3 py-2 rounded-xl text-center shadow-md backdrop-blur-sm transition-all hover:border-mafia-gold/30" data-t="footerStatOpened"></div>
-            <div class="border border-mafia-gold/15 bg-mafia-dark/70 px-3 py-2 rounded-xl text-center shadow-md backdrop-blur-sm transition-all hover:border-mafia-gold/30" data-t="footerStatOnline"></div>
-            <div class="border border-mafia-gold/15 bg-mafia-dark/70 px-3 py-2 rounded-xl text-center shadow-md backdrop-blur-sm transition-all hover:border-mafia-gold/30" data-t="footerStatElixir"></div>
-            <div class="border border-mafia-gold/15 bg-mafia-dark/70 px-3 py-2 rounded-xl text-center shadow-md backdrop-blur-sm transition-all hover:border-mafia-gold/30" data-t="footerStatPizzas"></div>
+          <!-- Copyright e Identidad -->
+          <div class="flex items-center gap-3">
+            <span class="text-2xl select-none">🍕</span>
+            <div>
+              <p class="font-cinzel text-xs text-provolone-cheese tracking-wider" data-t="footerCopyright">
+                © 2026 SPICYCRUST. ¡TODOS LOS HORNOS LISTOS PARA LA ACCIÓN!
+              </p>
+              <div class="flex gap-4 mt-1">
+                <span class="text-[10px] text-mafia-gold/60 font-typewriter" data-t="footerContract">SPICYCRUST ARCADE</span>
+                <span class="text-[10px] text-mafia-green font-typewriter" data-t="footerStatus">SISTEMA ONLINE 🟢</span>
+              </div>
+            </div>
           </div>
-          
-          <div class="flex items-center gap-3 font-lilita text-xs">
-            <span data-t="footerContract" class="text-mafia-gold/70">SPICYCRUST ARCADE</span>
-            <span class="text-mafia-gold/40">//</span>
-            <span data-t="footerStatus" class="text-mafia-green font-bold tracking-wider">SISTEMA ONLINE 🟢</span>
+
+          <!-- Métricas en Vivo -->
+          <div class="flex items-center gap-6 text-center">
+            <div class="border-r border-mafia-gold/20 pr-6" data-t="footerStatOpened">
+              <span class="block text-[9px] uppercase tracking-widest text-mafia-gold/50 font-sans">🏆 Top Score</span>
+              <span class="block text-sm font-black text-mafia-amber font-mono mt-0.5">99,450</span>
+            </div>
+            <div class="border-r border-mafia-gold/20 pr-6" data-t="footerStatOnline">
+              <span class="block text-[9px] uppercase tracking-widest text-mafia-gold/50 font-sans">⚔️ Partidas</span>
+              <span class="block text-sm font-black text-mafia-green font-mono mt-0.5">+15,000</span>
+            </div>
+            <div data-t="footerStatElixir">
+              <span class="block text-[9px] uppercase tracking-widest text-mafia-gold/50 font-sans">👥 Jugadores</span>
+              <span class="block text-sm font-black text-blue-400 font-mono mt-0.5">+3,400</span>
+            </div>
           </div>
+
         </div>
       </footer>
 
@@ -298,65 +319,72 @@
     <!-- ================= MODALES HUD INTERACTIVOS ================= -->
 
     <!-- MODAL 1: LEADERBOARD -->
-    <div id="leaderboard-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300 p-4" aria-modal="true" role="dialog">
-      <div class="modal-panel max-w-3xl w-full cyber-glass p-6 md:p-8 transform scale-95 opacity-0 transition-all duration-300 rounded-xl border border-mafia-gold/30">
+    <div id="leaderboard-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-md hidden opacity-0 transition-opacity duration-300 p-2 sm:p-4" aria-modal="true" role="dialog">
+      <div class="modal-panel max-w-4xl w-full cyber-glass p-4 sm:p-6 md:p-8 transform scale-95 opacity-0 transition-all duration-300 rounded-2xl border-2 border-mafia-gold/40 shadow-[0_0_50px_rgba(233,196,106,0.25)] flex flex-col max-h-[92vh]">
         
         <!-- Cabecera del modal -->
-        <div class="flex items-center justify-between border-b border-mafia-gold/20 pb-4 mb-5">
-          <h3 class="font-cinzel font-black text-lg md:text-xl text-provolone-cheese uppercase flex items-center gap-2" data-t="modalLeadTitle">
-            🏆 SALÓN DE LA FAMA // CLASIFICACIÓN
-          </h3>
-          <button id="leaderboard-close" class="text-mafia-gold/60 hover:text-mafia-red cursor-pointer focus:outline-none" aria-label="Cerrar modal de Leaderboard">
+        <div class="flex items-center justify-between border-b border-mafia-gold/20 pb-3 sm:pb-4 mb-3 sm:mb-4">
+          <div class="flex items-center gap-2 sm:gap-3">
+            <span class="text-2xl sm:text-3xl select-none animate-bounce">🏆</span>
+            <div>
+              <h3 class="font-cinzel font-black text-base sm:text-lg md:text-xl text-[#ffd866] uppercase tracking-wide flex items-center gap-2" data-t="modalLeadTitle">
+                SALÓN DE LA FAMA // CLASIFICACIÓN
+              </h3>
+              <p class="text-[10px] sm:text-xs text-provolone-cheese/60 font-sans">Los mejores pizzeros de la temporada compitiendo en tiempo real</p>
+            </div>
+          </div>
+          <button id="leaderboard-close" class="text-mafia-gold/60 hover:text-mafia-red cursor-pointer p-1.5 rounded-lg bg-mafia-dark/60 hover:bg-mafia-red/20 transition-all focus:outline-none" aria-label="Cerrar modal de Leaderboard">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
 
         <!-- Selector de Pestañas de Juegos & Buscador -->
-        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 mb-5">
-          <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
-            <button class="lead-tab active-tab border border-mafia-gold bg-mafia-mahogany/90 text-mafia-gold font-lilita text-xs px-3.5 py-1.5 rounded-lg cursor-pointer transition-all shadow-sm whitespace-nowrap" data-game="rhythm-slice">
-              🎵 RHYTHM SLICE
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 sm:gap-3 mb-3 sm:mb-4">
+          <div class="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-1.5 max-w-full touch-pan-x no-scrollbar">
+            <button class="lead-tab active-tab border border-mafia-gold bg-mafia-mahogany/95 text-mafia-gold font-lilita text-xs px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl cursor-pointer transition-all shadow-md shrink-0 whitespace-nowrap flex items-center gap-1.5" data-game="rhythm-slice">
+              <span>🎵</span> RHYTHM SLICE
             </button>
-            <button class="lead-tab border border-mafia-gold/20 bg-[#1a0f0a] text-provolone-cheese/60 hover:text-provolone-cheese font-lilita text-xs px-3.5 py-1.5 rounded-lg cursor-pointer transition-all shadow-sm whitespace-nowrap" data-game="slash-slice">
-              ⚔️ SLASH SLICE
+            <button class="lead-tab border border-mafia-gold/20 bg-[#1a0f0a] text-provolone-cheese/60 hover:text-provolone-cheese font-lilita text-xs px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl cursor-pointer transition-all shadow-sm shrink-0 whitespace-nowrap flex items-center gap-1.5" data-game="slash-slice">
+              <span>⚔️</span> SLASH SLICE
             </button>
-            <button class="lead-tab border border-mafia-gold/20 bg-[#1a0f0a] text-provolone-cheese/60 hover:text-provolone-cheese font-lilita text-xs px-3.5 py-1.5 rounded-lg cursor-pointer transition-all shadow-sm whitespace-nowrap" data-game="smash-the-crust">
-              👨‍🍳 SMASH THE CRUST
+            <button class="lead-tab border border-mafia-gold/20 bg-[#1a0f0a] text-provolone-cheese/60 hover:text-provolone-cheese font-lilita text-xs px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl cursor-pointer transition-all shadow-sm shrink-0 whitespace-nowrap flex items-center gap-1.5" data-game="smash-the-crust">
+              <span>👨‍🍳</span> SMASH CRUST
             </button>
-            <button class="lead-tab border border-mafia-gold/20 bg-[#1a0f0a] text-provolone-cheese/60 hover:text-provolone-cheese font-lilita text-xs px-3.5 py-1.5 rounded-lg cursor-pointer transition-all shadow-sm whitespace-nowrap" data-game="slice-hunter">
-              🛵 SLICE HUNTER
+            <button class="lead-tab border border-mafia-gold/20 bg-[#1a0f0a] text-provolone-cheese/60 hover:text-provolone-cheese font-lilita text-xs px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl cursor-pointer transition-all shadow-sm shrink-0 whitespace-nowrap flex items-center gap-1.5" data-game="slice-hunter">
+              <span>🛵</span> SLICE HUNTER
             </button>
           </div>
 
           <!-- Buscador de Jugador -->
-          <div class="relative min-w-[180px]">
-            <input type="text" id="leaderboard-search" placeholder="Buscar jugador..." class="w-full bg-[#1a0f0a] border border-mafia-gold/30 rounded-lg px-3 py-1.5 font-typewriter text-xs text-provolone-cheese placeholder-mafia-gold/40 focus:outline-none focus:border-mafia-gold transition-colors">
+          <div class="relative w-full sm:w-auto sm:min-w-[200px]">
+            <span class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-mafia-gold/40 text-xs">🔍</span>
+            <input type="text" id="leaderboard-search" placeholder="Buscar jugador..." class="w-full bg-[#140b07] border border-mafia-gold/30 rounded-xl pl-8 pr-3 py-1.5 font-sans text-xs text-provolone-cheese placeholder-mafia-gold/40 focus:outline-none focus:border-mafia-gold focus:ring-1 focus:ring-mafia-gold/50 transition-all">
           </div>
         </div>
 
         <!-- Tabla HUD del Leaderboard -->
-        <div class="overflow-x-auto max-h-[50vh] pr-1">
-          <table class="w-full text-left border-collapse">
+        <div class="overflow-y-auto overflow-x-auto flex-grow pr-1 border border-mafia-gold/15 rounded-xl bg-[#120a06]/80">
+          <table class="w-full text-left border-collapse min-w-[340px]">
             <thead>
-              <tr class="border-b border-mafia-gold/20 font-cinzel text-[10px] text-mafia-gold/70 uppercase tracking-widest bg-[#1a0f0a]/60 sticky top-0 backdrop-blur-sm z-10">
-                <th class="px-4 py-2.5 text-center w-14">#</th>
-                <th class="px-4 py-2.5">JUGADOR</th>
-                <th class="px-4 py-2.5 text-right">PUNTAJE</th>
-                <th class="px-4 py-2.5 text-right hidden sm:table-cell">FECHA</th>
+              <tr class="border-b border-mafia-gold/20 font-lilita text-[11px] text-mafia-gold/80 uppercase tracking-wider bg-[#1a0f0a] sticky top-0 backdrop-blur-md z-10">
+                <th class="px-3 sm:px-4 py-2.5 text-center w-14 sm:w-16">#</th>
+                <th class="px-3 sm:px-4 py-2.5">JUGADOR</th>
+                <th class="px-3 sm:px-4 py-2.5 text-right">PUNTAJE</th>
+                <th class="px-3 sm:px-4 py-2.5 text-right hidden sm:table-cell">FECHA</th>
               </tr>
             </thead>
-            <tbody id="leaderboard-tbody">
+            <tbody id="leaderboard-tbody" class="divide-y divide-mafia-gold/10">
               <!-- Cargado dinámicamente desde API v2 -->
             </tbody>
           </table>
         </div>
 
         <!-- Estado de Conexión de la API -->
-        <p id="leaderboard-api-status" class="text-[9px] text-mafia-gold/50 font-typewriter text-center mt-5 pt-3 border-t border-mafia-gold/15">
+        <div id="leaderboard-api-status" class="text-[10px] text-mafia-gold/60 font-sans text-center mt-3 pt-2.5 border-t border-mafia-gold/15 flex items-center justify-center gap-2">
           // CONECTANDO CON SPICYCRUST API V2 🟢
-        </p>
+        </div>
       </div>
     </div>
 

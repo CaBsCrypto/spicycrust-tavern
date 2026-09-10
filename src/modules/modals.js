@@ -42,7 +42,10 @@ export function initModals() {
   }
 
   // --- LEADERBOARD MODAL OPEN / CLOSE ---
-  if (leaderboardBtn && leaderboardModal && leaderboardClose) {
+  const leaderboardMobileBtn = document.getElementById('leaderboard-btn-mobile');
+  const openButtons = [leaderboardBtn, leaderboardMobileBtn].filter(Boolean);
+
+  if (openButtons.length > 0 && leaderboardModal && leaderboardClose) {
     const handleOpenLeaderboard = (e) => {
       e.preventDefault();
       Sound.playToggleSound();
@@ -51,8 +54,10 @@ export function initModals() {
       loadLeaderboard();
     };
 
-    leaderboardBtn.addEventListener('mouseenter', () => Sound.playHoverBlip());
-    leaderboardBtn.addEventListener('click', handleOpenLeaderboard);
+    openButtons.forEach(btn => {
+      btn.addEventListener('mouseenter', () => Sound.playHoverBlip());
+      btn.addEventListener('click', handleOpenLeaderboard);
+    });
 
     leaderboardClose.addEventListener('mouseenter', () => Sound.playHoverBlip());
     leaderboardClose.addEventListener('click', () => {
@@ -136,25 +141,44 @@ export function initModals() {
     tableBody.innerHTML = result.data.map((player, idx) => {
       const rank = player.rank ?? (idx + 1);
       const score = Number(player.score || 0).toLocaleString();
-      const rankClass = rank === 1 ? 'text-mafia-amber font-bold text-sm' : rank === 2 ? 'text-mafia-gold font-bold' : rank === 3 ? 'text-amber-200 font-bold' : 'text-mafia-gold/50';
-      const medal = rank === 1 ? '🥇 ' : rank === 2 ? '🥈 ' : rank === 3 ? '🥉 ' : '';
+      
+      let rankBadge = '';
+      let rowHighlight = 'hover:bg-mafia-mahogany/30';
+      if (rank === 1) {
+        rankBadge = '<span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-gradient-to-b from-yellow-300 to-amber-600 text-black font-black text-xs shadow-md">🥇</span>';
+        rowHighlight = 'bg-yellow-500/10 hover:bg-yellow-500/15 border-yellow-500/30';
+      } else if (rank === 2) {
+        rankBadge = '<span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-gradient-to-b from-slate-200 to-slate-400 text-black font-black text-xs shadow-md">🥈</span>';
+        rowHighlight = 'bg-slate-300/5 hover:bg-slate-300/10 border-slate-400/20';
+      } else if (rank === 3) {
+        rankBadge = '<span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-gradient-to-b from-amber-600 to-amber-800 text-white font-black text-xs shadow-md">🥉</span>';
+        rowHighlight = 'bg-amber-700/5 hover:bg-amber-700/10 border-amber-600/20';
+      } else {
+        rankBadge = `<span class="inline-flex items-center justify-center w-6 h-6 rounded-md bg-mafia-dark/80 text-mafia-gold/70 font-mono font-bold text-xs border border-mafia-gold/20">${rank}</span>`;
+      }
+
+      const formattedDate = player.created_at ? player.created_at.split(' ')[0] || player.created_at.split('T')[0] : 'HOY';
 
       return `
-        <tr class="border-b border-mafia-gold/10 hover:bg-[#3d1d07]/30 transition-colors">
-          <td class="px-4 py-3 font-arcade text-xs text-center ${rankClass}">
-            ${medal}${rank}
+        <tr class="transition-all duration-200 ${rowHighlight}">
+          <td class="px-3 sm:px-4 py-3 text-center">
+            ${rankBadge}
           </td>
-          <td class="px-4 py-3 font-semibold text-provolone-cheese flex items-center gap-2">
-            ${player.nickname || player.name || 'JUGADOR'}
-            <span class="text-[9px] bg-mafia-green/20 text-provolone-cheese px-1.5 py-0.5 rounded border border-mafia-green/40 flex items-center font-typewriter">
-              [VERIFICADO]
+          <td class="px-3 sm:px-4 py-3 font-semibold text-provolone-cheese">
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="font-lilita text-sm sm:text-base text-white tracking-wide">${player.nickname || player.name || 'JUGADOR'}</span>
+              <span class="text-[9px] bg-emerald-950/80 text-emerald-400 px-1.5 py-0.5 rounded border border-emerald-500/30 flex items-center gap-1 font-sans font-medium">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> VERIFICADO
+              </span>
+            </div>
+          </td>
+          <td class="px-3 sm:px-4 py-3 text-right">
+            <span class="font-mono font-black text-sm sm:text-base text-mafia-amber tracking-tight drop-shadow-sm">
+              ${score}
             </span>
           </td>
-          <td class="px-4 py-3 text-right font-arcade text-xs text-mafia-amber glow-amber">
-            ${score}
-          </td>
-          <td class="px-4 py-3 text-right text-[10px] text-provolone-cheese/50 font-typewriter hidden sm:table-cell">
-            ${player.created_at ? player.created_at.split('T')[0] : 'HOY'}
+          <td class="px-3 sm:px-4 py-3 text-right text-[11px] text-provolone-cheese/50 font-mono hidden sm:table-cell">
+            ${formattedDate}
           </td>
         </tr>
       `;
