@@ -1,3 +1,5 @@
+import { Sound } from './sound.js';
+
 export let translations = {};
 
 export async function initTranslations() {
@@ -23,6 +25,7 @@ export async function initTranslations() {
   async function applyTranslations(lang) {
     currentLang = lang;
     localStorage.setItem('lang', lang);
+    document.documentElement.lang = lang;
     const dict = await loadTranslations(lang);
 
     // Actualizar botón de idioma
@@ -47,6 +50,10 @@ export async function initTranslations() {
     if (scoreInput) {
       scoreInput.placeholder = lang === 'es' ? 'VALOR' : 'SCORE';
     }
+    const searchInput = document.getElementById('leaderboard-search');
+    if (searchInput) {
+      searchInput.placeholder = lang === 'es' ? 'Buscar jugador...' : 'Search player...';
+    }
 
     // Asegurar que si la wallet está conectada, el texto del botón se mantenga como la wallet
     if (window.AuthSystemUpdateUI) {
@@ -57,8 +64,13 @@ export async function initTranslations() {
     window.dispatchEvent(new CustomEvent('spicycrust:lang-changed', { detail: { lang } }));
   }
 
-  // Escuchar click de alternar
-  toggleBtn.addEventListener('click', async () => {
+  // Escuchar click de alternar de forma aislada
+  toggleBtn.addEventListener('click', async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    try {
+      Sound.playHoverBlip();
+    } catch (_) {}
     const nextLang = currentLang === 'es' ? 'en' : 'es';
     await applyTranslations(nextLang);
   });

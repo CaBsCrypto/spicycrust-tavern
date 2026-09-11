@@ -3,6 +3,7 @@
   "brand": "SPICY<span class=\"text-mafia-gold\">CRUST</span> TAVERN",
   "navHome": "HOME",
   "navLeaderboard": "LEADERBOARD",
+  "navRanking": "RANKING",
   "navRules": "RULES",
   "trophies": "🏆 CONNECT WALLET",
   "heroTitle": "<span class=\"text-mafia-gold\">SPICYCRUST</span> TAVERN",
@@ -55,8 +56,8 @@
   "modalRulesSec3Text": "This system runs on an optimized engine free of heavy runtime dependencies, rendering cards and chests at a stable 60 FPS.",
   "footerCopyright": "© 2026 SPICYCRUST. ALL OVENS FIRED UP FOR ACTION!",
   "footerStatOpened": "<span class=\"block text-[9px] uppercase tracking-widest text-mafia-gold/50 font-sans\">🏆 Top Score</span><span class=\"block text-sm font-black text-mafia-amber font-mono mt-0.5\">188,500</span>",
-  "footerStatOnline": "<span class=\"block text-[9px] uppercase tracking-widest text-mafia-gold/50 font-sans\">⚔️ Matches</span><span class=\"block text-sm font-black text-mafia-green font-mono mt-0.5">+31</span>",
-  "footerStatElixir": "<span class=\"block text-[9px] uppercase tracking-widest text-mafia-gold/50 font-sans\">👥 Players</span><span class=\"block text-sm font-black text-blue-400 font-mono mt-0.5">+26</span>",
+  "footerStatOnline": "<span class=\"block text-[9px] uppercase tracking-widest text-mafia-gold/50 font-sans\">⚔️ Matches</span><span class=\"block text-sm font-black text-mafia-green font-mono mt-0.5\">+31</span>",
+  "footerStatElixir": "<span class=\"block text-[9px] uppercase tracking-widest text-mafia-gold/50 font-sans\">👥 Players</span><span class=\"block text-sm font-black text-blue-400 font-mono mt-0.5\">+26</span>",
   "footerStatPizzas": "<span class=\"block text-[9px] uppercase tracking-widest text-mafia-gold/50 font-sans\">🍕 Slices</span><span class=\"block text-sm font-black text-mafia-amber font-mono mt-0.5\">+85K</span>",
   "footerContract": "SPICYCRUST ARCADE",
   "footerStatus": "SYSTEM ONLINE 🟢"
