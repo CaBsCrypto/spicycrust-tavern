@@ -207,9 +207,9 @@ export function initLogo3D() {
   // 1. Scene & Top-Down 3/4 Perspective Camera calibrated for heroic 48x48 framing
   const scene = new THREE.Scene();
 
-  const camera = new THREE.PerspectiveCamera(36, width / height, 0.1, 10);
-  camera.position.set(0, 1.55, 2.05);
-  camera.lookAt(0, 0.02, 0);
+  const camera = new THREE.PerspectiveCamera(38, width / height, 0.1, 10);
+  camera.position.set(0, 1.60, 2.30);
+  camera.lookAt(0, 0, 0);
 
   // WebGL Renderer with clean alpha transparency & ACESFilmic tone mapping (R2)
   const renderer = new THREE.WebGLRenderer({
@@ -456,6 +456,9 @@ export function initLogo3D() {
     leafMesh.scale.setScalar(cfg.scale);
     pizzaGroup.add(leafMesh);
   });
+
+  // Scale to comfortably fit within 48x48 (and mobile) bounding box with zero clipping
+  pizzaGroup.scale.setScalar(0.78);
 
   // Initial hero presentation angle (slight 3/4 turn showing depth & toppings)
   pizzaGroup.rotation.y = 0.40;
